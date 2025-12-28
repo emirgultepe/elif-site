@@ -7,7 +7,6 @@
   <style>
     :root{
       --bg:#0b0b0c;
-      --card:#121214;
       --muted:#9b9ba3;
       --text:#f3f3f5;
       --line:#232327;
@@ -90,6 +89,7 @@
       transition:.18s ease;
       font-weight:600;
       font-size:13px;
+      user-select:none;
     }
     .btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.32)}
     .btn.primary{
@@ -97,11 +97,11 @@
       color:#0b0b0c;
       border-color: rgba(255,255,255,.6);
     }
-    .btn[disabled]{
-      opacity:.45;
-      cursor:not-allowed;
-      transform:none !important;
+    .btn.danger{
+      border-color: rgba(255,92,122,.35);
+      background: rgba(255,92,122,.10);
     }
+    .btn[disabled]{opacity:.45; cursor:not-allowed; transform:none !important;}
     .pill{
       padding:8px 12px;
       border-radius:999px;
@@ -124,20 +124,9 @@
       padding:0 7px;
     }
 
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:18px;
-    }
-    .hero{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:18px;
-      margin-top:16px;
-    }
-    @media (max-width:900px){
-      .hero{grid-template-columns:1fr}
-    }
+    .wrap{max-width:1100px; margin:0 auto; padding:18px;}
+    .hero{display:grid; grid-template-columns: 1.2fr .8fr; gap:18px; margin-top:16px;}
+    @media (max-width:900px){ .hero{grid-template-columns:1fr} }
 
     .panel{
       background: rgba(255,255,255,.04);
@@ -155,25 +144,10 @@
       background: radial-gradient(600px 280px at 15% 10%, rgba(255,255,255,.10), transparent 60%);
       pointer-events:none;
     }
-    .hero h1{
-      margin:0 0 10px;
-      font-size:34px;
-      letter-spacing:.01em;
-    }
-    .sub{
-      color:var(--muted);
-      line-height:1.6;
-      margin:0 0 14px;
-      max-width:60ch;
-    }
-    .row{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-    }
-    .tiny{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-    }
+    .hero h1{margin:0 0 10px; font-size:34px; letter-spacing:.01em;}
+    .sub{color:var(--muted); line-height:1.6; margin:0 0 14px; max-width:60ch;}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .tiny{color:var(--muted); font-size:12px; line-height:1.5;}
     .divider{height:1px; background: var(--line); margin:14px 0}
 
     .section-title{
@@ -188,11 +162,7 @@
       text-transform:uppercase;
       color: rgba(255,255,255,.9);
     }
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:14px;
-    }
+    .grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;}
     @media (max-width:980px){ .grid{grid-template-columns: repeat(2,1fr)} }
     @media (max-width:640px){ .grid{grid-template-columns: 1fr} }
 
@@ -217,21 +187,9 @@
     }
     .thumb span{font-size:22px}
     .meta{flex:1}
-    .name{
-      font-weight:800;
-      margin:0;
-      font-size:15px;
-      letter-spacing:.01em;
-    }
-    .desc{
-      margin:6px 0 10px;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-    }
-    .price{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
+    .name{font-weight:800; margin:0; font-size:15px; letter-spacing:.01em;}
+    .desc{margin:6px 0 10px; color:var(--muted); font-size:13px; line-height:1.5;}
+    .price{display:flex; align-items:center; justify-content:space-between; gap:10px;}
     .tag{
       font-size:12px;
       color: rgba(255,255,255,.88);
@@ -254,15 +212,7 @@
       white-space:nowrap;
     }
     .add:hover{transform: translateY(-1px)}
-    .card:after{
-      content:"";
-      position:absolute;
-      inset:auto -50px -70px auto;
-      width:160px; height:160px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 60%);
-      transform: rotate(20deg);
-      pointer-events:none;
-    }
+    .add[disabled]{opacity:.45; cursor:not-allowed; transform:none !important;}
 
     .drawer{
       position:fixed;
@@ -317,13 +267,9 @@
       cursor:pointer;
       padding:6px 10px;
       font-size:12px;
+      user-select:none;
     }
-    .drawer-footer{
-      border-top:1px solid var(--line);
-      padding:14px 16px;
-      display:grid;
-      gap:10px;
-    }
+    .remove[disabled]{opacity:.45; cursor:not-allowed;}
 
     .modal{
       position:fixed;
@@ -377,7 +323,7 @@
       color:var(--muted);
       margin:10px 0 6px;
     }
-    input, textarea, select{
+    input, textarea{
       width:100%;
       border-radius: 14px;
       border:1px solid rgba(255,255,255,.14);
@@ -387,7 +333,7 @@
       outline:none;
       font-size:14px;
     }
-    textarea{min-height:130px; resize:vertical}
+    textarea{min-height:120px; resize:vertical}
     .modal-actions{
       padding:14px 16px 16px;
       border-top:1px solid var(--line);
@@ -395,19 +341,6 @@
       gap:10px;
       justify-content:flex-end;
       flex-wrap:wrap;
-    }
-
-    .heart{
-      position:fixed;
-      font-size:18px;
-      pointer-events:none;
-      animation: floatUp 1.2s ease forwards;
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));
-      z-index:999;
-    }
-    @keyframes floatUp{
-      from{ transform: translateY(0) scale(1); opacity:1 }
-      to{ transform: translateY(-120px) scale(1.35); opacity:0 }
     }
 
     .toast{
@@ -426,7 +359,23 @@
       z-index:300;
     }
     .toast.show{display:block; animation: pop .18s ease}
-    @keyframes pop{from{transform:translateX(-50%) scale(.95);opacity:.2}to{transform:translateX(-50%) scale(1);opacity:1}}
+    @keyframes pop{
+      from{transform:translateX(-50%) scale(.95);opacity:.2}
+      to{transform:translateX(-50%) scale(1);opacity:1}
+    }
+
+    .heart{
+      position:fixed;
+      font-size:18px;
+      pointer-events:none;
+      animation: floatUp 1.2s ease forwards;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));
+      z-index:999;
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) scale(1); opacity:1 }
+      to{ transform: translateY(-120px) scale(1.35); opacity:0 }
+    }
 
     footer{
       max-width:1100px;
@@ -440,15 +389,76 @@
       flex-wrap:wrap;
     }
 
-    .warn{
-      border:1px solid rgba(255, 92, 122, .35);
-      background: rgba(255, 92, 122, .08);
-      padding:10px 12px;
-      border-radius:14px;
-      color: rgba(255,255,255,.92);
-      font-size:12px;
-      line-height:1.5;
+    /* Role overlay */
+    .roleOverlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(6px);
+      display:none;
+      z-index:500;
+      padding:18px;
+      align-items:center;
+      justify-content:center;
     }
+    .roleOverlay.open{display:flex}
+    .roleCard{
+      width:min(520px, 96vw);
+      background: rgba(12,12,13,.94);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    .roleCard h3{
+      margin:0 0 8px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-size:14px;
+    }
+    .roleGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width:520px){ .roleGrid{grid-template-columns:1fr} }
+    .roleBtn{
+      border-radius:18px;
+      padding:14px 12px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      cursor:pointer;
+      text-align:left;
+      transition:.18s ease;
+    }
+    .roleBtn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.32)}
+    .roleBtn b{display:block; font-size:15px; margin-bottom:6px;}
+    .roleBtn span{color:var(--muted); font-size:12px; line-height:1.4;}
+    .miniLink{
+      color:rgba(255,255,255,.85);
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+      border-bottom:1px dashed rgba(255,255,255,.25);
+    }
+
+    .statusLine{
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .savedBadge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      font-size:12px;
+      color: rgba(255,255,255,.9);
+      user-select:none;
+    }
+    .savedBadge.ok{border-color: rgba(85,214,167,.35); background: rgba(85,214,167,.10);}
+    .savedBadge.wait{border-color: rgba(255,255,255,.14); opacity:.85}
   </style>
 </head>
 
@@ -467,7 +477,11 @@
       </div>
 
       <div class="actions">
-        <div class="pill" id="statusPill"><span class="dot" id="dot"></span><span id="statusText">Küs Modu</span></div>
+        <div class="pill" id="statusPill">
+          <span class="dot" id="dot"></span>
+          <span id="statusText">Küs Modu</span>
+        </div>
+
         <button class="btn" id="surpriseBtn">Sürpriz</button>
         <button class="btn primary" id="cartBtn">Gönül Sepeti <span class="count" id="cartCount">0</span></button>
       </div>
@@ -499,28 +513,35 @@
       </div>
 
       <div class="panel">
-        <h2 style="margin:0 0 10px; letter-spacing:.12em; text-transform:uppercase; font-size:14px;">Elif’e Mesaj Oluşturucu</h2>
-        <p class="tiny" style="margin:0 0 10px;">
-          Sepet ortak (senkron). “Barış/Küs” ve notlar da canlı.
-        </p>
+        <div class="row" style="justify-content:space-between; align-items:flex-start;">
+          <div>
+            <h2 style="margin:0 0 6px; letter-spacing:.12em; text-transform:uppercase; font-size:14px;">Canlı Durum</h2>
+            <p class="tiny" style="margin:0;">
+              <span id="whoText">Sen: -</span>
+              • <span class="miniLink" id="changeRole">Değiştir</span>
+            </p>
+          </div>
 
-        <label>Ben kimim?</label>
-        <select id="who">
-          <option value="Emir">Emir</option>
-          <option value="Elif">Elif</option>
-        </select>
-
-        <div class="row" style="justify-content:space-between; margin-top:10px;">
-          <span class="tiny" id="lastSeenText">Son bakan: -</span>
-          <span class="tiny" id="heartsText">Kalp: 0</span>
+          <div class="statusLine">
+            <span class="tiny" id="lastSeenText">Son bakan: -</span>
+            <span class="tiny" id="heartsText">Kalp: 0</span>
+          </div>
         </div>
 
         <div class="divider"></div>
 
-        <label>Elif’e hitap (Emir düzenleyebilir)</label>
+        <div class="row">
+          <button class="btn primary" id="btnPeace">Barış Modu</button>
+          <button class="btn danger" id="btnKus">Küs Modu</button>
+          <span class="tiny" id="modeHint">Modu değiştirebilirsin.</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <label>Elif’e hitap (Emir yazsın)</label>
         <input id="hitap" value="Elif" />
 
-        <label>Kısa not (Emir düzenleyebilir)</label>
+        <label>Kısa not (Emir yazsın)</label>
         <input id="kisaNot" placeholder="örn: Bugün konuşup düzeltmek istiyorum." />
 
         <label>Oluşan mesaj (Emir kopyalar)</label>
@@ -528,24 +549,27 @@
 
         <div class="row" style="margin-top:10px; justify-content:space-between;">
           <button class="btn" id="copyBtn">Mesajı Kopyala</button>
-          <button class="btn primary" id="makePeaceBtn">Barış Modu (Elif)</button>
+          <span class="tiny" id="readText">Okundu: -</span>
         </div>
 
         <div class="divider"></div>
 
-        <label>Elif’ten not (sadece Elif yazabilir)</label>
+        <label>Elif’ten not</label>
         <textarea id="elifNote" placeholder="Elif buraya bir not yazabilir…"></textarea>
 
         <div class="row" style="justify-content:space-between; margin-top:10px;">
-          <span class="tiny" id="readText">Okundu: -</span>
-          <span class="tiny">Not: Linki bilen herkes görür.</span>
+          <div class="row">
+            <span class="savedBadge wait" id="noteState">Henüz gönderilmedi</span>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="sendNote">Gönder</button>
+          </div>
         </div>
 
         <div class="divider"></div>
-        <div class="warn">
-          Güvenlik: Şu an “Elif” seçilirse değişiklik yapılabilir (telefonunda Elif seçerek kullanacak).
-          İstersen sonraki adımda basit bir <b>PIN</b> ekleyip sadece Elif’in değiştirmesini garanti ederiz.
-        </div>
+        <p class="tiny" style="margin:0;">
+          Not: Bu sayfa sadece sizde kalacak şekilde tasarlandı. Linki kimseyle paylaşmayın.
+        </p>
       </div>
     </section>
 
@@ -569,7 +593,7 @@
         <span class="tiny">“Fiyat” = duygusal emek 😄</span>
       </div>
       <button class="btn primary" id="checkoutBtn">Checkout • Barış Teklifi</button>
-      <button class="btn" id="clearBtn">Sepeti Boşalt (Elif)</button>
+      <button class="btn danger" id="clearBtn">Sepeti Boşalt</button>
     </div>
   </aside>
 
@@ -641,6 +665,26 @@
 
   <div class="toast" id="toast">Kopyalandı ✅</div>
 
+  <!-- Role chooser overlay -->
+  <div class="roleOverlay" id="roleOverlay">
+    <div class="roleCard">
+      <h3>Sen kimsin?</h3>
+      <p class="tiny" style="margin:0;">
+        Bu seçim sadece senin cihazında hatırlanır. Sonradan “Değiştir” diyebilirsin.
+      </p>
+      <div class="roleGrid">
+        <button class="roleBtn" id="pickEmir">
+          <b>Ben Emir’im</b>
+          <span>Mesajları düzenler, durumu görür.</span>
+        </button>
+        <button class="roleBtn" id="pickElif">
+          <b>Ben Elif’im</b>
+          <span>Not yazabilir, modu & sepeti değiştirebilir.</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <span>© ELIF BEAUTY • Gönül Onarım Mağazası</span>
     <span class="tiny">Easter egg: “Sürpriz”e 3 kez bas 😉</span>
@@ -651,13 +695,12 @@
        ========================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import {
-      getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment
-    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from
+      "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
     // ✅ BURAYI DOLDUR (Firebase Config)
     const firebaseConfig = {
-       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -672,22 +715,33 @@
 
     function nowTs(){ return Date.now(); }
 
-    async function ensureDefaults() {
+    async function ensureDefaults(){
       const snap = await getDoc(stateRef);
-      if (!snap.exists()) {
+      if(!snap.exists()){
         await setDoc(stateRef, {
           peaceMode: false,
           elifNote: "",
+          elifNoteUpdatedAt: 0,
           cart: [],
           hearts: 0,
-          reads: {},     // { Emir: ts, Elif: ts }
-          lastSeen: {}   // { name, ts }
+          reads: {},    // { Emir: ts, Elif: ts }
+          lastSeen: {}  // { name, ts }
         });
       }
     }
 
+    // pingSeen debounce (spam engeli)
+    let lastPingAt = 0;
+    async function pingSeenDebounced(name){
+      const now = nowTs();
+      if (now - lastPingAt < 5000) return; // 5 sn’de 1
+      lastPingAt = now;
+      await updateDoc(stateRef, { lastSeen: { name, ts: now } });
+    }
+
     window.__sharedState = {
-      viewerName: localStorage.getItem("viewerName") || "Emir",
+      viewerName: localStorage.getItem("viewerName") || "",
+
       setViewer(name){
         this.viewerName = name;
         localStorage.setItem("viewerName", name);
@@ -695,14 +749,14 @@
 
       async init(handlers){
         await ensureDefaults();
-        await this.pingSeen();
+        if (this.viewerName) await pingSeenDebounced(this.viewerName);
 
-        onSnapshot(stateRef, (s) => {
-          if (!s.exists()) return;
+        onSnapshot(stateRef, (s)=>{
+          if(!s.exists()) return;
           const d = s.data();
 
           handlers?.onPeaceMode?.(!!d.peaceMode);
-          handlers?.onElifNote?.(typeof d.elifNote === "string" ? d.elifNote : "");
+          handlers?.onElifNote?.(typeof d.elifNote === "string" ? d.elifNote : "", d.elifNoteUpdatedAt || 0);
           handlers?.onCart?.(Array.isArray(d.cart) ? d.cart : []);
           handlers?.onHearts?.(typeof d.hearts === "number" ? d.hearts : 0);
           handlers?.onReads?.(d.reads || {});
@@ -712,32 +766,33 @@
 
       async setPeaceMode(on){
         await updateDoc(stateRef, { peaceMode: !!on });
-        await this.pingSeen();
+        if (this.viewerName) await pingSeenDebounced(this.viewerName);
       },
 
       async setElifNote(text){
-        await updateDoc(stateRef, { elifNote: String(text ?? "") });
-        await this.pingSeen();
+        await updateDoc(stateRef, { elifNote: String(text ?? ""), elifNoteUpdatedAt: nowTs() });
+        if (this.viewerName) await pingSeenDebounced(this.viewerName);
       },
 
       async setCart(cartIds){
         await updateDoc(stateRef, { cart: cartIds });
-        await this.pingSeen();
+        if (this.viewerName) await pingSeenDebounced(this.viewerName);
       },
 
       async addHearts(n=1){
         await updateDoc(stateRef, { hearts: increment(n) });
-        await this.pingSeen();
+        if (this.viewerName) await pingSeenDebounced(this.viewerName);
       },
 
       async markRead(){
-        const key = this.viewerName;
-        await updateDoc(stateRef, { [`reads.${key}`]: nowTs() });
-        await this.pingSeen();
+        if(!this.viewerName) return;
+        await updateDoc(stateRef, { [`reads.${this.viewerName}`]: nowTs() });
+        await pingSeenDebounced(this.viewerName);
       },
 
       async pingSeen(){
-        await updateDoc(stateRef, { lastSeen: { name: this.viewerName, ts: nowTs() } });
+        if(!this.viewerName) return;
+        await pingSeenDebounced(this.viewerName);
       }
     };
   </script>
@@ -767,8 +822,10 @@
         desc:"Abartmadan, düşünceli bir jest. ‘Seni önemsiyorum’ der." },
     ];
 
+    // Elements
     const grid = document.getElementById("grid");
     const q = document.getElementById("q");
+
     const drawer = document.getElementById("drawer");
     const cartBtn = document.getElementById("cartBtn");
     const closeDrawer = document.getElementById("closeDrawer");
@@ -778,20 +835,37 @@
     const clearBtn = document.getElementById("clearBtn");
     const checkoutBtn = document.getElementById("checkoutBtn");
 
+    const statusText = document.getElementById("statusText");
+    const dot = document.getElementById("dot");
+    const statusPill = document.getElementById("statusPill");
+
+    const surpriseBtn = document.getElementById("surpriseBtn");
+    const quickAdd = document.getElementById("quickAdd");
+
     const hitap = document.getElementById("hitap");
     const kisaNot = document.getElementById("kisaNot");
     const mesaj = document.getElementById("mesaj");
     const copyBtn = document.getElementById("copyBtn");
-    const makePeaceBtn = document.getElementById("makePeaceBtn");
-    const statusText = document.getElementById("statusText");
-    const dot = document.getElementById("dot");
-    const statusPill = document.getElementById("statusPill");
+
+    const readText = document.getElementById("readText");
+    const heartsText = document.getElementById("heartsText");
+    const lastSeenText = document.getElementById("lastSeenText");
+
+    const btnPeace = document.getElementById("btnPeace");
+    const btnKus = document.getElementById("btnKus");
+    const modeHint = document.getElementById("modeHint");
+
+    const elifNoteEl = document.getElementById("elifNote");
+    const sendNote = document.getElementById("sendNote");
+    const noteState = document.getElementById("noteState");
+
+    const whoText = document.getElementById("whoText");
+    const changeRole = document.getElementById("changeRole");
 
     const modal = document.getElementById("modal");
     const openCheckout = document.getElementById("openCheckout");
     const closeModal = document.getElementById("closeModal");
     const closeModal2 = document.getElementById("closeModal2");
-
     const telafi = document.getElementById("telafi");
     const ozur = document.getElementById("ozur");
     const sevgi = document.getElementById("sevgi");
@@ -804,15 +878,13 @@
     const finishBtn = document.getElementById("finishBtn");
 
     const toast = document.getElementById("toast");
-    const surpriseBtn = document.getElementById("surpriseBtn");
-    const quickAdd = document.getElementById("quickAdd");
 
-    const who = document.getElementById("who");
-    const elifNoteEl = document.getElementById("elifNote");
-    const lastSeenText = document.getElementById("lastSeenText");
-    const readText = document.getElementById("readText");
-    const heartsText = document.getElementById("heartsText");
+    // Role overlay
+    const roleOverlay = document.getElementById("roleOverlay");
+    const pickEmir = document.getElementById("pickEmir");
+    const pickElif = document.getElementById("pickElif");
 
+    // State
     let cart = [];
     let surpriseCount = 0;
     let peaceMode = false;
@@ -820,24 +892,32 @@
     let suppressCartWrite = false;
     let suppressNoteWrite = false;
 
-    function isElif(){ return who.value === "Elif"; }
+    // Permissions: only Elif can change mode, note, cart (Emir sadece izler + mesajı kopyalar)
+    function isElif(){ return (window.__sharedState?.viewerName || "") === "Elif"; }
+    function viewer(){ return (window.__sharedState?.viewerName || ""); }
 
     function enforcePermissions(){
       const elif = isElif();
+      whoText.textContent = `Sen: ${viewer() || "-"}`;
 
-      // Elif yazabilir
-      elifNoteEl.readOnly = !elif;
-
-      // Elif değiştirir
-      makePeaceBtn.disabled = !elif;
+      // Elif yetkileri
+      btnPeace.disabled = !elif;
+      btnKus.disabled = !elif;
       clearBtn.disabled = !elif;
 
-      // Sepet ürün ekleme/silme sadece Elif (senin seçimin B)
+      elifNoteEl.readOnly = !elif;
+      sendNote.disabled = !elif;
+
+      // Ürün ekleme butonları
       document.querySelectorAll(".add").forEach(b => b.disabled = !elif);
+      // Sepet içi silme butonları
       document.querySelectorAll(".remove").forEach(b => b.disabled = !elif);
 
-      // Kalp gönderme herkese açık (tatlı)
-      // sendLove disabled değil.
+      modeHint.textContent = elif
+        ? "Modu değiştirebilirsin."
+        : "Modu sadece Elif değiştirebilir.";
+
+      // Emir mesaj alanı: zaten readonly
     }
 
     function money(n){ return `${n}₺`; }
@@ -871,6 +951,8 @@
       enforcePermissions();
     }
 
+    function cartIds(){ return cart.map(p => p.id); }
+
     function addToCart(id){
       const p = products.find(x=>x.id===id);
       if(!p) return;
@@ -896,10 +978,6 @@
       }
     }
 
-    function cartIds(){
-      return cart.map(p => p.id);
-    }
-
     function applyRemoteCart(ids){
       suppressCartWrite = true;
       cart = ids.map(id => products.find(p => p.id === id)).filter(Boolean);
@@ -919,7 +997,7 @@
         return;
       }
 
-      let total = cart.reduce((a,b)=>a+b.price,0);
+      const total = cart.reduce((a,b)=>a+b.price,0);
       summary.textContent = `${cart.length} ürün • ${money(total)}`;
 
       cart.forEach((p, idx)=>{
@@ -972,7 +1050,6 @@
       }
 
       if(note) parts.push(note);
-
       parts.push(`Beni istersen sonra da dinleyebilirsin; acele ettirmeyeceğim. Seni önemsiyorum. 🤍`);
       return parts.join("\n\n");
     }
@@ -980,6 +1057,26 @@
     function updateMessage(){
       mesaj.value = buildMessage();
       updateFinalMsg();
+    }
+
+    function renderPeaceUI(on){
+      peaceMode = on;
+      if(on){
+        statusText.textContent = "Barış Modu";
+        dot.classList.add("ok");
+        statusPill.style.borderColor = "rgba(85,214,167,.35)";
+      } else {
+        statusText.textContent = "Küs Modu";
+        dot.classList.remove("ok");
+        statusPill.style.borderColor = "rgba(255,255,255,.12)";
+      }
+    }
+
+    async function setPeaceModeShared(on){
+      renderPeaceUI(on);
+      if (window.__sharedState && isElif()) {
+        await window.__sharedState.setPeaceMode(on);
+      }
     }
 
     function openDrawer(){ drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false"); }
@@ -998,7 +1095,9 @@
     }
 
     function copyText(str){
-      navigator.clipboard.writeText(str).then(()=>popToast("Kopyalandı ✅")).catch(()=>popToast("Kopyalanamadı ❌"));
+      navigator.clipboard.writeText(str)
+        .then(()=>popToast("Kopyalandı ✅"))
+        .catch(()=>popToast("Kopyalanamadı ❌"));
     }
 
     function heart(x,y,emoji="❤️"){
@@ -1038,27 +1137,6 @@
       }
     }
 
-    // UI-only: mode toggle renderer
-    function renderPeaceUI(on){
-      peaceMode = on;
-      if(on){
-        statusText.textContent = "Barış Modu";
-        dot.classList.add("ok");
-        statusPill.style.borderColor = "rgba(85,214,167,.35)";
-      } else {
-        statusText.textContent = "Küs Modu";
-        dot.classList.remove("ok");
-        statusPill.style.borderColor = "rgba(255,255,255,.12)";
-      }
-    }
-
-    async function setPeaceModeShared(on){
-      renderPeaceUI(on);
-      if (window.__sharedState && isElif()) {
-        await window.__sharedState.setPeaceMode(on);
-      }
-    }
-
     function updateFinalMsg(){
       const H = (hitap.value || "Elif").trim();
       const oz = (ozur.value || "").trim();
@@ -1078,7 +1156,38 @@
       finalMsg.value = base.join("\n\n");
     }
 
-    // Events
+    // Note saved UI
+    function setNoteState(state){
+      // state: "idle" | "dirty" | "saved"
+      if(state === "dirty"){
+        noteState.className = "savedBadge wait";
+        noteState.textContent = "Yazılıyor…";
+      } else if(state === "saved"){
+        noteState.className = "savedBadge ok";
+        noteState.textContent = "Gönderildi ✅";
+      } else {
+        noteState.className = "savedBadge wait";
+        noteState.textContent = "Henüz gönderilmedi";
+      }
+    }
+
+    // Role overlay helpers
+    function openRoleOverlay(){ roleOverlay.classList.add("open"); }
+    function closeRoleOverlay(){ roleOverlay.classList.remove("open"); }
+
+    async function setRole(name){
+      window.__sharedState?.setViewer(name);
+      enforcePermissions();
+      closeRoleOverlay();
+
+      // okundu + seen
+      if(window.__sharedState){
+        await window.__sharedState.markRead();
+        await window.__sharedState.pingSeen();
+      }
+    }
+
+    // ===== Events =====
     cartBtn.addEventListener("click", openDrawer);
     closeDrawer.addEventListener("click", closeDrawerFn);
 
@@ -1122,11 +1231,17 @@
       popToast("Barışa bir adım daha ✨");
     });
 
-    makePeaceBtn.addEventListener("click", async ()=>{
+    btnPeace.addEventListener("click", async ()=>{
       if(!isElif()) return;
       await setPeaceModeShared(true);
       burstHearts(10);
       popToast("Barış Modu ✅");
+    });
+
+    btnKus.addEventListener("click", async ()=>{
+      if(!isElif()) return;
+      await setPeaceModeShared(false);
+      popToast("Küs Modu ✅");
     });
 
     surpriseBtn.addEventListener("click", ()=>{
@@ -1157,7 +1272,6 @@
       }
     });
 
-    // Live updates
     [hitap, kisaNot].forEach(el=> el.addEventListener("input", updateMessage));
     [telafi, ozur, sevgi, iletisim, kapanis].forEach(el=> el.addEventListener("input", updateFinalMsg));
 
@@ -1168,80 +1282,115 @@
       }
     });
 
-    // Who selector
-    who.addEventListener("change", async ()=>{
-      if (window.__sharedState) {
-        window.__sharedState.setViewer(who.value);
-        await window.__sharedState.pingSeen();
-        await window.__sharedState.markRead();
-      }
-      enforcePermissions();
-    });
+    // Role overlay triggers
+    changeRole.addEventListener("click", openRoleOverlay);
+    pickEmir.addEventListener("click", ()=> setRole("Emir"));
+    pickElif.addEventListener("click", ()=> setRole("Elif"));
 
-    // Elif note (debounced)
-    let noteTimer = null;
+    // Note behavior: only Elif can type, and needs "Gönder"
+    let localNoteDirty = false;
+    let noteTypingTimer = null;
+
     elifNoteEl.addEventListener("input", ()=>{
-      if(!window.__sharedState) return;
       if(!isElif()) return;
-      if(suppressNoteWrite) return;
-
-      clearTimeout(noteTimer);
-      noteTimer = setTimeout(async ()=>{
-        await window.__sharedState.setElifNote(elifNoteEl.value);
-        popToast("Not güncellendi ✍️");
-      }, 250);
+      localNoteDirty = true;
+      setNoteState("dirty");
+      clearTimeout(noteTypingTimer);
+      noteTypingTimer = setTimeout(()=> {
+        // yazmayı bitirdi -> "Gönder"e basmasını bekle
+        setNoteState("idle");
+      }, 450);
     });
 
-    // mark read when focusing message area
-    mesaj.addEventListener("focus", async ()=>{
-      if (window.__sharedState) await window.__sharedState.markRead();
+    sendNote.addEventListener("click", async ()=>{
+      if(!isElif()) return;
+      if(!window.__sharedState) return;
+
+      const text = elifNoteEl.value;
+      setNoteState("dirty");
+      await window.__sharedState.setElifNote(text);
+      localNoteDirty = false;
+      setNoteState("saved");
+      popToast("Not gönderildi ✅");
     });
 
-    // Init
+    // Read status: daha doğru
+    async function markReadSmart(){
+      if(!window.__sharedState) return;
+      if(!viewer()) return;
+      await window.__sharedState.markRead();
+    }
+    // sayfa açılınca
+    window.addEventListener("load", ()=> markReadSmart());
+    // sekmeye geri dönünce
+    document.addEventListener("visibilitychange", ()=>{
+      if(document.visibilityState === "visible") markReadSmart();
+    });
+    // sayfa odaklanınca
+    window.addEventListener("focus", ()=> markReadSmart());
+
+    // Init UI
     renderCards(products);
     updateCartUI();
     updateMessage();
     renderPeaceUI(false);
+    setNoteState("idle");
 
-    // Firebase init (live)
+    // If no role selected on this device -> show overlay
+    if(!window.__sharedState?.viewerName){
+      openRoleOverlay();
+    } else {
+      enforcePermissions();
+    }
+
+    // Firebase live
     (async ()=>{
       if (!window.__sharedState) return;
 
-      // set dropdown from storage
-      who.value = window.__sharedState.viewerName;
-
-      enforcePermissions();
-
       await window.__sharedState.init({
-        onPeaceMode: (v)=> {
-          // remote -> UI
-          renderPeaceUI(v);
-        },
-        onElifNote: (t)=> {
+        onPeaceMode: (v)=> renderPeaceUI(v),
+
+        onElifNote: (text, updatedAt)=> {
+          // Remote note geldiğinde sadece Elif yazıyorsa ve local değişiklik varsa ezmeyelim
+          if(isElif() && localNoteDirty) return;
+
           suppressNoteWrite = true;
-          if (elifNoteEl.value !== t) elifNoteEl.value = t;
+          if (elifNoteEl.value !== text) elifNoteEl.value = text;
           suppressNoteWrite = false;
+
+          // Notun varlığına göre badge
+          if(text && updatedAt){
+            setNoteState("saved");
+          } else {
+            setNoteState("idle");
+          }
         },
+
         onCart: (ids)=> {
           const local = cartIds();
           const same = local.length === ids.length && local.every((x,i)=>x===ids[i]);
           if (!same) applyRemoteCart(ids);
         },
-        onHearts: (n)=> {
-          heartsText.textContent = `Kalp: ${n}`;
-        },
+
+        onHearts: (n)=> { heartsText.textContent = `Kalp: ${n}`; },
+
         onReads: (reads)=> {
           const fmt = (ts)=> ts ? new Date(ts).toLocaleString("tr-TR") : "-";
           readText.textContent = `Okundu • Emir: ${fmt(reads?.Emir)} • Elif: ${fmt(reads?.Elif)}`;
         },
+
         onLastSeen: (ls)=> {
           if(!ls?.name || !ls?.ts) { lastSeenText.textContent = "Son bakan: -"; return; }
           lastSeenText.textContent = `Son bakan: ${ls.name} • ${new Date(ls.ts).toLocaleString("tr-TR")}`;
         }
       });
 
-      await window.__sharedState.markRead();
+      // role seçiliyse yetkileri uygula
+      enforcePermissions();
+
+      // açılışta seen + read
       await window.__sharedState.pingSeen();
+      await window.__sharedState.markRead();
     })();
   </script>
 </body>
