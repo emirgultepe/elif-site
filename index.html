@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ELIF BEAUTY • Gönül Onarım Mağazası</title>
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --card:#121214;
+      --muted:#9b9ba3;
+      --text:#f3f3f5;
+      --line:#232327;
+      --accent:#ffffff;
+      --good:#55d6a7;
+      --bad:#ff5c7a;
+      --shadow: 0 16px 40px rgba(0,0,0,.45);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(255,255,255,.08), transparent 55%),
+                  radial-gradient(900px 700px at 90% 10%, rgba(255,255,255,.06), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(10,10,11,.7);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .logo-badge{
+      width:34px; height:34px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.25);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    }
+    .logo-badge span{font-size:16px}
+    .search{
+      flex:1;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      padding:10px 14px;
+      min-width:140px;
+    }
+    .search input{
+      flex:1;
+      background:transparent;
+      border:0;
+      outline:none;
+      color:var(--text);
+      font-size:14px;
+    }
+    .search .hint{color:var(--muted); font-size:12px}
+    .actions{display:flex; gap:10px; align-items:center}
+    .btn{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      transition:.18s ease;
+      font-weight:600;
+      font-size:13px;
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.32)}
+    .btn.primary{
+      background: var(--accent);
+      color:#0b0b0c;
+      border-color: rgba(255,255,255,.6);
+    }
+    .btn[disabled]{
+      opacity:.45;
+      cursor:not-allowed;
+      transform:none !important;
+    }
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--muted);
+      font-size:12px;
+      display:flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    .dot{width:7px; height:7px; border-radius:50%; background:var(--bad)}
+    .dot.ok{background:var(--good)}
+    .count{
+      min-width:22px;
+      height:22px;
+      border-radius:999px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      font-size:12px;
+      padding:0 7px;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:18px;
+    }
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      margin-top:16px;
+    }
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+    }
+
+    .panel{
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding:18px;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .panel:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(600px 280px at 15% 10%, rgba(255,255,255,.10), transparent 60%);
+      pointer-events:none;
+    }
+    .hero h1{
+      margin:0 0 10px;
+      font-size:34px;
+      letter-spacing:.01em;
+    }
+    .sub{
+      color:var(--muted);
+      line-height:1.6;
+      margin:0 0 14px;
+      max-width:60ch;
+    }
+    .row{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+    .tiny{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .divider{height:1px; background: var(--line); margin:14px 0}
+
+    .section-title{
+      margin:26px 0 10px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+    }
+    .section-title h2{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.9);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+    @media (max-width:980px){ .grid{grid-template-columns: repeat(2,1fr)} }
+    @media (max-width:640px){ .grid{grid-template-columns: 1fr} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding:14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.35);
+      display:flex;
+      gap:12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .thumb{
+      width:54px; height:54px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      display:grid; place-items:center;
+      flex:0 0 auto;
+    }
+    .thumb span{font-size:22px}
+    .meta{flex:1}
+    .name{
+      font-weight:800;
+      margin:0;
+      font-size:15px;
+      letter-spacing:.01em;
+    }
+    .desc{
+      margin:6px 0 10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .price{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .tag{
+      font-size:12px;
+      color: rgba(255,255,255,.88);
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      padding:6px 10px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+    .add{
+      border:0;
+      cursor:pointer;
+      background: rgba(255,255,255,.92);
+      color:#0b0b0c;
+      padding:9px 12px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      transition:.18s ease;
+      white-space:nowrap;
+    }
+    .add:hover{transform: translateY(-1px)}
+    .card:after{
+      content:"";
+      position:absolute;
+      inset:auto -50px -70px auto;
+      width:160px; height:160px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 60%);
+      transform: rotate(20deg);
+      pointer-events:none;
+    }
+
+    .drawer{
+      position:fixed;
+      top:0; right:0;
+      width:min(420px, 92vw);
+      height:100%;
+      background: rgba(12,12,13,.92);
+      border-left:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      transform: translateX(110%);
+      transition:.25s ease;
+      z-index:100;
+      display:flex;
+      flex-direction:column;
+      box-shadow: -20px 0 50px rgba(0,0,0,.5);
+    }
+    .drawer.open{transform: translateX(0)}
+    .drawer-header{
+      padding:16px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .drawer-header h3{
+      margin:0;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:14px;
+    }
+    .drawer-body{padding:14px 16px; overflow:auto; flex:1}
+    .item{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      border-radius:16px;
+      margin-bottom:10px;
+    }
+    .item .thumb{width:44px;height:44px;border-radius:14px}
+    .item .name{font-size:14px}
+    .item .desc{margin:4px 0 0; font-size:12px}
+    .remove{
+      margin-left:auto;
+      border:1px solid rgba(255,255,255,.18);
+      background: transparent;
+      color:rgba(255,255,255,.9);
+      border-radius:999px;
+      cursor:pointer;
+      padding:6px 10px;
+      font-size:12px;
+    }
+    .drawer-footer{
+      border-top:1px solid var(--line);
+      padding:14px 16px;
+      display:grid;
+      gap:10px;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:200;
+      padding:18px;
+    }
+    .modal.open{display:flex}
+    .modal-card{
+      width:min(760px, 96vw);
+      background: rgba(12,12,13,.92);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal-top{
+      padding:16px 16px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modal-top h3{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .modal-body{
+      padding:16px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width:860px){ .modal-body{grid-template-columns:1fr} }
+    .box{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      border-radius: 18px;
+      padding:14px;
+    }
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:10px 0 6px;
+    }
+    input, textarea, select{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:12px 12px;
+      outline:none;
+      font-size:14px;
+    }
+    textarea{min-height:130px; resize:vertical}
+    .modal-actions{
+      padding:14px 16px 16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .heart{
+      position:fixed;
+      font-size:18px;
+      pointer-events:none;
+      animation: floatUp 1.2s ease forwards;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));
+      z-index:999;
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) scale(1); opacity:1 }
+      to{ transform: translateY(-120px) scale(1.35); opacity:0 }
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,.92);
+      color:#0b0b0c;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:13px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index:300;
+    }
+    .toast.show{display:block; animation: pop .18s ease}
+    @keyframes pop{from{transform:translateX(-50%) scale(.95);opacity:.2}to{transform:translateX(-50%) scale(1);opacity:1}}
+
+    footer{
+      max-width:1100px;
+      margin:24px auto 40px;
+      padding:0 18px;
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .warn{
+      border:1px solid rgba(255, 92, 122, .35);
+      background: rgba(255, 92, 122, .08);
+      padding:10px 12px;
+      border-radius:14px;
+      color: rgba(255,255,255,.92);
+      font-size:12px;
+      line-height:1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">
+        <div class="logo-badge"><span>✦</span></div>
+        ELIF BEAUTY
+      </div>
+
+      <div class="search" title="Arama">
+        <span style="opacity:.9">⌕</span>
+        <input id="q" placeholder="Bir şey ara… (örn: özür, kahve, sarılma)" />
+        <span class="hint">Enter</span>
+      </div>
+
+      <div class="actions">
+        <div class="pill" id="statusPill"><span class="dot" id="dot"></span><span id="statusText">Küs Modu</span></div>
+        <button class="btn" id="surpriseBtn">Sürpriz</button>
+        <button class="btn primary" id="cartBtn">Gönül Sepeti <span class="count" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="panel">
+        <h1>Elif’in gönlünü almak için<br/>şık bir “telafi koleksiyonu”.</h1>
+        <p class="sub">
+          Buradaki her “ürün” aslında bir adım: özür, anlayış, telafi ve sevgi.
+          Hedef tek: <b>Elif’in yüzünü güldürmek</b>.
+        </p>
+
+        <div class="row">
+          <button class="btn primary" id="quickAdd">Hızlı Telafi Seti Ekle</button>
+          <button class="btn" id="openCheckout">Checkout (Barış Teklifi)</button>
+          <span class="tiny">İpucu: <b>“Sürpriz”</b> butonuna bas. 😉</span>
+        </div>
+
+        <div class="divider"></div>
+        <div class="row">
+          <span class="tag">✅ Yumuşak dil</span>
+          <span class="tag">✅ Suç atmadan</span>
+          <span class="tag">✅ Net özür</span>
+          <span class="tag">✅ Telafi planı</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin:0 0 10px; letter-spacing:.12em; text-transform:uppercase; font-size:14px;">Elif’e Mesaj Oluşturucu</h2>
+        <p class="tiny" style="margin:0 0 10px;">
+          Sepet ortak (senkron). “Barış/Küs” ve notlar da canlı.
+        </p>
+
+        <label>Ben kimim?</label>
+        <select id="who">
+          <option value="Emir">Emir</option>
+          <option value="Elif">Elif</option>
+        </select>
+
+        <div class="row" style="justify-content:space-between; margin-top:10px;">
+          <span class="tiny" id="lastSeenText">Son bakan: -</span>
+          <span class="tiny" id="heartsText">Kalp: 0</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <label>Elif’e hitap (Emir düzenleyebilir)</label>
+        <input id="hitap" value="Elif" />
+
+        <label>Kısa not (Emir düzenleyebilir)</label>
+        <input id="kisaNot" placeholder="örn: Bugün konuşup düzeltmek istiyorum." />
+
+        <label>Oluşan mesaj (Emir kopyalar)</label>
+        <textarea id="mesaj" readonly></textarea>
+
+        <div class="row" style="margin-top:10px; justify-content:space-between;">
+          <button class="btn" id="copyBtn">Mesajı Kopyala</button>
+          <button class="btn primary" id="makePeaceBtn">Barış Modu (Elif)</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <label>Elif’ten not (sadece Elif yazabilir)</label>
+        <textarea id="elifNote" placeholder="Elif buraya bir not yazabilir…"></textarea>
+
+        <div class="row" style="justify-content:space-between; margin-top:10px;">
+          <span class="tiny" id="readText">Okundu: -</span>
+          <span class="tiny">Not: Linki bilen herkes görür.</span>
+        </div>
+
+        <div class="divider"></div>
+        <div class="warn">
+          Güvenlik: Şu an “Elif” seçilirse değişiklik yapılabilir (telefonunda Elif seçerek kullanacak).
+          İstersen sonraki adımda basit bir <b>PIN</b> ekleyip sadece Elif’in değiştirmesini garanti ederiz.
+        </div>
+      </div>
+    </section>
+
+    <div class="section-title">
+      <h2>Koleksiyon</h2>
+      <span class="tiny">Arama kutusuyla filtreleyebilirsin.</span>
+    </div>
+
+    <section class="grid" id="grid"></section>
+  </main>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <h3>GÖNÜL SEPETİ (SENKRON)</h3>
+      <button class="btn" id="closeDrawer">Kapat</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-footer">
+      <div class="row" style="justify-content:space-between;">
+        <span class="tiny" id="summary">0 ürün • 0₺</span>
+        <span class="tiny">“Fiyat” = duygusal emek 😄</span>
+      </div>
+      <button class="btn primary" id="checkoutBtn">Checkout • Barış Teklifi</button>
+      <button class="btn" id="clearBtn">Sepeti Boşalt (Elif)</button>
+    </div>
+  </aside>
+
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h3>Checkout • Barış Teklifi</h3>
+        <button class="btn" id="closeModal">Kapat</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="box">
+          <h4 style="margin:0 0 10px;">🎁 Barış Planı</h4>
+          <p class="tiny" style="line-height:1.6;margin:0;">
+            1) Kısa ve net özür <br/>
+            2) Onu anladığını söyle <br/>
+            3) Telafi öner (somut) <br/>
+            4) “Konuşalım” ama baskı yapmadan
+          </p>
+
+          <div class="divider"></div>
+
+          <label>Telafi önerin (Emir)</label>
+          <input id="telafi" placeholder="örn: Yarın kahve + yürüyüş, sen ne istersen." />
+
+          <label>Özür cümlen (Emir)</label>
+          <input id="ozur" placeholder="örn: Seni üzdüysem gerçekten özür dilerim." />
+
+          <label>Son mesaj (kopyalanabilir)</label>
+          <textarea id="finalMsg" readonly></textarea>
+
+          <div class="row" style="margin-top:10px; justify-content:space-between;">
+            <button class="btn" id="copyFinal">Finali Kopyala</button>
+            <button class="btn primary" id="sendLove">Kalp Gönder</button>
+          </div>
+        </div>
+
+        <div class="box">
+          <h4 style="margin:0 0 10px;">🖤 Elif’e Özel</h4>
+          <p class="tiny" style="line-height:1.6;margin:0 0 10px;">
+            Metni kişiselleştir. “Ben” dili kullan, “sen hep” deme.
+          </p>
+          <div class="divider"></div>
+
+          <label>Onu en çok sevdiğin şey (Emir)</label>
+          <input id="sevgi" placeholder="örn: Senin yanında huzurluyum." />
+
+          <label>İletişim cümlesi (Emir)</label>
+          <input id="iletisim" value="Konuşmak istersen ben buradayım." />
+
+          <label>Kapanış (Emir)</label>
+          <input id="kapanis" value="Seni önemsiyorum. ❤️" />
+
+          <div class="divider"></div>
+
+          <button class="btn" id="autoFill">Otomatik Doldur (Şık)</button>
+          <p class="tiny" style="margin:10px 0 0;">
+            Bu metin iskelet. En iyisi senin dilinle küçük dokunuş.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn" id="closeModal2">Kapat</button>
+        <button class="btn primary" id="finishBtn">Barışa Bir Adım Daha</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Kopyalandı ✅</div>
+
+  <footer>
+    <span>© ELIF BEAUTY • Gönül Onarım Mağazası</span>
+    <span class="tiny">Easter egg: “Sürpriz”e 3 kez bas 😉</span>
+  </footer>
+
+  <!-- =========================
+       FIREBASE (CANLI SENKRON)
+       ========================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import {
+      getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    // ✅ BURAYI DOLDUR (Firebase Config)
+    const firebaseConfig = {
+       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+  authDomain: "elif-site.firebaseapp.com",
+  projectId: "elif-site",
+  storageBucket: "elif-site.firebasestorage.app",
+  messagingSenderId: "740065601752",
+  appId: "1:740065601752:web:38898a11ab28cba588cfad",
+  measurementId: "G-53C6DN719D"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const stateRef = doc(db, "shared", "relationshipState");
+
+    function nowTs(){ return Date.now(); }
+
+    async function ensureDefaults() {
+      const snap = await getDoc(stateRef);
+      if (!snap.exists()) {
+        await setDoc(stateRef, {
+          peaceMode: false,
+          elifNote: "",
+          cart: [],
+          hearts: 0,
+          reads: {},     // { Emir: ts, Elif: ts }
+          lastSeen: {}   // { name, ts }
+        });
+      }
+    }
+
+    window.__sharedState = {
+      viewerName: localStorage.getItem("viewerName") || "Emir",
+      setViewer(name){
+        this.viewerName = name;
+        localStorage.setItem("viewerName", name);
+      },
+
+      async init(handlers){
+        await ensureDefaults();
+        await this.pingSeen();
+
+        onSnapshot(stateRef, (s) => {
+          if (!s.exists()) return;
+          const d = s.data();
+
+          handlers?.onPeaceMode?.(!!d.peaceMode);
+          handlers?.onElifNote?.(typeof d.elifNote === "string" ? d.elifNote : "");
+          handlers?.onCart?.(Array.isArray(d.cart) ? d.cart : []);
+          handlers?.onHearts?.(typeof d.hearts === "number" ? d.hearts : 0);
+          handlers?.onReads?.(d.reads || {});
+          handlers?.onLastSeen?.(d.lastSeen || {});
+        });
+      },
+
+      async setPeaceMode(on){
+        await updateDoc(stateRef, { peaceMode: !!on });
+        await this.pingSeen();
+      },
+
+      async setElifNote(text){
+        await updateDoc(stateRef, { elifNote: String(text ?? "") });
+        await this.pingSeen();
+      },
+
+      async setCart(cartIds){
+        await updateDoc(stateRef, { cart: cartIds });
+        await this.pingSeen();
+      },
+
+      async addHearts(n=1){
+        await updateDoc(stateRef, { hearts: increment(n) });
+        await this.pingSeen();
+      },
+
+      async markRead(){
+        const key = this.viewerName;
+        await updateDoc(stateRef, { [`reads.${key}`]: nowTs() });
+        await this.pingSeen();
+      },
+
+      async pingSeen(){
+        await updateDoc(stateRef, { lastSeen: { name: this.viewerName, ts: nowTs() } });
+      }
+    };
+  </script>
+
+  <!-- =========================
+       APP SCRIPT
+       ========================= -->
+  <script>
+    const products = [
+      { id:"p1", icon:"🤍", name:"Net Özür Serum", price: 49, tag:"Best Seller",
+        desc:"Savunmaya geçmeden, kısa ve net bir özür: kalbi yormaz, duvarları indirir." },
+      { id:"p2", icon:"🧠", name:"Anlayış Tonik", price: 39, tag:"Gentle",
+        desc:"‘Seni anlıyorum’ kısmını doğru kurar. Haklılık kavgasını bitirir." },
+      { id:"p3", icon:"🫶", name:"Sarılma Kremi", price: 59, tag:"Hydrating",
+        desc:"Sıcak, güven veren bir yaklaşım. Buzları yavaş yavaş eritir." },
+      { id:"p4", icon:"☕", name:"Kahve + Yürüyüş Set", price: 89, tag:"Classic",
+        desc:"Somut telafi önerisi. ‘Konuşalım mı?’nın en zarif hali." },
+      { id:"p5", icon:"📝", name:"Tek Cümlelik İtiraf Lip", price: 29, tag:"Minimal",
+        desc:"‘Seni kırdıysam gerçekten üzgünüm.’ gibi tek cümleyle etkili vuruş." },
+      { id:"p6", icon:"🌸", name:"Tatlı Hatıra Parfüm", price: 99, tag:"Signature",
+        desc:"İkinizi gülümseten bir anıyı hatırlatır. Atmosferi yumuşatır." },
+      { id:"p7", icon:"🎧", name:"Dinleme Maskesi", price: 69, tag:"Deep Care",
+        desc:"Sözünü kesmeden dinleme modu. ‘Önce seni anlayayım’ enerjisi." },
+      { id:"p8", icon:"📵", name:"Baskısız Alan SPF", price: 44, tag:"Respect",
+        desc:"Üst üste mesaj atma koruması. Alan tanır, saygı gösterir." },
+      { id:"p9", icon:"🎁", name:"Küçük Sürpriz Mini", price: 79, tag:"Cute",
+        desc:"Abartmadan, düşünceli bir jest. ‘Seni önemsiyorum’ der." },
+    ];
+
+    const grid = document.getElementById("grid");
+    const q = document.getElementById("q");
+    const drawer = document.getElementById("drawer");
+    const cartBtn = document.getElementById("cartBtn");
+    const closeDrawer = document.getElementById("closeDrawer");
+    const drawerBody = document.getElementById("drawerBody");
+    const cartCount = document.getElementById("cartCount");
+    const summary = document.getElementById("summary");
+    const clearBtn = document.getElementById("clearBtn");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+
+    const hitap = document.getElementById("hitap");
+    const kisaNot = document.getElementById("kisaNot");
+    const mesaj = document.getElementById("mesaj");
+    const copyBtn = document.getElementById("copyBtn");
+    const makePeaceBtn = document.getElementById("makePeaceBtn");
+    const statusText = document.getElementById("statusText");
+    const dot = document.getElementById("dot");
+    const statusPill = document.getElementById("statusPill");
+
+    const modal = document.getElementById("modal");
+    const openCheckout = document.getElementById("openCheckout");
+    const closeModal = document.getElementById("closeModal");
+    const closeModal2 = document.getElementById("closeModal2");
+
+    const telafi = document.getElementById("telafi");
+    const ozur = document.getElementById("ozur");
+    const sevgi = document.getElementById("sevgi");
+    const iletisim = document.getElementById("iletisim");
+    const kapanis = document.getElementById("kapanis");
+    const finalMsg = document.getElementById("finalMsg");
+    const copyFinal = document.getElementById("copyFinal");
+    const sendLove = document.getElementById("sendLove");
+    const autoFill = document.getElementById("autoFill");
+    const finishBtn = document.getElementById("finishBtn");
+
+    const toast = document.getElementById("toast");
+    const surpriseBtn = document.getElementById("surpriseBtn");
+    const quickAdd = document.getElementById("quickAdd");
+
+    const who = document.getElementById("who");
+    const elifNoteEl = document.getElementById("elifNote");
+    const lastSeenText = document.getElementById("lastSeenText");
+    const readText = document.getElementById("readText");
+    const heartsText = document.getElementById("heartsText");
+
+    let cart = [];
+    let surpriseCount = 0;
+    let peaceMode = false;
+
+    let suppressCartWrite = false;
+    let suppressNoteWrite = false;
+
+    function isElif(){ return who.value === "Elif"; }
+
+    function enforcePermissions(){
+      const elif = isElif();
+
+      // Elif yazabilir
+      elifNoteEl.readOnly = !elif;
+
+      // Elif değiştirir
+      makePeaceBtn.disabled = !elif;
+      clearBtn.disabled = !elif;
+
+      // Sepet ürün ekleme/silme sadece Elif (senin seçimin B)
+      document.querySelectorAll(".add").forEach(b => b.disabled = !elif);
+      document.querySelectorAll(".remove").forEach(b => b.disabled = !elif);
+
+      // Kalp gönderme herkese açık (tatlı)
+      // sendLove disabled değil.
+    }
+
+    function money(n){ return `${n}₺`; }
+
+    function renderCards(list){
+      grid.innerHTML = "";
+      list.forEach(p=>{
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+          <div class="thumb"><span>${p.icon}</span></div>
+          <div class="meta">
+            <p class="name">${p.name}</p>
+            <p class="desc">${p.desc}</p>
+            <div class="price">
+              <span class="tag">${p.tag} • ${money(p.price)}</span>
+              <button class="add" data-id="${p.id}">Gönlüne Ekle</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(el);
+      });
+
+      grid.querySelectorAll(".add").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          if(!isElif()) return;
+          addToCart(btn.dataset.id);
+        });
+      });
+
+      enforcePermissions();
+    }
+
+    function addToCart(id){
+      const p = products.find(x=>x.id===id);
+      if(!p) return;
+      cart.push(p);
+      popToast(`Eklendi: ${p.name}`);
+      burstHearts(6);
+      updateCartUI();
+      updateMessage();
+
+      if (!suppressCartWrite && window.__sharedState) {
+        window.__sharedState.setCart(cartIds());
+      }
+    }
+
+    function removeFromCart(idx){
+      if(!isElif()) return;
+      cart.splice(idx, 1);
+      updateCartUI();
+      updateMessage();
+
+      if (!suppressCartWrite && window.__sharedState) {
+        window.__sharedState.setCart(cartIds());
+      }
+    }
+
+    function cartIds(){
+      return cart.map(p => p.id);
+    }
+
+    function applyRemoteCart(ids){
+      suppressCartWrite = true;
+      cart = ids.map(id => products.find(p => p.id === id)).filter(Boolean);
+      updateCartUI();
+      updateMessage();
+      suppressCartWrite = false;
+    }
+
+    function updateCartUI(){
+      cartCount.textContent = cart.length;
+      drawerBody.innerHTML = "";
+
+      if(cart.length === 0){
+        drawerBody.innerHTML = `<p class="tiny">Sepet boş. Elif’in gönlüne gidecek birkaç şey seç 😉</p>`;
+        summary.textContent = `0 ürün • 0₺`;
+        enforcePermissions();
+        return;
+      }
+
+      let total = cart.reduce((a,b)=>a+b.price,0);
+      summary.textContent = `${cart.length} ürün • ${money(total)}`;
+
+      cart.forEach((p, idx)=>{
+        const it = document.createElement("div");
+        it.className="item";
+        it.innerHTML = `
+          <div class="thumb"><span>${p.icon}</span></div>
+          <div style="flex:1">
+            <p class="name">${p.name}</p>
+            <p class="desc">${p.tag} • ${money(p.price)}</p>
+          </div>
+          <button class="remove" data-idx="${idx}">Sil</button>
+        `;
+        drawerBody.appendChild(it);
+      });
+
+      drawerBody.querySelectorAll(".remove").forEach(btn=>{
+        btn.addEventListener("click", ()=> removeFromCart(Number(btn.dataset.idx)));
+      });
+
+      enforcePermissions();
+    }
+
+    function buildMessage(){
+      const H = (hitap.value || "Elif").trim();
+      const note = (kisaNot.value || "").trim();
+
+      const picks = cart.map(p=>p.name);
+      const has = (name)=> picks.some(x=>x.toLowerCase().includes(name.toLowerCase()));
+
+      const parts = [];
+      parts.push(`${H}, sana yazmadan içim rahat etmedi.`);
+
+      if(has("Özür") || has("İtiraf")){
+        parts.push(`Seni kırdıysam gerçekten özür dilerim. Savunmaya geçmek istemiyorum.`);
+      } else {
+        parts.push(`Seni üzdüğümü hissediyorum ve bunun için üzgünüm.`);
+      }
+
+      if(has("Anlayış") || has("Dinleme")){
+        parts.push(`Seni dinlemek ve gerçekten anlamak istiyorum. Haklı olduğun yerler varsa kabul ediyorum.`);
+      } else {
+        parts.push(`Önemli olan haklılık değil; aramızın iyi olması.`);
+      }
+
+      if(has("Kahve") || has("Sürpriz")){
+        parts.push(`İstersen bir kahve içip kısa bir yürüyüş yapalım; sen nasıl istersen. Ben telafi etmek istiyorum.`);
+      } else {
+        parts.push(`Konuşup sakin sakin düzeltmek istiyorum.`);
+      }
+
+      if(note) parts.push(note);
+
+      parts.push(`Beni istersen sonra da dinleyebilirsin; acele ettirmeyeceğim. Seni önemsiyorum. 🤍`);
+      return parts.join("\n\n");
+    }
+
+    function updateMessage(){
+      mesaj.value = buildMessage();
+      updateFinalMsg();
+    }
+
+    function openDrawer(){ drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false"); }
+    function closeDrawerFn(){ drawer.classList.remove("open"); drawer.setAttribute("aria-hidden","true"); }
+
+    function openModal(){
+      modal.classList.add("open");
+      updateFinalMsg();
+    }
+    function closeModalFn(){ modal.classList.remove("open"); }
+
+    function popToast(text="Kopyalandı ✅"){
+      toast.textContent = text;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1100);
+    }
+
+    function copyText(str){
+      navigator.clipboard.writeText(str).then(()=>popToast("Kopyalandı ✅")).catch(()=>popToast("Kopyalanamadı ❌"));
+    }
+
+    function heart(x,y,emoji="❤️"){
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = emoji;
+      h.style.left = x + "px";
+      h.style.top = y + "px";
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), 1300);
+    }
+
+    function burstHearts(n=8){
+      const cx = window.innerWidth - 70;
+      const cy = 90;
+      for(let i=0;i<n;i++){
+        const x = cx + (Math.random()*40 - 20);
+        const y = cy + (Math.random()*30 - 15);
+        setTimeout(()=>heart(x,y, Math.random()>.25?"❤️":"🤍"), i*35);
+      }
+    }
+
+    function rainHearts(count=28){
+      for(let i=0;i<count;i++){
+        setTimeout(()=>{
+          const x = Math.random() * window.innerWidth;
+          const y = window.innerHeight - 40;
+          const h = document.createElement("div");
+          h.className="heart";
+          h.textContent = Math.random()>.25 ? "❤️" : "🤍";
+          h.style.left = x + "px";
+          h.style.top = y + "px";
+          h.style.animationDuration = (0.9 + Math.random()*0.9) + "s";
+          document.body.appendChild(h);
+          setTimeout(()=>h.remove(), 1600);
+        }, i*40);
+      }
+    }
+
+    // UI-only: mode toggle renderer
+    function renderPeaceUI(on){
+      peaceMode = on;
+      if(on){
+        statusText.textContent = "Barış Modu";
+        dot.classList.add("ok");
+        statusPill.style.borderColor = "rgba(85,214,167,.35)";
+      } else {
+        statusText.textContent = "Küs Modu";
+        dot.classList.remove("ok");
+        statusPill.style.borderColor = "rgba(255,255,255,.12)";
+      }
+    }
+
+    async function setPeaceModeShared(on){
+      renderPeaceUI(on);
+      if (window.__sharedState && isElif()) {
+        await window.__sharedState.setPeaceMode(on);
+      }
+    }
+
+    function updateFinalMsg(){
+      const H = (hitap.value || "Elif").trim();
+      const oz = (ozur.value || "").trim();
+      const tl = (telafi.value || "").trim();
+      const sv = (sevgi.value || "").trim();
+      const il = (iletisim.value || "Konuşmak istersen ben buradayım.").trim();
+      const kp = (kapanis.value || "Seni önemsiyorum. ❤️").trim();
+
+      const base = [];
+      base.push(`${H},`);
+      base.push(oz || `Seni kırdıysam gerçekten özür dilerim. Amacım asla seni üzmek değildi.`);
+      if(sv) base.push(sv);
+      base.push(tl || `İstersen uygun olduğunda konuşalım; ben telafi etmek istiyorum.`);
+      base.push(il);
+      base.push(kp);
+
+      finalMsg.value = base.join("\n\n");
+    }
+
+    // Events
+    cartBtn.addEventListener("click", openDrawer);
+    closeDrawer.addEventListener("click", closeDrawerFn);
+
+    clearBtn.addEventListener("click", ()=>{
+      if(!isElif()) return;
+      cart = [];
+      updateCartUI();
+      updateMessage();
+      popToast("Sepet boşaltıldı");
+      if (window.__sharedState) window.__sharedState.setCart([]);
+    });
+
+    checkoutBtn.addEventListener("click", openModal);
+    openCheckout.addEventListener("click", openModal);
+
+    closeModal.addEventListener("click", closeModalFn);
+    closeModal2.addEventListener("click", closeModalFn);
+
+    copyBtn.addEventListener("click", ()=> copyText(mesaj.value));
+    copyFinal.addEventListener("click", ()=> copyText(finalMsg.value));
+
+    sendLove.addEventListener("click", async ()=>{
+      burstHearts(14);
+      rainHearts(22);
+      popToast("Kalpler yolda 💌");
+      if (window.__sharedState) await window.__sharedState.addHearts(1);
+    });
+
+    autoFill.addEventListener("click", ()=>{
+      ozur.value = "Seni üzdüysem gerçekten özür dilerim. Savunmaya geçmek istemiyorum.";
+      telafi.value = "İstersen bir kahve içip kısa bir yürüyüş yapalım; sen ne istersen.";
+      sevgi.value = "Senin yanında kendimi iyi ve huzurlu hissediyorum, bunu kaybetmek istemem.";
+      iletisim.value = "Konuşmak istersen ben buradayım, seni zorlamayacağım.";
+      kapanis.value = "Seni önemsiyorum. 🤍";
+      updateFinalMsg();
+      popToast("Şık metin hazır ✨");
+    });
+
+    finishBtn.addEventListener("click", ()=>{
+      rainHearts(30);
+      popToast("Barışa bir adım daha ✨");
+    });
+
+    makePeaceBtn.addEventListener("click", async ()=>{
+      if(!isElif()) return;
+      await setPeaceModeShared(true);
+      burstHearts(10);
+      popToast("Barış Modu ✅");
+    });
+
+    surpriseBtn.addEventListener("click", ()=>{
+      surpriseCount++;
+      burstHearts(10);
+      popToast("Sürpriz açıldı ✨");
+      if(surpriseCount >= 3){
+        rainHearts(40);
+        popToast("Easter egg! ❤️❤️❤️");
+        surpriseCount = 0;
+      }
+    });
+
+    quickAdd.addEventListener("click", ()=>{
+      if(!isElif()) { popToast("Bu seti Elif seçebilir ✨"); openDrawer(); return; }
+      ["p1","p2","p4","p7","p8"].forEach(addToCart);
+      openDrawer();
+    });
+
+    q.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        const term = q.value.trim().toLowerCase();
+        const filtered = !term ? products : products.filter(p =>
+          (p.name + " " + p.desc + " " + p.tag).toLowerCase().includes(term)
+        );
+        renderCards(filtered);
+        popToast(filtered.length ? `${filtered.length} sonuç` : "Sonuç yok");
+      }
+    });
+
+    // Live updates
+    [hitap, kisaNot].forEach(el=> el.addEventListener("input", updateMessage));
+    [telafi, ozur, sevgi, iletisim, kapanis].forEach(el=> el.addEventListener("input", updateFinalMsg));
+
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape"){
+        closeDrawerFn();
+        closeModalFn();
+      }
+    });
+
+    // Who selector
+    who.addEventListener("change", async ()=>{
+      if (window.__sharedState) {
+        window.__sharedState.setViewer(who.value);
+        await window.__sharedState.pingSeen();
+        await window.__sharedState.markRead();
+      }
+      enforcePermissions();
+    });
+
+    // Elif note (debounced)
+    let noteTimer = null;
+    elifNoteEl.addEventListener("input", ()=>{
+      if(!window.__sharedState) return;
+      if(!isElif()) return;
+      if(suppressNoteWrite) return;
+
+      clearTimeout(noteTimer);
+      noteTimer = setTimeout(async ()=>{
+        await window.__sharedState.setElifNote(elifNoteEl.value);
+        popToast("Not güncellendi ✍️");
+      }, 250);
+    });
+
+    // mark read when focusing message area
+    mesaj.addEventListener("focus", async ()=>{
+      if (window.__sharedState) await window.__sharedState.markRead();
+    });
+
+    // Init
+    renderCards(products);
+    updateCartUI();
+    updateMessage();
+    renderPeaceUI(false);
+
+    // Firebase init (live)
+    (async ()=>{
+      if (!window.__sharedState) return;
+
+      // set dropdown from storage
+      who.value = window.__sharedState.viewerName;
+
+      enforcePermissions();
+
+      await window.__sharedState.init({
+        onPeaceMode: (v)=> {
+          // remote -> UI
+          renderPeaceUI(v);
+        },
+        onElifNote: (t)=> {
+          suppressNoteWrite = true;
+          if (elifNoteEl.value !== t) elifNoteEl.value = t;
+          suppressNoteWrite = false;
+        },
+        onCart: (ids)=> {
+          const local = cartIds();
+          const same = local.length === ids.length && local.every((x,i)=>x===ids[i]);
+          if (!same) applyRemoteCart(ids);
+        },
+        onHearts: (n)=> {
+          heartsText.textContent = `Kalp: ${n}`;
+        },
+        onReads: (reads)=> {
+          const fmt = (ts)=> ts ? new Date(ts).toLocaleString("tr-TR") : "-";
+          readText.textContent = `Okundu • Emir: ${fmt(reads?.Emir)} • Elif: ${fmt(reads?.Elif)}`;
+        },
+        onLastSeen: (ls)=> {
+          if(!ls?.name || !ls?.ts) { lastSeenText.textContent = "Son bakan: -"; return; }
+          lastSeenText.textContent = `Son bakan: ${ls.name} • ${new Date(ls.ts).toLocaleString("tr-TR")}`;
+        }
+      });
+
+      await window.__sharedState.markRead();
+      await window.__sharedState.pingSeen();
+    })();
+  </script>
+</body>
+</html>
