@@ -12,9 +12,9 @@
       --line: #333333;
       --text:#ffffff; 
       --muted:#888888; 
-      --good:#10b981; /* YEŞİL RENK BURADA */
-      --bad:#ef4444;  /* KIRMIZI RENK BURADA */
-      --accent: #db2777; /* Pembe vurgu */
+      --good:#10b981; 
+      --bad:#ef4444;
+      --accent: #db2777; 
       --shadow: 0 10px 40px rgba(0,0,0,.8); 
       --r:16px;
     }
@@ -52,28 +52,26 @@
     .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:0; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
     .btn:hover{background: var(--line);}
     
-    /* GÜNCELLENEN BUTON RENKLERİ */
     .btn.primary{
-        background: var(--good); /* YEŞİL */
+        background: var(--good); 
         color: #fff; 
         border-color: var(--good);
     }
     .btn.primary:hover{
-        background: #059669; /* Koyu Yeşil (Hover) */
+        background: #059669; 
     }
     
     .btn.danger{
-        background: var(--bad); /* KIRMIZI */
+        background: var(--bad); 
         color: #fff;
         border-color: var(--bad); 
     }
     .btn.danger:hover{
-        background: #dc2626; /* Koyu Kırmızı (Hover) */
+        background: #dc2626; 
     }
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
-    /* Not Alanı */
     textarea{
       width:100%;
       border-radius:4px;
@@ -91,7 +89,6 @@
     textarea:focus { border-color: var(--accent); }
     textarea[readonly]{opacity:.5; cursor: not-allowed;}
 
-    /* Ürün Kartları */
     .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:15px; margin-top:15px;}
     
     .pCard{
@@ -110,7 +107,6 @@
     .desc{margin:5px 0 15px; color:var(--muted); font-size:11px;}
     .tag{font-size:10px; color: #000; background: #fff; padding:2px 6px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;}
 
-    /* Sepet Drawer */
     .drawer{position:fixed; top:0; right:0; width:min(400px, 85vw); height:100%; background: #000; border-left:1px solid var(--line); transform: translateX(110%); transition:.3s cubic-bezier(0.4, 0, 0.2, 1); z-index:100; display:flex; flex-direction:column; box-shadow: -10px 0 50px rgba(0,0,0,.8);}
     .drawer.open{transform: translateX(0)}
     .drawer-header{padding:20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
@@ -121,7 +117,6 @@
     .xbtn:hover { color: var(--bad); }
     .drawer-footer{border-top:1px solid var(--line); padding:20px; display:grid; gap:10px;}
 
-    /* Modal (Giriş Ekranı) */
     .overlay{position:fixed; inset:0; background: #000; z-index:500; display:none; align-items:center; justify-content:center; padding:20px;}
     .overlay.open{display:flex}
     .modal{width:min(450px, 96vw); text-align: center;}
@@ -151,6 +146,7 @@
         padding: 4px; 
         overflow: hidden;
         background: #000;
+        position: relative;
     }
     .avatar-img {
         width: 100%; 
@@ -265,7 +261,7 @@
       <div class="grid2">
         <button class="roleBtn emir" id="pickEmir">
             <div class="avatar-frame">
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200" class="avatar-img">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80" class="avatar-img">
             </div>
             <b>EMİR</b>
             <span>"Aşık"</span>
@@ -273,7 +269,7 @@
 
         <button class="roleBtn elif" id="pickElif">
             <div class="avatar-frame">
-                <img src="elif.jpg" class="avatar-img" onerror="this.src='https://i.pinimg.com/736x/0a/8e/13/0a8e1300735620547491478878808806.jpg'">
+                <img src="https://i.pinimg.com/736x/0a/8e/13/0a8e1300735620547491478878808806.jpg" class="avatar-img">
             </div>
             <b>ELİF</b>
             <span>"Prenses"</span>
@@ -288,7 +284,7 @@
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from
       "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIR 🔴
+    // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIRMAYI UNUTMA 🔴
     const firebaseConfig = {
        apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
