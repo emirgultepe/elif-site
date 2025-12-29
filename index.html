@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>ELIF & EMIR • Private Space</title>
   
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -28,6 +28,7 @@
       background: var(--bg);
       color:var(--text);
       min-height:100vh;
+      -webkit-tap-highlight-color: transparent;
     }
     
     /* Üst Bar */
@@ -73,10 +74,16 @@
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
+    /* GÜNCELLENEN NOT ALANI (DAHA GENİŞ) */
     textarea, input[type="text"], input[type="date"] {
       width:100%; border-radius:4px; border:1px solid var(--line); background: #111; color: #ddd; padding:15px; outline:none; font-size:14px; font-family: monospace;
+      min-height: 350px; /* GENİŞLETİLDİ */
     }
+    input[type="text"], input[type="date"] { min-height: auto; }
     textarea:focus, input:focus { border-color: var(--accent); }
+    
+    /* Senkron İkonu */
+    .sync-icon { font-size: 18px; color: var(--muted); transition: color 0.3s; margin-left: auto; }
     
     /* Geleceğe Mektup Stili */
     .capsule { border: 1px dashed var(--line); padding: 15px; border-radius: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); }
@@ -98,7 +105,7 @@
 
     .pass-container { display:none; flex-direction: column; align-items: center; gap:15px; animation: fadeIn 0.3s; }
     @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
-    .passInput { background: #111; border: 1px solid var(--line); color: #fff; padding: 15px; text-align: center; letter-spacing: 5px; font-size: 20px; width: 200px; border-radius: 4px; outline: none; }
+    .passInput { background: #111; border: 1px solid var(--line); color: #fff; padding: 15px; text-align: center; letter-spacing: 5px; font-size: 20px; width: 200px; border-radius: 4px; outline: none; min-height: auto; }
     .passInput:focus { border-color: var(--accent); }
     .backBtn { background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:10px; }
 
@@ -111,6 +118,9 @@
     
     .heart{position:fixed; font-size:24px; pointer-events:none; animation: floatUp 1.5s ease forwards; z-index:999;}
     @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-150px) scale(1.5); opacity:0 }}
+    
+    /* Mobilde input gizleme ayarı */
+    #hiddenDateInput { position: absolute; opacity: 0; pointer-events: none; height: 0; width: 0; }
   </style>
 </head>
 
@@ -135,6 +145,7 @@
     <div class="card">
       <div class="title">
         <span>Geri Sayım</span>
+        <input type="text" id="hiddenDateInput">
         <button class="link" id="editDateBtn" style="border:none; background:none;">⚙️</button>
       </div>
       <div class="countdown-box">
@@ -146,8 +157,7 @@
     <div class="card">
       <h2 class="title">İlişki Durumu</h2>
       
-      <div class="row" id="peaceActions" style="margin-bottom: 20px;">
-        </div>
+      <div class="row" id="peaceActions" style="margin-bottom: 20px;"></div>
       
       <div class="row" style="justify-content: space-between; border-top: 1px solid var(--line); padding-top: 15px;">
          <button class="btn" id="sendHeart" style="border-radius: 50%; width: 50px; height: 50px; padding:0; font-size: 20px; border-color: var(--accent); color: var(--accent);">💖</button>
@@ -161,20 +171,19 @@
     <div class="card">
       <h2 class="title">Özel Notlar</h2>
       
-      <label style="color: #3b82f6;">EMİR'İN SATIRLARI</label>
+      <div class="row" style="justify-content:space-between; margin-bottom:5px;">
+        <label style="color: #3b82f6; margin:0;">EMİR'İN SATIRLARI</label>
+        <div id="emirSync" class="sync-icon"></div>
+      </div>
       <textarea id="emirNote" placeholder="Emir buraya duygularını yazacak..."></textarea>
       
-      <div class="row" style="justify-content:flex-end; margin-top:5px; margin-bottom: 20px;">
-        <span class="pill" id="emirSavedPill">Senkron: -</span>
-      </div>
-
       <div class="divider"></div>
 
-      <label style="color: #db2777;">ELİF'İN SATIRLARI</label>
-      <textarea id="elifNote" placeholder="Elif buraya duygularını yazacak..."></textarea>
-      <div class="row" style="justify-content:flex-end; margin-top:5px;">
-        <span class="pill" id="elifSavedPill">Senkron: -</span>
+      <div class="row" style="justify-content:space-between; margin-bottom:5px;">
+        <label style="color: #db2777; margin:0;">ELİF'İN SATIRLARI</label>
+        <div id="elifSync" class="sync-icon"></div>
       </div>
+      <textarea id="elifNote" placeholder="Elif buraya duygularını yazacak..."></textarea>
     </div>
 
     <div class="card">
@@ -253,8 +262,8 @@
     const timerText = document.getElementById("timerText");
     
     const countdownDisplay = document.getElementById("countdownDisplay");
-    const targetLabel = document.getElementById("targetLabel");
     const editDateBtn = document.getElementById("editDateBtn");
+    const hiddenDateInput = document.getElementById("hiddenDateInput");
 
     const capsuleList = document.getElementById("capsuleList");
     const capsuleMsg = document.getElementById("capsuleMsg");
@@ -263,8 +272,8 @@
 
     const emirNoteEl = document.getElementById("emirNote");
     const elifNoteEl = document.getElementById("elifNote");
-    const emirSavedPill = document.getElementById("emirSavedPill");
-    const elifSavedPill = document.getElementById("elifSavedPill");
+    const emirSync = document.getElementById("emirSync");
+    const elifSync = document.getElementById("elifSync");
 
     const heartsPill = document.getElementById("heartsPill");
     const sendHeart = document.getElementById("sendHeart");
@@ -372,89 +381,56 @@
        await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() });
     });
 
-    // 🔴 BARIŞ / KÜSLÜK MANTIĞI (KRİTİK GÜNCELLEME) 🔴
-    
-    // 1. İSTEK GÖNDERME
+    // BARIŞ / KÜSLÜK
     async function requestPeace(){
         const v = viewer(); if(!v) return;
         await updateDoc(stateRef, { peaceRequestBy: v });
         popToast("Barış Talebi Gönderildi 🕊️");
     }
-
-    // 2. ONAYLAMA (SAYAÇ SIFIRLANIR - BARIŞ BAŞLAR)
     async function confirmPeace(){
-        await updateDoc(stateRef, { 
-            peaceMode: true, 
-            peaceRequestBy: null,
-            modeChangedAt: nowTs() // SAYAÇ SIFIRLANDI!
-        });
+        await updateDoc(stateRef, { peaceMode: true, peaceRequestBy: null, modeChangedAt: nowTs() });
         popToast("BARIŞ SAĞLANDI! ❤️");
         burstHearts(20);
     }
-    
-    // 3. REDDETME (SAYAÇ SIFIRLANMAZ - KÜSLÜK DEVAM EDER)
     async function rejectPeace(){
-        // modeChangedAt GÜNCELLENMİYOR, yani sayaç kaldığı yerden devam eder.
         await updateDoc(stateRef, { peaceRequestBy: null });
         popToast("İstek Reddedildi ❌");
     }
-
-    // 4. KÜSLÜK BAŞLATMA (SAYAÇ SIFIRLANIR - KÜSLÜK BAŞLAR)
     async function startFeud(){
-        await updateDoc(stateRef, { 
-            peaceMode: false, 
-            peaceRequestBy: null,
-            modeChangedAt: nowTs() // SAYAÇ SIFIRLANDI!
-        });
+        await updateDoc(stateRef, { peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs() });
         popToast("KÜSLÜK BAŞLADI ⛈️");
     }
 
-    // UI Doldurma
     function renderPeaceUI(d){
         const v = viewer();
         peaceActions.innerHTML = "";
         
-        // 1. Durum: Barışık
         if(d.peaceMode){
             modeText.textContent = "BARIŞTIK"; modeDot.className = "dot ok";
-            const btn = document.createElement("button");
-            btn.className = "btn danger"; btn.style.flex = "1";
-            btn.textContent = "KÜSTÜK ⛈️";
-            btn.onclick = startFeud; 
+            const btn = document.createElement("button"); btn.className = "btn danger"; btn.style.flex = "1";
+            btn.textContent = "KÜSTÜK ⛈️"; btn.onclick = startFeud; 
             peaceActions.appendChild(btn);
             return;
         }
 
-        // 2. Durum: Bekliyor
         if(d.peaceRequestBy){
             modeText.textContent = "BEKLİYOR"; modeDot.className = "dot wait";
-            
             if(d.peaceRequestBy === v){
-                const info = document.createElement("div");
-                info.className = "btn warn"; info.style.flex="1"; info.style.opacity="0.7"; info.style.cursor="default";
-                info.textContent = "Onay Bekleniyor... ⏳";
-                peaceActions.appendChild(info);
+                const info = document.createElement("div"); info.className = "btn warn"; info.style.flex="1"; info.style.opacity="0.7";
+                info.textContent = "Onay Bekleniyor... ⏳"; peaceActions.appendChild(info);
             } else {
-                const btnConfirm = document.createElement("button");
-                btnConfirm.className = "btn primary"; btnConfirm.style.flex="1";
-                btnConfirm.textContent = `${d.peaceRequestBy} BARIŞMAK İSTİYOR - ONAYLA ✅`;
-                btnConfirm.onclick = confirmPeace;
-                
-                const btnReject = document.createElement("button");
-                btnReject.className = "btn danger"; btnReject.textContent = "X";
-                btnReject.onclick = rejectPeace; // Bu artık sayacı sıfırlamaz
-                peaceActions.appendChild(btnConfirm);
-                peaceActions.appendChild(btnReject);
+                const btnConfirm = document.createElement("button"); btnConfirm.className = "btn primary"; btnConfirm.style.flex="1";
+                btnConfirm.textContent = `${d.peaceRequestBy} BARIŞMAK İSTİYOR - ONAYLA ✅`; btnConfirm.onclick = confirmPeace;
+                const btnReject = document.createElement("button"); btnReject.className = "btn danger"; btnReject.textContent = "X";
+                btnReject.onclick = rejectPeace;
+                peaceActions.appendChild(btnConfirm); peaceActions.appendChild(btnReject);
             }
             return;
         }
 
-        // 3. Durum: Küs
         modeText.textContent = "KÜSÜZ"; modeDot.className = "dot";
-        const btn = document.createElement("button");
-        btn.className = "btn primary"; btn.style.flex = "1";
-        btn.textContent = "BARIŞALIM MI? 🕊️";
-        btn.onclick = requestPeace;
+        const btn = document.createElement("button"); btn.className = "btn primary"; btn.style.flex = "1";
+        btn.textContent = "BARIŞALIM MI? 🕊️"; btn.onclick = requestPeace;
         peaceActions.appendChild(btn);
     }
 
@@ -469,21 +445,22 @@
     setInterval(()=>{
         const diff = targetTime - Date.now();
         if(diff <= 0) { countdownDisplay.textContent = "GÜN GELDİ! 🎉"; return; }
-        
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const s = Math.floor((diff % (1000 * 60)) / 1000);
-        
         countdownDisplay.textContent = `${d}g ${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
     }, 1000);
 
-    const fp = flatpickr(document.createElement("input"), {
+    // Tarih Seçici - MOBİL İÇİN ÖZEL INPUT
+    const fp = flatpickr(hiddenDateInput, {
         enableTime: true, dateFormat: "Y-m-d H:i", locale: "tr", theme: "dark",
+        disableMobile: "true", // Flatpickr'ın kendi native tarihçisini zorlar, bazen daha stabil
         onClose: async (selectedDates) => {
              if(selectedDates.length > 0) await updateDoc(stateRef, { targetDate: selectedDates[0].getTime() });
         }
     });
+    // Butona basınca inputu tetikle
     editDateBtn.addEventListener("click", ()=> fp.open());
 
     // ----- Geleceğe Mektup -----
@@ -493,13 +470,10 @@
         const msg = capsuleMsg.value.trim();
         const dateStr = capsuleDateInput.value;
         if(!msg || !dateStr) return popToast("Mesaj ve Tarih Girin!");
-        
         const unlockTs = new Date(dateStr).getTime();
         const newCap = { id: Date.now().toString(), from: viewer(), msg: msg, unlockTs: unlockTs };
-        
         await updateDoc(stateRef, { capsules: arrayUnion(newCap) });
-        capsuleMsg.value = ""; capsuleDateInput.value = "";
-        popToast("Mektup Kilitlendi 🔒");
+        capsuleMsg.value = ""; capsuleDateInput.value = ""; popToast("Mektup Kilitlendi 🔒");
     });
 
     function renderCapsules(list){
@@ -516,10 +490,26 @@
         });
     }
 
+    // ----- Not Kaydetme ve Yeşil Tik -----
     let timer;
-    function autoSave(field, val){ clearTimeout(timer); timer = setTimeout(()=> updateDoc(stateRef, { [field]: val }), 500); }
-    emirNoteEl.addEventListener("input", ()=> isEmir() && autoSave("emirNote", emirNoteEl.value));
-    elifNoteEl.addEventListener("input", ()=> isElif() && autoSave("elifNote", elifNoteEl.value));
+    function setSyncState(el, state){
+        // state: 0=boş, 1=yazıyor, 2=kaydedildi
+        if(state===0) el.textContent = "";
+        if(state===1) el.textContent = "...";
+        if(state===2) { el.textContent = "✅"; el.style.color = "#10b981"; setTimeout(()=>{ el.textContent=""; }, 2000); }
+    }
+
+    function autoSave(field, val, syncEl){
+        setSyncState(syncEl, 1);
+        clearTimeout(timer);
+        timer = setTimeout(async ()=> {
+            await updateDoc(stateRef, { [field]: val });
+            setSyncState(syncEl, 2);
+        }, 800);
+    }
+    
+    emirNoteEl.addEventListener("input", ()=> isEmir() && autoSave("emirNote", emirNoteEl.value, emirSync));
+    elifNoteEl.addEventListener("input", ()=> isElif() && autoSave("elifNote", elifNoteEl.value, elifSync));
 
     // ----- ANA DİNLLEYİCİ -----
     let lastKnownHeartTs = 0;
