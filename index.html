@@ -6,7 +6,7 @@
   <title>ELIF & EMIR • Private Space</title>
   <style>
     :root{
-      /* Sephora / Lüks hissiyatı için renkler */
+      /* Tasarım Renkleri */
       --bg:#000000; 
       --card: #111111; 
       --line: #333333;
@@ -15,7 +15,6 @@
       --good:#10b981; 
       --bad:#ef4444;
       --accent: #db2777; 
-      --shadow: 0 10px 40px rgba(0,0,0,.8); 
       --r:16px;
     }
     *{box-sizing:border-box}
@@ -57,18 +56,14 @@
         color: #fff; 
         border-color: var(--good);
     }
-    .btn.primary:hover{
-        background: #059669; 
-    }
+    .btn.primary:hover{ background: #059669; }
     
     .btn.danger{
         background: var(--bad); 
         color: #fff;
         border-color: var(--bad); 
     }
-    .btn.danger:hover{
-        background: #dc2626; 
-    }
+    .btn.danger:hover{ background: #dc2626; }
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
@@ -107,6 +102,7 @@
     .desc{margin:5px 0 15px; color:var(--muted); font-size:11px;}
     .tag{font-size:10px; color: #000; background: #fff; padding:2px 6px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;}
 
+    /* Sepet */
     .drawer{position:fixed; top:0; right:0; width:min(400px, 85vw); height:100%; background: #000; border-left:1px solid var(--line); transform: translateX(110%); transition:.3s cubic-bezier(0.4, 0, 0.2, 1); z-index:100; display:flex; flex-direction:column; box-shadow: -10px 0 50px rgba(0,0,0,.8);}
     .drawer.open{transform: translateX(0)}
     .drawer-header{padding:20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
@@ -117,6 +113,7 @@
     .xbtn:hover { color: var(--bad); }
     .drawer-footer{border-top:1px solid var(--line); padding:20px; display:grid; gap:10px;}
 
+    /* Modal */
     .overlay{position:fixed; inset:0; background: #000; z-index:500; display:none; align-items:center; justify-content:center; padding:20px;}
     .overlay.open{display:flex}
     .modal{width:min(450px, 96vw); text-align: center;}
@@ -269,7 +266,11 @@
 
         <button class="roleBtn elif" id="pickElif">
             <div class="avatar-frame">
-                <img src="https://i.pinimg.com/736x/0a/8e/13/0a8e1300735620547491478878808806.jpg" class="avatar-img">
+                <img 
+                   src="BURAYA_RESIM_LINKINI_YAPISTIR" 
+                   class="avatar-img" 
+                   onerror="this.src='https://i.pinimg.com/736x/0a/8e/13/0a8e1300735620547491478878808806.jpg'"
+                >
             </div>
             <b>ELİF</b>
             <span>"Prenses"</span>
