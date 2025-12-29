@@ -97,8 +97,10 @@
     .drawer-footer{border-top:1px solid var(--line); padding:20px; display:grid; gap:10px;}
 
     /* Modal */
-    .overlay{position:fixed; inset:0; background: #000; z-index:500; display:none; align-items:center; justify-content:center; padding:20px;}
-    .overlay.open{display:flex}
+    .overlay{position:fixed; inset:0; background: #000; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px;}
+    /* display:flex yaptım, JS ile kaldırana kadar hep açık */
+    .overlay.hidden{display:none;} 
+
     .modal{width:min(450px, 96vw); text-align: center;}
     .modal h3{margin:0 0 30px; font-size:24px; letter-spacing:.2em; text-transform:uppercase; font-weight: 300;}
     
@@ -398,7 +400,7 @@
     // ----- Rol ve Şifre Yönetimi -----
     let selectedRole = null;
     
-    // Şifreler (Daha güvenli olması için normalde backend'de tutulur ama bu basit projede burada)
+    // Şifreler
     const PASSWORDS = {
         "Emir": "615127",
         "Elif": "6161221"
@@ -411,7 +413,7 @@
     function setViewer(name){
       localStorage.setItem("viewerName", name);
       whoText.textContent = name;
-      overlay.classList.remove("open");
+      overlay.classList.add("hidden"); // Gizle
       resetModal();
       enforcePermissions();
     }
@@ -447,8 +449,11 @@
     }
 
     function openOverlay(){ 
-        overlay.classList.add("open"); 
+        localStorage.removeItem("viewerName"); // Çıkış yapınca hafızayı sil
+        whoText.textContent = "-";
+        overlay.classList.remove("hidden"); 
         resetModal();
+        enforcePermissions();
     }
 
     // Modal Eventleri
@@ -461,6 +466,9 @@
     passInput.addEventListener("keypress", (e)=>{
         if(e.key === "Enter") checkPass();
     });
+
+    // ÇIKIŞ BUTONU
+    changeRole.addEventListener("click", openOverlay);
 
     function enforcePermissions(){
       emirNoteEl.readOnly = !isEmir();
@@ -677,21 +685,18 @@
       await updateDoc(stateRef, { hearts: increment(1) });
     });
 
-    changeRole.addEventListener("click", openOverlay);
-    
-    // Pick eventleri artık direkt açmıyor, şifreye yönlendiriyor (HTML kısmında)
-
     document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "visible") markRead().catch(()=>{}); });
     window.addEventListener("focus", ()=> markRead().catch(()=>{}));
 
-    // ----- Başlatma -----
-    renderProducts();
-    updateCartUI();
-
-    if(!viewer()) overlay.classList.add("open");
-    else whoText.textContent = viewer();
+    // ----- Başlatma (HER SEFERİNDE SIFIRLAMA) -----
+    // Sayfa her yüklendiğinde hafızayı sil, böylece login ekranı gelir.
+    localStorage.removeItem("viewerName");
+    whoText.textContent = "-";
+    resetModal();
     enforcePermissions();
 
+    renderProducts();
+    updateCartUI();
     await ensureDefaults();
 
     onSnapshot(stateRef, (s)=>{
