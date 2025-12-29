@@ -74,7 +74,7 @@
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
-    /* GÜNCELLENEN NOT ALANI */
+    /* Not Alanı */
     textarea, input[type="text"], input[type="date"] {
       width:100%; border-radius:4px; border:1px solid var(--line); background: #111; color: #ddd; padding:15px; outline:none; font-size:14px; font-family: monospace;
       min-height: 350px; 
@@ -82,10 +82,9 @@
     input[type="text"], input[type="date"] { min-height: auto; }
     textarea:focus, input:focus { border-color: var(--accent); }
     
-    /* Senkron İkonu */
     .sync-icon { font-size: 18px; color: var(--muted); transition: color 0.3s; margin-left: auto; }
     
-    /* Geleceğe Mektup Stili */
+    /* Geleceğe Mektup */
     .capsule { border: 1px dashed var(--line); padding: 15px; border-radius: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); position:relative; }
     .capsule.locked { opacity: 0.7; }
     .capsule-header { display:flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; align-items:center; }
@@ -123,13 +122,13 @@
     
     #hiddenDateInput { position: absolute; opacity: 0; pointer-events: none; height: 0; width: 0; }
 
-    /* YENİ: Aktiflik Durumu Footer */
+    /* Aktiflik Durumu */
     .status-footer {
         border-top: 1px solid var(--line);
         margin-top: 15px;
         padding-top: 15px;
         display: flex;
-        flex-direction: column; /* Mobilde alt alta daha düzgün */
+        flex-direction: column;
         gap: 8px;
         font-size: 10px;
         color: #666;
@@ -138,7 +137,7 @@
     }
     .status-row { display:flex; align-items:center; justify-content: space-between; }
     .status-dot {
-        display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: #444;
+        display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: #444; transition: .3s;
     }
     .status-dot.online { background: #10b981; box-shadow: 0 0 5px #10b981; }
   </style>
@@ -259,7 +258,7 @@
 
     // 🔴 FIREBASE AYARLARI 🔴
     const firebaseConfig = {
-      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -304,7 +303,6 @@
     const sendHeart = document.getElementById("sendHeart");
     const toast = document.getElementById("toast");
 
-    // Aktiflik UI
     const emirStatus = document.getElementById("emirStatus");
     const elifStatus = document.getElementById("elifStatus");
 
@@ -324,16 +322,8 @@
     }
     function formatDuration(ms){
       if(ms < 0) ms = 0;
-      const s = Math.floor(ms/1000);
-      const days = Math.floor(s/86400);
-      const hrs  = Math.floor((s%86400)/3600);
-      const mins = Math.floor((s%3600)/60);
-      const secs = s%60;
-      const parts = [];
-      if(days) parts.push(`${days}g`);
-      if(hrs || days) parts.push(`${hrs}sa`);
-      if(mins || hrs || days) parts.push(`${mins}dk`);
-      parts.push(`${secs}sn`);
+      const s = Math.floor(ms/1000); const days = Math.floor(s/86400); const hrs  = Math.floor((s%86400)/3600); const mins = Math.floor((s%3600)/60); const secs = s%60;
+      const parts = []; if(days) parts.push(`${days}g`); if(hrs || days) parts.push(`${hrs}sa`); if(mins || hrs || days) parts.push(`${mins}dk`); parts.push(`${secs}sn`);
       return parts.join(" ");
     }
     function fmtTime(ts){ return new Date(ts).toLocaleTimeString("tr-TR", {hour:'2-digit', minute:'2-digit'}); }
@@ -354,8 +344,6 @@
         selectedRole=role; roleContainer.style.display="none"; passContainer.style.display="flex";
         modalTitle.textContent=role+" İÇİN GİRİŞ"; passInput.focus();
     }
-    
-    // GİRİŞ KONTROLÜ (Giriş Saatini Kaydetme Eklendi)
     async function checkPass(){
         if(PASSWORDS[selectedRole] && passInput.value === PASSWORDS[selectedRole]){
             localStorage.setItem("viewerName", selectedRole);
@@ -363,13 +351,10 @@
             overlay.classList.add("hidden");
             enforcePermissions();
             
-            // 🔥 OTURUM AÇMA SAATİNİ KAYDET
+            // GİRİŞ SAATİNİ KAYDET
             const now = nowTs();
-            await updateDoc(stateRef, { 
-                [`presence.${selectedRole}`]: now,      // Son aktif
-                [`presence.${selectedRole}Login`]: now  // İlk giriş
-            });
-            
+            await updateDoc(stateRef, { [`presence.${selectedRole}`]: now, [`presence.${selectedRole}Login`]: now });
+            pingPresence(); // Anında ping at
         } else {
             popToast("HATALI PAROLA 🔒"); passInput.value="";
         }
@@ -379,7 +364,13 @@
     document.getElementById("btnBack").addEventListener("click", resetModal);
     document.getElementById("btnUnlock").addEventListener("click", checkPass);
     passInput.addEventListener("keypress", (e)=>{if(e.key==="Enter") checkPass();});
-    changeRole.addEventListener("click", ()=>{ localStorage.removeItem("viewerName"); whoText.textContent="-"; overlay.classList.remove("hidden"); resetModal(); });
+    
+    // ÇIKIŞ BUTONU (Zorla çevrimdışı yap)
+    changeRole.addEventListener("click", async ()=>{ 
+        const v = viewer();
+        if(v) await updateDoc(stateRef, { [`presence.${v}`]: nowTs() - 60000 }); // Saati geri alarak offline yap
+        localStorage.removeItem("viewerName"); whoText.textContent="-"; overlay.classList.remove("hidden"); resetModal(); 
+    });
     localStorage.removeItem("viewerName"); resetModal();
 
     function enforcePermissions(){
@@ -401,18 +392,26 @@
     }
     sendHeart.addEventListener("click", async ()=>{ await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() }); });
 
-    // AKTİFLİK SİNYALİ (Sadece Last Active Günceller)
+    // AKTİFLİK SİNYALİ (10 SANİYEDE BİR)
     async function pingPresence(){
         const v = viewer(); if(!v) return;
         await updateDoc(stateRef, { [`presence.${v}`]: nowTs() });
     }
-    setInterval(()=> pingPresence(), 60000); 
+    setInterval(()=> pingPresence(), 10000); 
     
+    // SEKME KAPATINCA SON PİNG
+    document.addEventListener("visibilitychange", ()=>{
+        const v = viewer();
+        if(document.visibilityState === "hidden" && v){
+             updateDoc(stateRef, { [`presence.${v}`]: nowTs() });
+        }
+    });
+
     // UI Güncelleme (Giriş Saatini Gösterir)
     function renderPresence(p){
         if(!p) return;
         const now = nowTs();
-        const limit = 2 * 60 * 1000; 
+        const limit = 25000; // 25 saniye tolerans (Anında tepki için düşürüldü)
         
         // Emir
         const emirLast = p.Emir || 0;
@@ -420,7 +419,7 @@
         const isEmirOnline = (now - emirLast) < limit;
         emirStatus.innerHTML = `
             <div><span class="status-dot ${isEmirOnline?'online':''}"></span>EMİR</div>
-            <div>${isEmirOnline ? `<span style="color:#10b981">ÇEVRİMİÇİ • ${fmtTime(emirLogin)}</span>` : fmtTime(emirLast)}</div>`;
+            <div>${isEmirOnline ? `<span style="color:#10b981; font-weight:bold;">ÇEVRİMİÇİ • ${fmtTime(emirLogin)}</span>` : fmtTime(emirLast)}</div>`;
         
         // Elif
         const elifLast = p.Elif || 0;
@@ -428,7 +427,7 @@
         const isElifOnline = (now - elifLast) < limit;
         elifStatus.innerHTML = `
             <div><span class="status-dot ${isElifOnline?'online':''}"></span>ELİF</div>
-            <div>${isElifOnline ? `<span style="color:#10b981">ÇEVRİMİÇİ • ${fmtTime(elifLogin)}</span>` : fmtTime(elifLast)}</div>`;
+            <div>${isElifOnline ? `<span style="color:#10b981; font-weight:bold;">ÇEVRİMİÇİ • ${fmtTime(elifLogin)}</span>` : fmtTime(elifLast)}</div>`;
     }
 
     // BARIŞ MANTIĞI
