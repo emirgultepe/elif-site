@@ -57,6 +57,7 @@
       min-height:120px;
       resize:vertical;
     }
+    textarea[readonly]{opacity:.9}
 
     .grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:12px;}
     @media(max-width:900px){ .grid{grid-template-columns: repeat(2,1fr)} }
@@ -82,7 +83,6 @@
 
     .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); font-size:12px; user-select:none; white-space:nowrap;}
     .pill.ok{border-color: rgba(85,214,167,.35); background: rgba(85,214,167,.10);}
-    .pill.bad{border-color: rgba(255,92,122,.35); background: rgba(255,92,122,.10);}
 
     .overlay{position:fixed; inset:0; background: rgba(0,0,0,.72); backdrop-filter: blur(6px); display:none; align-items:center; justify-content:center; padding:18px; z-index:500;}
     .overlay.open{display:flex}
@@ -156,7 +156,7 @@
 
     <div class="card">
       <h2 class="title">Koleksiyon</h2>
-      <p class="muted">Sephora hissi: ürün kartları + sepete ekleme. Sepette kim ekledi görünür.</p>
+      <p class="muted">Ürün kartları + sepete ekleme. Sepette kim ekledi görünür.</p>
       <div class="grid" id="grid"></div>
     </div>
   </div>
@@ -322,10 +322,9 @@
     function openOverlay(){ overlay.classList.add("open"); }
 
     function enforcePermissions(){
-      // Emir alanı sadece Emir, Elif alanı sadece Elif
       emirNoteEl.readOnly = !isEmir();
       elifNoteEl.readOnly = !isElif();
-      copyEmir.disabled = !isEmir(); // Emir kopyalasın (istersen bunu açarız)
+      copyEmir.disabled = !isEmir();
     }
 
     // ----- Firestore -----
@@ -333,25 +332,26 @@
     const db = getFirestore(app);
     const stateRef = doc(db, "shared", "relationshipState");
 
+    /**
+     * ✅ KRİTİK: Refresh'te veri silmemesi için
+     * - Sadece doküman YOKSA oluşturuyoruz
+     * - Var ise HİÇ overwrite etmiyoruz
+     */
     async function ensureDefaults(){
       const snap = await getDoc(stateRef);
-      const base = {
-        peaceMode: false,
-        modeChangedAt: nowTs(),
-        emirNote: "",
-        elifNote: "",
-        emirNoteUpdatedAt: 0,
-        elifNoteUpdatedAt: 0,
-        cart: [],              // [{id, by, ts}]
-        hearts: 0,
-        reads: {},
-        lastSeen: {}
-      };
       if(!snap.exists()){
-        await setDoc(stateRef, base);
-      } else {
-        // mevcut dokümana eksik alanları ekle
-        await setDoc(stateRef, base, { merge: true });
+        await setDoc(stateRef, {
+          peaceMode: false,
+          modeChangedAt: nowTs(),
+          emirNote: "",
+          elifNote: "",
+          emirNoteUpdatedAt: 0,
+          elifNoteUpdatedAt: 0,
+          cart: [],               // [{id, by, ts}]
+          hearts: 0,
+          reads: {},
+          lastSeen: {}
+        });
       }
     }
 
@@ -373,6 +373,14 @@
     // ----- Notes autosave (separate) -----
     let emirTimer = null;
     let elifTimer = null;
+
+    // Snapshot gelince yazarken textbox "ezilmesin" diye:
+    let emirTyping = false;
+    let elifTyping = false;
+    emirNoteEl.addEventListener("focus", ()=>{ emirTyping = true; });
+    emirNoteEl.addEventListener("blur", ()=>{ emirTyping = false; });
+    elifNoteEl.addEventListener("focus", ()=>{ elifTyping = true; });
+    elifNoteEl.addEventListener("blur", ()=>{ elifTyping = false; });
 
     async function saveEmirNote(val){
       setPill(emirSavedPill, "Senkron: yazılıyor…", false);
@@ -580,14 +588,9 @@
       }
       readPill.textContent = `Okundu • Emir: ${fmtTR(d.reads?.Emir)} • Elif: ${fmtTR(d.reads?.Elif)}`;
 
-      // emir note
+      // emir note (✅ yazarken ezme yok)
       const remoteEmir = String(d.emirNote || "");
-      if(!isEmir()){ // Emir değilken remote her zaman yansısın
-        if(emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
-      } else {
-        // Emir yazıyorken: remote farklıysa yine de eşitle (tek kullanıcı yazıyor varsayımı)
-        if(emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
-      }
+      if(!emirTyping && emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
       const emirAt = Number(d.emirNoteUpdatedAt || 0);
       if(remoteEmir.trim()){
         setPill(emirSavedPill, `Senkron ✅ • ${fmtTR(emirAt)}`, true);
@@ -595,13 +598,9 @@
         emirSavedPill.textContent = "Senkron: -"; emirSavedPill.classList.remove("ok");
       }
 
-      // elif note
+      // elif note (✅ yazarken ezme yok)
       const remoteElif = String(d.elifNote || "");
-      if(!isElif()){
-        if(elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
-      } else {
-        if(elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
-      }
+      if(!elifTyping && elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
       const elifAt = Number(d.elifNoteUpdatedAt || 0);
       if(remoteElif.trim()){
         setPill(elifSavedPill, `Senkron ✅ • ${fmtTR(elifAt)}`, true);
