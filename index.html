@@ -357,7 +357,7 @@
         await setDoc(stateRef, {
           peaceMode: false,
           peaceRequestBy: null,
-          modeChangedAt: nowTs(), // Sayaç için
+          modeChangedAt: nowTs(),
           hearts: 0,
           lastHeartTs: 0,
           targetDate: nowTs() + 86400000,
@@ -372,16 +372,16 @@
        await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() });
     });
 
-    // 🔴 BARIŞ / KÜSLÜK MANTIĞI (SAYAÇ KONTROLLÜ) 🔴
+    // 🔴 BARIŞ / KÜSLÜK MANTIĞI (KRİTİK GÜNCELLEME) 🔴
     
-    // 1. İSTEK GÖNDERME (Sayaç DEĞİŞMEZ)
+    // 1. İSTEK GÖNDERME
     async function requestPeace(){
         const v = viewer(); if(!v) return;
         await updateDoc(stateRef, { peaceRequestBy: v });
         popToast("Barış Talebi Gönderildi 🕊️");
     }
 
-    // 2. ONAYLAMA (Sayaç SIFIRLANIR -> Barış Başlar)
+    // 2. ONAYLAMA (SAYAÇ SIFIRLANIR - BARIŞ BAŞLAR)
     async function confirmPeace(){
         await updateDoc(stateRef, { 
             peaceMode: true, 
@@ -392,14 +392,14 @@
         burstHearts(20);
     }
     
-    // 3. REDDETME (Sayaç DEĞİŞMEZ -> Küslük devam eder)
+    // 3. REDDETME (SAYAÇ SIFIRLANMAZ - KÜSLÜK DEVAM EDER)
     async function rejectPeace(){
+        // modeChangedAt GÜNCELLENMİYOR, yani sayaç kaldığı yerden devam eder.
         await updateDoc(stateRef, { peaceRequestBy: null });
-        // modeChangedAt GÜNCELLENMEDİ, sayaç kaldığı yerden devam eder.
         popToast("İstek Reddedildi ❌");
     }
 
-    // 4. BARIŞI BOZMA (Sayaç SIFIRLANIR -> Küslük Başlar)
+    // 4. KÜSLÜK BAŞLATMA (SAYAÇ SIFIRLANIR - KÜSLÜK BAŞLAR)
     async function startFeud(){
         await updateDoc(stateRef, { 
             peaceMode: false, 
@@ -420,7 +420,7 @@
             const btn = document.createElement("button");
             btn.className = "btn danger"; btn.style.flex = "1";
             btn.textContent = "KÜSTÜK ⛈️";
-            btn.onclick = startFeud; // Yeni fonksiyon
+            btn.onclick = startFeud; 
             peaceActions.appendChild(btn);
             return;
         }
@@ -442,7 +442,7 @@
                 
                 const btnReject = document.createElement("button");
                 btnReject.className = "btn danger"; btnReject.textContent = "X";
-                btnReject.onclick = rejectPeace; // Yeni fonksiyon (Sayaç sıfırlamaz)
+                btnReject.onclick = rejectPeace; // Bu artık sayacı sıfırlamaz
                 peaceActions.appendChild(btnConfirm);
                 peaceActions.appendChild(btnReject);
             }
