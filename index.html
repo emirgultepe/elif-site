@@ -91,11 +91,7 @@
     .capsule-header { display:flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; align-items:center; }
     .capsule-body { font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
     .lock-icon { font-size: 20px; display:block; margin-bottom: 5px; }
-    
-    /* Mektup Silme Butonu */
-    .del-capsule-btn {
-        background: none; border: none; color: #666; font-size: 16px; cursor: pointer; padding: 0 5px; margin-left: 10px;
-    }
+    .del-capsule-btn { background: none; border: none; color: #666; font-size: 16px; cursor: pointer; padding: 0 5px; margin-left: 10px; }
     .del-capsule-btn:hover { color: var(--bad); }
 
     /* Modal */
@@ -126,6 +122,23 @@
     @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-150px) scale(1.5); opacity:0 }}
     
     #hiddenDateInput { position: absolute; opacity: 0; pointer-events: none; height: 0; width: 0; }
+
+    /* YENİ: Aktiflik Durumu Footer */
+    .status-footer {
+        border-top: 1px solid var(--line);
+        margin-top: 15px;
+        padding-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .status-dot {
+        display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; background: #444;
+    }
+    .status-dot.online { background: #10b981; box-shadow: 0 0 5px #10b981; }
   </style>
 </head>
 
@@ -170,6 +183,11 @@
             <div style="font-size: 10px; color: #666; margin-bottom: 4px;">KALP SAYACI</div>
             <span class="pill" id="heartsPill" style="font-size: 14px; color: #fff;">0</span>
          </div>
+      </div>
+
+      <div class="status-footer">
+          <div id="emirStatus"><span class="status-dot"></span>Emir: -</div>
+          <div id="elifStatus"><span class="status-dot"></span>Elif: -</div>
       </div>
     </div>
 
@@ -239,7 +257,7 @@
 
     // 🔴 FIREBASE AYARLARI 🔴
     const firebaseConfig = {
-       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -284,6 +302,10 @@
     const sendHeart = document.getElementById("sendHeart");
     const toast = document.getElementById("toast");
 
+    // Aktiflik UI
+    const emirStatus = document.getElementById("emirStatus");
+    const elifStatus = document.getElementById("elifStatus");
+
     // ----- Yardımcı Fonksiyonlar -----
     const nowTs = () => Date.now();
     function popToast(text="✅"){ toast.textContent = text; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 2000); }
@@ -312,6 +334,7 @@
       parts.push(`${secs}sn`);
       return parts.join(" ");
     }
+    function fmtTime(ts){ return new Date(ts).toLocaleTimeString("tr-TR", {hour:'2-digit', minute:'2-digit'}); }
 
     // ----- ŞİFRE SİSTEMİ -----
     const PASSWORDS = { "Emir": "615127", "Elif": "6161221" };
@@ -335,6 +358,7 @@
             whoText.textContent = selectedRole;
             overlay.classList.add("hidden");
             enforcePermissions();
+            pingPresence(); // Giriş yapınca hemen sinyal gönder
         } else {
             popToast("HATALI PAROLA 🔒"); passInput.value="";
         }
@@ -359,11 +383,36 @@
         await setDoc(stateRef, {
           peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs(),
           hearts: 0, lastHeartTs: 0, targetDate: nowTs() + 86400000,
-          capsules: [], emirNote: "", elifNote: ""
+          capsules: [], emirNote: "", elifNote: "",
+          presence: { Emir: 0, Elif: 0 }
         });
       }
     }
     sendHeart.addEventListener("click", async ()=>{ await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() }); });
+
+    // AKTİFLİK SİNYALİ (Her 60 saniyede bir güncelle)
+    async function pingPresence(){
+        const v = viewer(); if(!v) return;
+        await updateDoc(stateRef, { [`presence.${v}`]: nowTs() });
+    }
+    setInterval(()=> pingPresence(), 60000); // 1 dk'da bir otomatik ping
+    
+    // UI Güncelleme Fonksiyonu
+    function renderPresence(p){
+        if(!p) return;
+        const now = nowTs();
+        const limit = 2 * 60 * 1000; // 2 dakika tolerans
+        
+        // Emir UI
+        const emirLast = p.Emir || 0;
+        const isEmirOnline = (now - emirLast) < limit;
+        emirStatus.innerHTML = `<span class="status-dot ${isEmirOnline?'online':''}"></span>Emir: ${isEmirOnline ? '<span style="color:#fff">ÇEVRİMİÇİ</span>' : fmtTime(emirLast)}`;
+        
+        // Elif UI
+        const elifLast = p.Elif || 0;
+        const isElifOnline = (now - elifLast) < limit;
+        elifStatus.innerHTML = `<span class="status-dot ${isElifOnline?'online':''}"></span>Elif: ${isElifOnline ? '<span style="color:#fff">ÇEVRİMİÇİ</span>' : fmtTime(elifLast)}`;
+    }
 
     // BARIŞ MANTIĞI
     async function requestPeace(){
@@ -394,6 +443,7 @@
             peaceActions.appendChild(btn);
             return;
         }
+
         if(d.peaceRequestBy){
             modeText.textContent = "BEKLİYOR"; modeDot.className = "dot wait";
             if(d.peaceRequestBy === v){
@@ -446,7 +496,6 @@
         capsuleMsg.value = ""; capsuleDateInput.value = ""; popToast("Mektup Kilitlendi 🔒");
     });
     
-    // MEKTUP SİLME FONKSİYONU
     window.deleteCapsule = async (id) => {
         const snap = await getDoc(stateRef);
         if(!snap.exists()) return;
@@ -508,6 +557,7 @@
         modeChangedAt = d.modeChangedAt || nowTs();
         targetTime = d.targetDate || (nowTs() + 86400000);
         renderCapsules(d.capsules);
+        renderPresence(d.presence); // YENİ: Aktiflik render
         if(document.activeElement !== emirNoteEl) emirNoteEl.value = d.emirNote || "";
         if(document.activeElement !== elifNoteEl) elifNoteEl.value = d.elifNote || "";
     });
