@@ -6,7 +6,7 @@
   <title>ELIF & EMIR • Private Space</title>
   <style>
     :root{
-      /* Sephora / Lüks hissiyatı için renkler revize edildi */
+      /* Sephora / Lüks hissiyatı için renkler */
       --bg:#000000; 
       --card: #111111; 
       --line: #333333;
@@ -39,7 +39,7 @@
     .dot.ok{background:var(--good); box-shadow: 0 0 10px var(--good);}
     
     .link{font-size:11px; color:var(--muted); text-decoration: underline; cursor:pointer;}
-    .count{min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content: center; background: var(--accent); color: white; font-size:10px; font-weight: bold; margin-left: 5px;}
+    .count{min-width:18px; height:18px; border-radius:999px; display:flex; align-items:center; justify-content: center; background: var(--accent); color: white; font-size:10px; font-weight: bold; margin-left: 5px;}
 
     .wrap{max-width:980px; margin:0 auto; padding:16px;}
     .card{background: var(--card); border:1px solid var(--line); border-radius: var(--r); padding:20px; margin-top:20px;}
@@ -58,7 +58,7 @@
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
-    /* Not Alanı - Kağıt Görünümü */
+    /* Not Alanı */
     textarea{
       width:100%;
       border-radius:4px;
@@ -135,6 +135,7 @@
         border: 2px solid var(--line); 
         padding: 4px; 
         overflow: hidden;
+        background: #000;
     }
     .avatar-img {
         width: 100%; 
@@ -252,12 +253,12 @@
                 <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200" class="avatar-img">
             </div>
             <b>EMİR</b>
-            <span>"Suçlu taraf"</span>
+            <span>"Aşık"</span>
         </button>
 
         <button class="roleBtn elif" id="pickElif">
             <div class="avatar-frame">
-                <img src="elif_prenses.jpg" class="avatar-img" onerror="this.src='https://cdn.dribbble.com/users/1061276/screenshots/14207601/media/34672849007056110656567010066423.jpg?resize=400x300'">
+                <img src="elif.jpg" class="avatar-img" onerror="this.src='https://i.pinimg.com/736x/0a/8e/13/0a8e1300735620547491478878808806.jpg'">
             </div>
             <b>ELİF</b>
             <span>"Prenses"</span>
@@ -272,9 +273,9 @@
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from
       "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // 🔴 DİKKAT: BURADAKİ BİLGİLERİ KENDİ FIREBASE PANELİNDEN ALIP DOLDURMALISIN 🔴
+    // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIR 🔴
     const firebaseConfig = {
-      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -319,7 +320,7 @@
 
     const toast = document.getElementById("toast");
 
-    // ----- Ürün Listesi (Sephora Tarzı İsimler) -----
+    // ----- Ürün Listesi -----
     const products = [
       { id:"p1", icon:"✨", name:"Samimi Özür Serum", tag:"Best Seller", desc:"%100 saf pişmanlık içerir." },
       { id:"p2", icon:"💖", name:"Sonsuz İlgi Maskesi", tag:"Limited", desc:"7/24 kesintisiz ilgi sağlar." },
@@ -404,7 +405,7 @@
       emirNoteEl.readOnly = !isEmir();
       elifNoteEl.readOnly = !isElif();
       copyEmir.disabled = !isEmir();
-      // Placeholder güncelleme
+      
       if(isEmir()) emirNoteEl.placeholder = "Yazabilirsin Emir...";
       else emirNoteEl.placeholder = "Emir'in yazmasını bekle...";
       
