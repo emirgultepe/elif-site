@@ -45,8 +45,18 @@
     .btn[disabled]{opacity:.45; cursor:not-allowed; transform:none !important;}
 
     label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px;}
-    input, textarea{width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); color: var(--text); padding:12px 12px; outline:none; font-size:14px;}
-    textarea{min-height:110px; resize:vertical}
+    textarea{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:12px 12px;
+      outline:none;
+      font-size:14px;
+      min-height:120px;
+      resize:vertical;
+    }
 
     .grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:12px;}
     @media(max-width:900px){ .grid{grid-template-columns: repeat(2,1fr)} }
@@ -99,8 +109,8 @@
       <div class="brand"><div class="badge">✦</div>ELIF BEAUTY</div>
 
       <div class="right">
-        <div class="chip" id="modeChip"><span class="dot" id="modeDot"></span><span id="modeText">Küs</span></div>
-        <div class="chip" id="timerChip">⏱ <span id="timerText">0 sn</span></div>
+        <div class="chip"><span class="dot" id="modeDot"></span><span id="modeText">Küs</span></div>
+        <div class="chip">⏱ <span id="timerText">0 sn</span></div>
         <button class="btn" id="cartOpenBtn">Sepet <span class="count" id="cartCount">0</span></button>
         <div class="chip"><span id="whoText">Sen: -</span> • <span class="link" id="changeRole">Değiştir</span></div>
       </div>
@@ -110,7 +120,7 @@
   <div class="wrap">
     <div class="card">
       <h2 class="title">Durum</h2>
-      <p class="muted">Mod değişince sayaç sıfırlanır ve tekrar sayar. (İkiniz de değiştirebilir.)</p>
+      <p class="muted">Mod değişince sayaç sıfırlanır ve tekrar sayar.</p>
       <div class="divider"></div>
       <div class="row">
         <button class="btn primary" id="btnPeace">Barış</button>
@@ -124,29 +134,24 @@
 
     <div class="card">
       <h2 class="title">Notlar</h2>
-      <p class="muted">Artık yazdıkça otomatik kaydeder. Yenileyince kaybolmaz.</p>
+      <p class="muted">Emir’in notu ayrı, Elif’in notu ayrı. Herkes sadece kendi notunu yazar.</p>
 
-      <label>Kısa not</label>
-      <input id="shortNote" placeholder="örn: Konuşmak istersen ben buradayım." />
+      <div class="divider"></div>
 
-      <label>Otomatik mesaj (kopyalanabilir)</label>
-      <textarea id="autoMsg" readonly></textarea>
-
+      <label>Emir’in notu (sadece Emir yazabilir)</label>
+      <textarea id="emirNote" placeholder="Emir buraya yazacak…"></textarea>
       <div class="row" style="justify-content:space-between; margin-top:10px;">
-        <button class="btn" id="copyBtn">Kopyala</button>
-        <span class="pill" id="noteSyncPill">Senkron: -</span>
+        <button class="btn" id="copyEmir">Emir Notunu Kopyala</button>
+        <span class="pill" id="emirSavedPill">Senkron: -</span>
       </div>
 
       <div class="divider"></div>
 
-      <label>Ortak not (yazdıkça kaydeder)</label>
-      <textarea id="sharedNote" placeholder="Buraya yazın…"></textarea>
-
-      <div class="row" style="justify-content:space-between; margin-top:10px;">
-        <span class="pill" id="sharedSavedPill">Senkron: -</span>
-        <button class="btn primary" id="sendNoteBtn">Gönderildi ✅ yap</button>
+      <label>Elif’in notu (sadece Elif yazabilir)</label>
+      <textarea id="elifNote" placeholder="Elif buraya yazacak…"></textarea>
+      <div class="row" style="justify-content:flex-end; margin-top:10px;">
+        <span class="pill" id="elifSavedPill">Senkron: -</span>
       </div>
-      <p class="muted" style="margin-top:10px;">Not: “Gönderildi ✅ yap” sadece etiketi günceller (not zaten otomatik kaydedilir).</p>
     </div>
 
     <div class="card">
@@ -177,8 +182,8 @@
       <h3>Sen kimsin?</h3>
       <p class="muted" style="margin:0;">Bu seçim sadece bu cihazda hatırlanır.</p>
       <div class="grid2">
-        <button class="roleBtn" id="pickEmir"><b>Ben Emir’im</b><span>İstediğin her şeyi yapabilirsin.</span></button>
-        <button class="roleBtn" id="pickElif"><b>Ben Elif’im</b><span>İstediğin her şeyi yapabilirsin.</span></button>
+        <button class="roleBtn" id="pickEmir"><b>Ben Emir’im</b><span>Emir notunu yazarsın.</span></button>
+        <button class="roleBtn" id="pickElif"><b>Ben Elif’im</b><span>Elif notunu yazarsın.</span></button>
       </div>
     </div>
   </div>
@@ -190,7 +195,7 @@
 
     // ✅ BURAYI KENDİ CONFIG'İNLE DOLDUR
     const firebaseConfig = {
-      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+     apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -199,7 +204,7 @@
   measurementId: "G-53C6DN719D"
     };
 
-    // ----- UI refs -----
+    // ----- UI -----
     const overlay = document.getElementById("overlay");
     const pickEmir = document.getElementById("pickEmir");
     const pickElif = document.getElementById("pickElif");
@@ -217,14 +222,11 @@
     const lastSeenPill = document.getElementById("lastSeenPill");
     const readPill = document.getElementById("readPill");
 
-    const shortNoteEl = document.getElementById("shortNote");
-    const autoMsgEl = document.getElementById("autoMsg");
-    const copyBtn = document.getElementById("copyBtn");
-    const noteSyncPill = document.getElementById("noteSyncPill");
-
-    const sharedNoteEl = document.getElementById("sharedNote");
-    const sharedSavedPill = document.getElementById("sharedSavedPill");
-    const sendNoteBtn = document.getElementById("sendNoteBtn");
+    const emirNoteEl = document.getElementById("emirNote");
+    const elifNoteEl = document.getElementById("elifNote");
+    const emirSavedPill = document.getElementById("emirSavedPill");
+    const elifSavedPill = document.getElementById("elifSavedPill");
+    const copyEmir = document.getElementById("copyEmir");
 
     const grid = document.getElementById("grid");
 
@@ -250,6 +252,7 @@
 
     // ----- Helpers -----
     const nowTs = () => Date.now();
+    const fmtTR = (ts) => ts ? new Date(ts).toLocaleString("tr-TR") : "-";
 
     function popToast(text="✅"){
       toast.textContent = text;
@@ -296,25 +299,10 @@
       parts.push(`${secs} sn`);
       return parts.join(" ");
     }
-
     function renderMode(isPeace){
       if(isPeace){ modeText.textContent = "Barış"; modeDot.classList.add("ok"); }
       else { modeText.textContent = "Küs"; modeDot.classList.remove("ok"); }
     }
-
-    function buildAutoMsg(shortText){
-      const extra = (shortText || "").trim();
-      const parts = [
-        "Elif,",
-        "Seni üzdüysem gerçekten özür dilerim. Savunmaya geçmek istemiyorum.",
-        "Konuşmak istersen ben buradayım. Seni önemsiyorum. 🤍"
-      ];
-      if(extra) parts.push(extra);
-      return parts.join("\n\n");
-    }
-
-    function fmtTR(ts){ return ts ? new Date(ts).toLocaleString("tr-TR") : "-"; }
-
     function setPill(el, text, ok=false){
       el.textContent = text;
       el.classList.toggle("ok", ok);
@@ -322,12 +310,23 @@
 
     // ----- Role -----
     function viewer(){ return localStorage.getItem("viewerName") || ""; }
+    function isEmir(){ return viewer() === "Emir"; }
+    function isElif(){ return viewer() === "Elif"; }
+
     function setViewer(name){
       localStorage.setItem("viewerName", name);
       whoText.textContent = `Sen: ${name}`;
       overlay.classList.remove("open");
+      enforcePermissions();
     }
     function openOverlay(){ overlay.classList.add("open"); }
+
+    function enforcePermissions(){
+      // Emir alanı sadece Emir, Elif alanı sadece Elif
+      emirNoteEl.readOnly = !isEmir();
+      elifNoteEl.readOnly = !isElif();
+      copyEmir.disabled = !isEmir(); // Emir kopyalasın (istersen bunu açarız)
+    }
 
     // ----- Firestore -----
     const app = initializeApp(firebaseConfig);
@@ -336,19 +335,23 @@
 
     async function ensureDefaults(){
       const snap = await getDoc(stateRef);
+      const base = {
+        peaceMode: false,
+        modeChangedAt: nowTs(),
+        emirNote: "",
+        elifNote: "",
+        emirNoteUpdatedAt: 0,
+        elifNoteUpdatedAt: 0,
+        cart: [],              // [{id, by, ts}]
+        hearts: 0,
+        reads: {},
+        lastSeen: {}
+      };
       if(!snap.exists()){
-        await setDoc(stateRef, {
-          peaceMode: false,
-          modeChangedAt: nowTs(),
-          shortNote: "",
-          sharedNote: "",
-          sharedNoteUpdatedAt: 0,
-          sharedNoteSentAt: 0,     // sadece "Gönderildi ✅" etiketi için
-          cart: [],                // artık: [{id, by, ts}]
-          hearts: 0,
-          reads: {},
-          lastSeen: {}
-        });
+        await setDoc(stateRef, base);
+      } else {
+        // mevcut dokümana eksik alanları ekle
+        await setDoc(stateRef, base, { merge: true });
       }
     }
 
@@ -367,12 +370,46 @@
       await pingSeenDebounced(v);
     }
 
+    // ----- Notes autosave (separate) -----
+    let emirTimer = null;
+    let elifTimer = null;
+
+    async function saveEmirNote(val){
+      setPill(emirSavedPill, "Senkron: yazılıyor…", false);
+      await updateDoc(stateRef, { emirNote: String(val||""), emirNoteUpdatedAt: nowTs() });
+      setPill(emirSavedPill, "Senkron: kaydedildi ✅", true);
+      const v = viewer(); if(v) await pingSeenDebounced(v);
+    }
+
+    async function saveElifNote(val){
+      setPill(elifSavedPill, "Senkron: yazılıyor…", false);
+      await updateDoc(stateRef, { elifNote: String(val||""), elifNoteUpdatedAt: nowTs() });
+      setPill(elifSavedPill, "Senkron: kaydedildi ✅", true);
+      const v = viewer(); if(v) await pingSeenDebounced(v);
+    }
+
+    emirNoteEl.addEventListener("input", ()=>{
+      if(!isEmir()) return;
+      clearTimeout(emirTimer);
+      emirTimer = setTimeout(()=> saveEmirNote(emirNoteEl.value).catch(()=>{}), 300);
+    });
+
+    elifNoteEl.addEventListener("input", ()=>{
+      if(!isElif()) return;
+      clearTimeout(elifTimer);
+      elifTimer = setTimeout(()=> saveElifNote(elifNoteEl.value).catch(()=>{}), 300);
+    });
+
+    copyEmir.addEventListener("click", ()=>{
+      if(!isEmir()) return;
+      copyText(emirNoteEl.value || "");
+    });
+
     // ----- Cart state -----
-    let cart = [];                 // local: [{id, by, ts}]
+    let cart = [];                 // [{id, by, ts}]
     let suppressCartWrite = false;
 
     function normalizeCart(remoteCart){
-      // Backward-compat: eski format string[] gelirse objeye çevirir
       if(!Array.isArray(remoteCart)) return [];
       if(remoteCart.length === 0) return [];
       if(typeof remoteCart[0] === "string"){
@@ -382,11 +419,9 @@
         .filter(x => x && typeof x.id === "string")
         .map(x => ({ id:x.id, by: String(x.by||"?"), ts: Number(x.ts||0) }));
     }
-
-    function cartIdsKey(list){
+    function cartKey(list){
       return JSON.stringify(list.map(x=>x.id+"|"+x.by+"|"+x.ts));
     }
-
     async function writeCart(){
       if(suppressCartWrite) return;
       await updateDoc(stateRef, { cart });
@@ -401,7 +436,6 @@
       popToast("Sepete eklendi");
       writeCart().catch(()=>{});
     }
-
     function removeFromCart(idx){
       cart.splice(idx,1);
       updateCartUI();
@@ -438,25 +472,6 @@
       drawerBody.querySelectorAll(".xbtn").forEach(b=>{
         b.addEventListener("click", ()=> removeFromCart(Number(b.dataset.idx)));
       });
-    }
-
-    // ----- Notes autosave -----
-    let shortTimer = null;
-    let sharedTimer = null;
-    let localTypingShared = false;
-
-    async function saveShortNote(val){
-      setPill(noteSyncPill, "Senkron: yazılıyor…", false);
-      await updateDoc(stateRef, { shortNote: String(val||"") });
-      setPill(noteSyncPill, "Senkron: kaydedildi ✅", true);
-      const v = viewer(); if(v) await pingSeenDebounced(v);
-    }
-
-    async function saveSharedNote(val){
-      setPill(sharedSavedPill, "Senkron: yazılıyor…", false);
-      await updateDoc(stateRef, { sharedNote: String(val||""), sharedNoteUpdatedAt: nowTs() });
-      setPill(sharedSavedPill, "Senkron: kaydedildi ✅", true);
-      const v = viewer(); if(v) await pingSeenDebounced(v);
     }
 
     // ----- Products UI -----
@@ -528,30 +543,6 @@
       const v = viewer(); if(v) await pingSeenDebounced(v);
     });
 
-    copyBtn.addEventListener("click", ()=> copyText(autoMsgEl.value));
-
-    shortNoteEl.addEventListener("input", ()=>{
-      autoMsgEl.value = buildAutoMsg(shortNoteEl.value);
-      clearTimeout(shortTimer);
-      shortTimer = setTimeout(()=> saveShortNote(shortNoteEl.value).catch(()=>{}), 250);
-    });
-
-    sharedNoteEl.addEventListener("input", ()=>{
-      localTypingShared = true;
-      clearTimeout(sharedTimer);
-      sharedTimer = setTimeout(async ()=>{
-        await saveSharedNote(sharedNoteEl.value).catch(()=>{});
-        localTypingShared = false;
-      }, 300);
-    });
-
-    // sadece “Gönderildi ✅” etiketi için
-    sendNoteBtn.addEventListener("click", async ()=>{
-      await updateDoc(stateRef, { sharedNoteSentAt: nowTs() });
-      popToast("Gönderildi ✅");
-      const v = viewer(); if(v) await pingSeenDebounced(v);
-    });
-
     changeRole.addEventListener("click", openOverlay);
     pickEmir.addEventListener("click", async ()=>{ setViewer("Emir"); await markRead().catch(()=>{}); });
     pickElif.addEventListener("click", async ()=>{ setViewer("Elif"); await markRead().catch(()=>{}); });
@@ -562,10 +553,10 @@
     // ----- Boot -----
     renderProducts();
     updateCartUI();
-    autoMsgEl.value = buildAutoMsg("");
 
-    if(!viewer()) openOverlay();
+    if(!viewer()) overlay.classList.add("open");
     else whoText.textContent = `Sen: ${viewer()}`;
+    enforcePermissions();
 
     await ensureDefaults();
 
@@ -573,15 +564,15 @@
       if(!s.exists()) return;
       const d = s.data();
 
-      // Mode + timer
+      // mode + timer
       renderMode(!!d.peaceMode);
       modeChangedAt = Number(d.modeChangedAt || 0);
       startTimer();
 
-      // Hearts
+      // hearts
       heartsPill.textContent = `Kalp: ${d.hearts ?? 0}`;
 
-      // Seen / Read
+      // seen / read
       if(d.lastSeen?.name && d.lastSeen?.ts){
         lastSeenPill.textContent = `Son bakan: ${d.lastSeen.name} • ${fmtTR(d.lastSeen.ts)}`;
       } else {
@@ -589,38 +580,46 @@
       }
       readPill.textContent = `Okundu • Emir: ${fmtTR(d.reads?.Emir)} • Elif: ${fmtTR(d.reads?.Elif)}`;
 
-      // Short note
-      const remoteShort = String(d.shortNote || "");
-      if(shortNoteEl.value !== remoteShort) shortNoteEl.value = remoteShort;
-      autoMsgEl.value = buildAutoMsg(remoteShort);
-      if(remoteShort.trim()) setPill(noteSyncPill, "Senkron: kaydedildi ✅", true);
-      else { noteSyncPill.textContent = "Senkron: -"; noteSyncPill.classList.remove("ok"); }
-
-      // Shared note (remote update gelince senin yazını ezmesin diye)
-      const remoteShared = String(d.sharedNote || "");
-      if(!localTypingShared && sharedNoteEl.value !== remoteShared){
-        sharedNoteEl.value = remoteShared;
-      }
-
-      // Shared saved label
-      const sentAt = Number(d.sharedNoteSentAt || 0);
-      if(sentAt){
-        setPill(sharedSavedPill, `Gönderildi ✅ • ${fmtTR(sentAt)}`, true);
-      } else if(remoteShared.trim()){
-        setPill(sharedSavedPill, "Senkron: kaydedildi ✅", true);
+      // emir note
+      const remoteEmir = String(d.emirNote || "");
+      if(!isEmir()){ // Emir değilken remote her zaman yansısın
+        if(emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
       } else {
-        sharedSavedPill.textContent = "Senkron: -"; sharedSavedPill.classList.remove("ok");
+        // Emir yazıyorken: remote farklıysa yine de eşitle (tek kullanıcı yazıyor varsayımı)
+        if(emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
+      }
+      const emirAt = Number(d.emirNoteUpdatedAt || 0);
+      if(remoteEmir.trim()){
+        setPill(emirSavedPill, `Senkron ✅ • ${fmtTR(emirAt)}`, true);
+      } else {
+        emirSavedPill.textContent = "Senkron: -"; emirSavedPill.classList.remove("ok");
       }
 
-      // Cart (kim ekledi dahil)
+      // elif note
+      const remoteElif = String(d.elifNote || "");
+      if(!isElif()){
+        if(elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
+      } else {
+        if(elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
+      }
+      const elifAt = Number(d.elifNoteUpdatedAt || 0);
+      if(remoteElif.trim()){
+        setPill(elifSavedPill, `Senkron ✅ • ${fmtTR(elifAt)}`, true);
+      } else {
+        elifSavedPill.textContent = "Senkron: -"; elifSavedPill.classList.remove("ok");
+      }
+
+      // cart
       const remoteCart = normalizeCart(d.cart);
-      const same = cartIdsKey(cart) === cartIdsKey(remoteCart);
+      const same = cartKey(cart) === cartKey(remoteCart);
       if(!same){
         suppressCartWrite = true;
         cart = remoteCart;
         updateCartUI();
         suppressCartWrite = false;
       }
+
+      enforcePermissions();
     });
 
     await markRead().catch(()=>{});
