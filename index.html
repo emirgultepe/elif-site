@@ -6,34 +6,40 @@
   <title>ELIF & EMIR • Private Space</title>
   <style>
     :root{
-      /* Tasarım Renkleri (Dark/Luxe Theme) */
-      --bg:#000000; 
-      --card: #111111; 
-      --line: #333333;
+      /* Tasarım Renkleri */
+      --card: rgba(17, 17, 17, 0.85); /* Kartlar hafif şeffaf */
+      --line: rgba(255, 255, 255, 0.1);
       --text:#ffffff; 
-      --muted:#888888; 
-      --good:#10b981; /* Yeşil */
-      --bad:#ef4444;  /* Kırmızı */
-      --accent: #db2777; /* Pembe */
+      --muted:#aaaaaa; 
+      --good:#10b981; 
+      --bad:#ef4444;  
+      --accent: #db2777; 
       --r:16px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: var(--bg);
+      
+      /* YENİ ARKA PLAN: Romantik, loş, bokeh efektli */
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
+                  url('https://images.unsplash.com/photo-1516053898236-0952d7e4b97d?q=80&w=2069&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      
       color:var(--text);
       min-height:100vh;
     }
     
-    /* Üst Bar */
-    .top{position:sticky; top:0; z-index:20; backdrop-filter: blur(12px); background: rgba(0,0,0,.8); border-bottom:1px solid var(--line);}
+    /* Üst Bar - Biraz daha şeffaf */
+    .top{position:sticky; top:0; z-index:20; backdrop-filter: blur(12px); background: rgba(0,0,0,.6); border-bottom:1px solid var(--line);}
     .topin{max-width:980px; margin:0 auto; padding:16px; display:flex; align-items:center; gap:12px;}
-    .brand{display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.15em; font-size: 1.2rem; text-transform:uppercase; user-select:none;}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.15em; font-size: 1.2rem; text-transform:uppercase; user-select:none; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
     .brand span { color: var(--accent); font-weight: 300; font-style: italic; }
     
     .right{margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
-    .chip{padding:6px 12px; border-radius:4px; border:1px solid var(--line); background: #1a1a1a; font-size:11px; font-weight: 600; color:#fff; display:flex; align-items:center; gap:6px; user-select:none; white-space:nowrap; letter-spacing: 0.05em;}
+    .chip{padding:6px 12px; border-radius:4px; border:1px solid var(--line); background: rgba(0,0,0,0.5); font-size:11px; font-weight: 600; color:#fff; display:flex; align-items:center; gap:6px; user-select:none; white-space:nowrap; letter-spacing: 0.05em; backdrop-filter: blur(5px);}
     .dot{width:8px; height:8px; border-radius:50%; background:var(--bad); box-shadow: 0 0 10px var(--bad);} 
     .dot.ok{background:var(--good); box-shadow: 0 0 10px var(--good);}
     
@@ -41,29 +47,41 @@
     .count{min-width:18px; height:18px; border-radius:999px; display:flex; align-items:center; justify-content: center; background: var(--accent); color: white; font-size:10px; font-weight: bold; margin-left: 5px;}
 
     .wrap{max-width:980px; margin:0 auto; padding:16px;}
-    .card{background: var(--card); border:1px solid var(--line); border-radius: var(--r); padding:20px; margin-top:20px;}
-    .title{margin:0 0 8px; font-size:16px; text-transform: uppercase; letter-spacing: 0.1em; border-left: 3px solid var(--accent); padding-left: 10px;}
+    
+    /* Kartlar artık hafif şeffaf ve blurlu */
+    .card{
+        background: var(--card); 
+        backdrop-filter: blur(10px);
+        border:1px solid var(--line); 
+        border-radius: var(--r); 
+        padding:20px; 
+        margin-top:20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .title{margin:0 0 8px; font-size:16px; text-transform: uppercase; letter-spacing: 0.1em; border-left: 3px solid var(--accent); padding-left: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
     .muted{color:var(--muted); font-size:13px; line-height:1.5; margin:0;}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
     .divider{height:1px; background:var(--line); margin:20px 0}
 
     /* Butonlar */
-    .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:0; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
-    .btn:hover{background: var(--line);}
+    .btn{border:1px solid var(--line); background: rgba(0,0,0,0.6); color:#fff; padding:12px 20px; border-radius:0; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
+    .btn:hover{background: rgba(255,255,255,0.1);}
     
     .btn.primary{
         background: var(--good); 
         color: #fff; 
         border-color: var(--good);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
-    .btn.primary:hover{ background: #059669; }
+    .btn.primary:hover{ background: #059669; transform: translateY(-1px); }
     
     .btn.danger{
         background: var(--bad); 
         color: #fff;
         border-color: var(--bad); 
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
     }
-    .btn.danger:hover{ background: #dc2626; }
+    .btn.danger:hover{ background: #dc2626; transform: translateY(-1px); }
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
@@ -71,8 +89,8 @@
       width:100%;
       border-radius:4px;
       border:1px solid var(--line);
-      background: #111;
-      color: #ddd;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
       padding:15px;
       outline:none;
       font-size:14px;
@@ -80,15 +98,16 @@
       min-height:150px;
       resize:vertical;
       font-family: monospace;
+      transition: 0.3s;
     }
-    textarea:focus { border-color: var(--accent); }
+    textarea:focus { border-color: var(--accent); background: rgba(0,0,0,0.8); }
     textarea[readonly]{opacity:.5; cursor: not-allowed;}
 
     .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:15px; margin-top:15px;}
     
     .pCard{
         border:1px solid var(--line); 
-        background: #000; 
+        background: rgba(0,0,0,0.4); 
         padding:15px; 
         display:flex; 
         flex-direction: column; 
@@ -96,14 +115,14 @@
         text-align: center;
         transition: transform 0.2s;
     }
-    .pCard:hover { transform: translateY(-5px); border-color: var(--accent); }
+    .pCard:hover { transform: translateY(-5px); border-color: var(--accent); background: rgba(0,0,0,0.8); }
     .thumb{font-size: 40px; margin-bottom: 10px;}
     .name{font-weight:700; margin:5px 0; font-size:13px;}
     .desc{margin:5px 0 15px; color:var(--muted); font-size:11px;}
     .tag{font-size:10px; color: #000; background: #fff; padding:2px 6px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;}
 
     /* Sepet */
-    .drawer{position:fixed; top:0; right:0; width:min(400px, 85vw); height:100%; background: #000; border-left:1px solid var(--line); transform: translateX(110%); transition:.3s cubic-bezier(0.4, 0, 0.2, 1); z-index:100; display:flex; flex-direction:column; box-shadow: -10px 0 50px rgba(0,0,0,.8);}
+    .drawer{position:fixed; top:0; right:0; width:min(400px, 85vw); height:100%; background: #080808; border-left:1px solid var(--line); transform: translateX(110%); transition:.3s cubic-bezier(0.4, 0, 0.2, 1); z-index:100; display:flex; flex-direction:column; box-shadow: -10px 0 50px rgba(0,0,0,.8);}
     .drawer.open{transform: translateX(0)}
     .drawer-header{padding:20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
     .drawer-header h3{margin:0; letter-spacing:.1em; text-transform:uppercase; font-size:16px;}
@@ -114,10 +133,10 @@
     .drawer-footer{border-top:1px solid var(--line); padding:20px; display:grid; gap:10px;}
 
     /* Modal */
-    .overlay{position:fixed; inset:0; background: #000; z-index:500; display:none; align-items:center; justify-content:center; padding:20px;}
+    .overlay{position:fixed; inset:0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index:500; display:none; align-items:center; justify-content:center; padding:20px;}
     .overlay.open{display:flex}
     .modal{width:min(450px, 96vw); text-align: center;}
-    .modal h3{margin:0 0 30px; font-size:24px; letter-spacing:.2em; text-transform:uppercase; font-weight: 300;}
+    .modal h3{margin:0 0 30px; font-size:24px; letter-spacing:.2em; text-transform:uppercase; font-weight: 300; text-shadow: 0 0 20px rgba(255,255,255,0.2);}
     
     .grid2{display:flex; justify-content: center; gap:30px; margin-top:20px;}
     
@@ -144,6 +163,7 @@
         overflow: hidden;
         background: #000;
         position: relative;
+        transition: 0.3s;
     }
     .avatar-img {
         width: 100%; 
@@ -151,8 +171,8 @@
         border-radius: 50%; 
         object-fit: cover;
     }
-    .roleBtn.elif:hover .avatar-frame { border-color: var(--accent); box-shadow: 0 0 20px var(--accent); }
-    .roleBtn.emir:hover .avatar-frame { border-color: #3b82f6; box-shadow: 0 0 20px #3b82f6; }
+    .roleBtn.elif:hover .avatar-frame { border-color: var(--accent); box-shadow: 0 0 30px var(--accent); }
+    .roleBtn.emir:hover .avatar-frame { border-color: #3b82f6; box-shadow: 0 0 30px #3b82f6; }
 
     .roleBtn b{display:block; font-size:16px; letter-spacing: 0.1em;}
     .roleBtn span{color:var(--muted); font-size:11px;}
@@ -180,7 +200,7 @@
         <div class="chip">⏱ <span id="timerText">0 sn</span></div>
         <button class="btn" id="cartOpenBtn">Sepet <span class="count" id="cartCount">0</span></button>
         <div class="chip" style="background:transparent; border:none;">
-            <span id="whoText" style="font-size:10px; color:#666;">-</span> 
+            <span id="whoText" style="font-size:10px; color:#ccc;">-</span> 
             <span class="link" id="changeRole" style="margin-left:5px;">Çıkış</span>
         </div>
       </div>
@@ -198,12 +218,12 @@
       <div class="row" style="justify-content: space-between; border-top: 1px solid var(--line); padding-top: 15px;">
          <button class="btn" id="sendHeart" style="border-radius: 50%; width: 50px; height: 50px; padding:0; font-size: 20px; border-color: var(--accent); color: var(--accent);">💖</button>
          <div style="text-align: right;">
-            <div style="font-size: 10px; color: #666; margin-bottom: 4px;">KALP SAYACI</div>
+            <div style="font-size: 10px; color: #aaa; margin-bottom: 4px;">KALP SAYACI</div>
             <span class="pill" id="heartsPill" style="font-size: 14px; color: #fff;">0</span>
          </div>
       </div>
       
-      <div style="margin-top: 15px; font-size: 10px; color: #444; text-align: center;">
+      <div style="margin-top: 15px; font-size: 10px; color: #888; text-align: center;">
         <span id="lastSeenPill">Son aktivite: -</span> | <span id="readPill">Okundu: -</span>
       </div>
     </div>
@@ -278,7 +298,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from 
       "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
     // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIRMAYI UNUTMA 🔴
@@ -575,7 +595,7 @@
             <p class="name">${p.name}</p>
             <p class="desc">${p.desc}</p>
           </div>
-          <button class="btn addBtn" data-id="${p.id}" style="width:100%; border-color:#333; font-size:10px;">EKLE</button>
+          <button class="btn addBtn" data-id="${p.id}" style="width:100%; border-color:#555; font-size:10px;">EKLE</button>
         `;
         grid.appendChild(el);
       });
