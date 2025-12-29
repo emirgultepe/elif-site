@@ -52,7 +52,7 @@
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
     .divider{height:1px; background:var(--line); margin:20px 0}
 
-    /* Geri Sayım Kartı (Büyük Hedef) */
+    /* Geri Sayım Kartı */
     .countdown-box { text-align:center; padding: 20px 0; }
     .countdown-timer { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: var(--accent); text-shadow: 0 0 20px rgba(219, 39, 119, 0.4); }
     .countdown-label { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.2em; margin-top: 5px; }
@@ -156,7 +156,6 @@
             <span class="pill" id="heartsPill" style="font-size: 14px; color: #fff;">0</span>
          </div>
       </div>
-      <p style="text-align:center; font-size:10px; color:#444; margin-top:10px;">Kalbe basınca herkesin ekranında patlar!</p>
     </div>
 
     <div class="card">
@@ -164,6 +163,7 @@
       
       <label style="color: #3b82f6;">EMİR'İN SATIRLARI</label>
       <textarea id="emirNote" placeholder="Emir buraya duygularını yazacak..."></textarea>
+      
       <div class="row" style="justify-content:flex-end; margin-top:5px; margin-bottom: 20px;">
         <span class="pill" id="emirSavedPill">Senkron: -</span>
       </div>
@@ -195,7 +195,7 @@
         </div>
     </div>
 
-    </div>
+  </div>
 
   <div class="toast" id="toast">✅</div>
 
@@ -250,7 +250,7 @@
     const peaceActions = document.getElementById("peaceActions");
     const modeDot = document.getElementById("modeDot");
     const modeText = document.getElementById("modeText");
-    const timerText = document.getElementById("timerText"); // Geri gelen sayaç
+    const timerText = document.getElementById("timerText");
     
     const countdownDisplay = document.getElementById("countdownDisplay");
     const targetLabel = document.getElementById("targetLabel");
@@ -285,7 +285,7 @@
       }
     }
     
-    // Geri gelen sayaç fonksiyonu
+    // Sayaç Formatı
     function formatDuration(ms){
       if(ms < 0) ms = 0;
       const s = Math.floor(ms/1000);
@@ -357,7 +357,7 @@
         await setDoc(stateRef, {
           peaceMode: false,
           peaceRequestBy: null,
-          modeChangedAt: nowTs(), // Sayaç için önemli
+          modeChangedAt: nowTs(), // Sayaç için
           hearts: 0,
           lastHeartTs: 0,
           targetDate: nowTs() + 86400000,
@@ -367,36 +367,49 @@
       }
     }
 
-    // Kalp Gönderimi
+    // Kalp
     sendHeart.addEventListener("click", async ()=>{
        await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() });
     });
 
-    // Barış Mantığı (ONAYLI & SAYAÇ SIFIRLAMALI)
+    // 🔴 BARIŞ / KÜSLÜK MANTIĞI (SAYAÇ KONTROLLÜ) 🔴
+    
+    // 1. İSTEK GÖNDERME (Sayaç DEĞİŞMEZ)
     async function requestPeace(){
         const v = viewer(); if(!v) return;
         await updateDoc(stateRef, { peaceRequestBy: v });
         popToast("Barış Talebi Gönderildi 🕊️");
     }
+
+    // 2. ONAYLAMA (Sayaç SIFIRLANIR -> Barış Başlar)
     async function confirmPeace(){
         await updateDoc(stateRef, { 
             peaceMode: true, 
             peaceRequestBy: null,
-            modeChangedAt: nowTs() // SAYAÇ SIFIRLANIR
+            modeChangedAt: nowTs() // SAYAÇ SIFIRLANDI!
         });
         popToast("BARIŞ SAĞLANDI! ❤️");
         burstHearts(20);
     }
-    async function breakPeace(){
+    
+    // 3. REDDETME (Sayaç DEĞİŞMEZ -> Küslük devam eder)
+    async function rejectPeace(){
+        await updateDoc(stateRef, { peaceRequestBy: null });
+        // modeChangedAt GÜNCELLENMEDİ, sayaç kaldığı yerden devam eder.
+        popToast("İstek Reddedildi ❌");
+    }
+
+    // 4. BARIŞI BOZMA (Sayaç SIFIRLANIR -> Küslük Başlar)
+    async function startFeud(){
         await updateDoc(stateRef, { 
             peaceMode: false, 
             peaceRequestBy: null,
-            modeChangedAt: nowTs() // SAYAÇ SIFIRLANIR
+            modeChangedAt: nowTs() // SAYAÇ SIFIRLANDI!
         });
-        popToast("KÜSLÜK MODU ⛈️");
+        popToast("KÜSLÜK BAŞLADI ⛈️");
     }
 
-    // UI Render
+    // UI Doldurma
     function renderPeaceUI(d){
         const v = viewer();
         peaceActions.innerHTML = "";
@@ -407,7 +420,7 @@
             const btn = document.createElement("button");
             btn.className = "btn danger"; btn.style.flex = "1";
             btn.textContent = "KÜSTÜK ⛈️";
-            btn.onclick = breakPeace;
+            btn.onclick = startFeud; // Yeni fonksiyon
             peaceActions.appendChild(btn);
             return;
         }
@@ -429,7 +442,7 @@
                 
                 const btnReject = document.createElement("button");
                 btnReject.className = "btn danger"; btnReject.textContent = "X";
-                btnReject.onclick = breakPeace; 
+                btnReject.onclick = rejectPeace; // Yeni fonksiyon (Sayaç sıfırlamaz)
                 peaceActions.appendChild(btnConfirm);
                 peaceActions.appendChild(btnReject);
             }
@@ -446,14 +459,12 @@
     }
 
     // ----- SAYAÇLAR -----
-    // 1. Durum Sayacı (Üst Bar)
     let modeChangedAt = 0;
     setInterval(()=>{
         const diff = Date.now() - modeChangedAt;
         timerText.textContent = formatDuration(diff);
     }, 1000);
 
-    // 2. Geri Sayım (Büyük Hedef)
     let targetTime = 0;
     setInterval(()=>{
         const diff = targetTime - Date.now();
@@ -467,7 +478,6 @@
         countdownDisplay.textContent = `${d}g ${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
     }, 1000);
 
-    // Tarih Seçici
     const fp = flatpickr(document.createElement("input"), {
         enableTime: true, dateFormat: "Y-m-d H:i", locale: "tr", theme: "dark",
         onClose: async (selectedDates) => {
@@ -506,7 +516,6 @@
         });
     }
 
-    // ----- Not Kaydetme -----
     let timer;
     function autoSave(field, val){ clearTimeout(timer); timer = setTimeout(()=> updateDoc(stateRef, { [field]: val }), 500); }
     emirNoteEl.addEventListener("input", ()=> isEmir() && autoSave("emirNote", emirNoteEl.value));
@@ -528,7 +537,6 @@
         }
         heartsPill.textContent = d.hearts;
 
-        // Sayaçlar için veri güncellemesi
         modeChangedAt = d.modeChangedAt || nowTs();
         targetTime = d.targetDate || (nowTs() + 86400000);
 
