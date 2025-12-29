@@ -129,14 +129,16 @@
         margin-top: 15px;
         padding-top: 15px;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column; /* Mobilde alt alta daha düzgün */
+        gap: 8px;
         font-size: 10px;
         color: #666;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
+    .status-row { display:flex; align-items:center; justify-content: space-between; }
     .status-dot {
-        display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; background: #444;
+        display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: #444;
     }
     .status-dot.online { background: #10b981; box-shadow: 0 0 5px #10b981; }
   </style>
@@ -186,8 +188,8 @@
       </div>
 
       <div class="status-footer">
-          <div id="emirStatus"><span class="status-dot"></span>Emir: -</div>
-          <div id="elifStatus"><span class="status-dot"></span>Elif: -</div>
+          <div class="status-row" id="emirStatus"><span class="status-dot"></span>Emir: -</div>
+          <div class="status-row" id="elifStatus"><span class="status-dot"></span>Elif: -</div>
       </div>
     </div>
 
@@ -352,13 +354,22 @@
         selectedRole=role; roleContainer.style.display="none"; passContainer.style.display="flex";
         modalTitle.textContent=role+" İÇİN GİRİŞ"; passInput.focus();
     }
-    function checkPass(){
+    
+    // GİRİŞ KONTROLÜ (Giriş Saatini Kaydetme Eklendi)
+    async function checkPass(){
         if(PASSWORDS[selectedRole] && passInput.value === PASSWORDS[selectedRole]){
             localStorage.setItem("viewerName", selectedRole);
             whoText.textContent = selectedRole;
             overlay.classList.add("hidden");
             enforcePermissions();
-            pingPresence(); // Giriş yapınca hemen sinyal gönder
+            
+            // 🔥 OTURUM AÇMA SAATİNİ KAYDET
+            const now = nowTs();
+            await updateDoc(stateRef, { 
+                [`presence.${selectedRole}`]: now,      // Son aktif
+                [`presence.${selectedRole}Login`]: now  // İlk giriş
+            });
+            
         } else {
             popToast("HATALI PAROLA 🔒"); passInput.value="";
         }
@@ -384,34 +395,40 @@
           peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs(),
           hearts: 0, lastHeartTs: 0, targetDate: nowTs() + 86400000,
           capsules: [], emirNote: "", elifNote: "",
-          presence: { Emir: 0, Elif: 0 }
+          presence: {}
         });
       }
     }
     sendHeart.addEventListener("click", async ()=>{ await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() }); });
 
-    // AKTİFLİK SİNYALİ (Her 60 saniyede bir güncelle)
+    // AKTİFLİK SİNYALİ (Sadece Last Active Günceller)
     async function pingPresence(){
         const v = viewer(); if(!v) return;
         await updateDoc(stateRef, { [`presence.${v}`]: nowTs() });
     }
-    setInterval(()=> pingPresence(), 60000); // 1 dk'da bir otomatik ping
+    setInterval(()=> pingPresence(), 60000); 
     
-    // UI Güncelleme Fonksiyonu
+    // UI Güncelleme (Giriş Saatini Gösterir)
     function renderPresence(p){
         if(!p) return;
         const now = nowTs();
-        const limit = 2 * 60 * 1000; // 2 dakika tolerans
+        const limit = 2 * 60 * 1000; 
         
-        // Emir UI
+        // Emir
         const emirLast = p.Emir || 0;
+        const emirLogin = p.EmirLogin || emirLast;
         const isEmirOnline = (now - emirLast) < limit;
-        emirStatus.innerHTML = `<span class="status-dot ${isEmirOnline?'online':''}"></span>Emir: ${isEmirOnline ? '<span style="color:#fff">ÇEVRİMİÇİ</span>' : fmtTime(emirLast)}`;
+        emirStatus.innerHTML = `
+            <div><span class="status-dot ${isEmirOnline?'online':''}"></span>EMİR</div>
+            <div>${isEmirOnline ? `<span style="color:#10b981">ÇEVRİMİÇİ • ${fmtTime(emirLogin)}</span>` : fmtTime(emirLast)}</div>`;
         
-        // Elif UI
+        // Elif
         const elifLast = p.Elif || 0;
+        const elifLogin = p.ElifLogin || elifLast;
         const isElifOnline = (now - elifLast) < limit;
-        elifStatus.innerHTML = `<span class="status-dot ${isElifOnline?'online':''}"></span>Elif: ${isElifOnline ? '<span style="color:#fff">ÇEVRİMİÇİ</span>' : fmtTime(elifLast)}`;
+        elifStatus.innerHTML = `
+            <div><span class="status-dot ${isElifOnline?'online':''}"></span>ELİF</div>
+            <div>${isElifOnline ? `<span style="color:#10b981">ÇEVRİMİÇİ • ${fmtTime(elifLogin)}</span>` : fmtTime(elifLast)}</div>`;
     }
 
     // BARIŞ MANTIĞI
@@ -443,7 +460,6 @@
             peaceActions.appendChild(btn);
             return;
         }
-
         if(d.peaceRequestBy){
             modeText.textContent = "BEKLİYOR"; modeDot.className = "dot wait";
             if(d.peaceRequestBy === v){
@@ -557,7 +573,7 @@
         modeChangedAt = d.modeChangedAt || nowTs();
         targetTime = d.targetDate || (nowTs() + 86400000);
         renderCapsules(d.capsules);
-        renderPresence(d.presence); // YENİ: Aktiflik render
+        renderPresence(d.presence);
         if(document.activeElement !== emirNoteEl) emirNoteEl.value = d.emirNote || "";
         if(document.activeElement !== elifNoteEl) elifNoteEl.value = d.elifNote || "";
     });
