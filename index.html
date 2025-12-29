@@ -6,7 +6,7 @@
   <title>ELIF & EMIR • Private Space</title>
   <style>
     :root{
-      /* Tasarım Renkleri */
+      /* Tasarım Renkleri (Dark/Luxe) */
       --bg:#000000; 
       --card: #111111; 
       --line: #333333;
@@ -102,10 +102,11 @@
     .modal{width:min(450px, 96vw); text-align: center;}
     .modal h3{margin:0 0 30px; font-size:24px; letter-spacing:.2em; text-transform:uppercase; font-weight: 300;}
     
-    .grid2{display:flex; justify-content: center; gap:30px; margin-top:20px;}
+    /* Rol Seçim Alanı */
+    .role-container { display:flex; justify-content: center; gap:30px; margin-top:20px; }
     
     .roleBtn{
-        background: #111; /* Arkaya hafif bir renk verdim, butona benzesin diye */
+        background: #111;
         border: 1px solid var(--line); 
         color:var(--text); 
         cursor:pointer; 
@@ -120,12 +121,31 @@
         transition: .3s;
     }
     .roleBtn:hover { transform: scale(1.05); border-color: var(--text); background: #222; }
-    
     .roleBtn.elif:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(219, 39, 119, 0.3); }
     .roleBtn.emir:hover { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
 
     .roleBtn b{display:block; font-size:18px; letter-spacing: 0.1em;}
     .roleBtn span{color:var(--muted); font-size:12px; font-style: italic;}
+
+    /* Şifre Alanı (Başlangıçta gizli) */
+    .pass-container { display:none; flex-direction: column; align-items: center; gap:15px; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+    
+    .passInput {
+        background: #111;
+        border: 1px solid var(--line);
+        color: #fff;
+        padding: 15px;
+        text-align: center;
+        letter-spacing: 5px;
+        font-size: 20px;
+        width: 200px;
+        border-radius: 4px;
+        outline: none;
+    }
+    .passInput:focus { border-color: var(--accent); }
+    
+    .backBtn { background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:10px; }
 
     .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:4px; background: #222; font-size:10px; color: #aaa; text-transform: uppercase; font-weight: bold;}
     .pill.ok{color: var(--good); background: rgba(16, 185, 129, 0.1);}
@@ -222,9 +242,9 @@
 
   <div class="overlay" id="overlay">
     <div class="modal">
-      <h3>KİM GİRİŞ YAPIYOR?</h3>
+      <h3 id="modalTitle">KİM GİRİŞ YAPIYOR?</h3>
       
-      <div class="grid2">
+      <div class="role-container" id="roleContainer">
         <button class="roleBtn emir" id="pickEmir">
             <b>EMİR</b>
             <span>"Aşık"</span>
@@ -234,6 +254,13 @@
             <b>ELİF</b>
             <span>"Prenses"</span>
         </button>
+      </div>
+
+      <div class="pass-container" id="passContainer">
+        <div style="font-size: 14px; margin-bottom: 10px; color: #888;" id="passHint">Lütfen parolayı giriniz</div>
+        <input type="password" id="passInput" class="passInput" maxlength="10">
+        <button class="btn primary" id="btnUnlock" style="width: 200px; margin-top: 10px;">GİRİŞ YAP</button>
+        <button class="backBtn" id="btnBack">← Geri Dön</button>
       </div>
 
     </div>
@@ -246,7 +273,7 @@
 
     // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIRMAYI UNUTMA 🔴
     const firebaseConfig = {
-      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -257,8 +284,17 @@
 
     // ----- UI Elements -----
     const overlay = document.getElementById("overlay");
+    const roleContainer = document.getElementById("roleContainer");
+    const passContainer = document.getElementById("passContainer");
+    const modalTitle = document.getElementById("modalTitle");
+    const passInput = document.getElementById("passInput");
+    const passHint = document.getElementById("passHint");
+    const btnUnlock = document.getElementById("btnUnlock");
+    const btnBack = document.getElementById("btnBack");
+
     const pickEmir = document.getElementById("pickEmir");
     const pickElif = document.getElementById("pickElif");
+    
     const whoText = document.getElementById("whoText");
     const changeRole = document.getElementById("changeRole");
 
@@ -359,7 +395,15 @@
       el.classList.toggle("ok", ok);
     }
 
-    // ----- Rol Yönetimi -----
+    // ----- Rol ve Şifre Yönetimi -----
+    let selectedRole = null;
+    
+    // Şifreler (Daha güvenli olması için normalde backend'de tutulur ama bu basit projede burada)
+    const PASSWORDS = {
+        "Emir": "615127",
+        "Elif": "6161221"
+    };
+
     function viewer(){ return localStorage.getItem("viewerName") || ""; }
     function isEmir(){ return viewer() === "Emir"; }
     function isElif(){ return viewer() === "Elif"; }
@@ -368,9 +412,55 @@
       localStorage.setItem("viewerName", name);
       whoText.textContent = name;
       overlay.classList.remove("open");
+      resetModal();
       enforcePermissions();
     }
-    function openOverlay(){ overlay.classList.add("open"); }
+    
+    function resetModal(){
+        roleContainer.style.display = "flex";
+        passContainer.style.display = "none";
+        modalTitle.textContent = "KİM GİRİŞ YAPIYOR?";
+        passInput.value = "";
+        selectedRole = null;
+    }
+
+    function showPassInput(role){
+        selectedRole = role;
+        roleContainer.style.display = "none";
+        passContainer.style.display = "flex";
+        modalTitle.textContent = role + " İÇİN GİRİŞ";
+        passHint.textContent = `${role} için parolanı gir:`;
+        passInput.focus();
+    }
+    
+    function checkPass(){
+        const val = passInput.value;
+        if(PASSWORDS[selectedRole] && val === PASSWORDS[selectedRole]){
+            setViewer(selectedRole);
+            markRead().catch(()=>{});
+        } else {
+            passInput.value = "";
+            popToast("HATALI PAROLA 🔒");
+            passInput.style.borderColor = "red";
+            setTimeout(()=> passInput.style.borderColor = "#333", 1000);
+        }
+    }
+
+    function openOverlay(){ 
+        overlay.classList.add("open"); 
+        resetModal();
+    }
+
+    // Modal Eventleri
+    pickEmir.addEventListener("click", ()=> showPassInput("Emir"));
+    pickElif.addEventListener("click", ()=> showPassInput("Elif"));
+    
+    btnBack.addEventListener("click", resetModal);
+    
+    btnUnlock.addEventListener("click", checkPass);
+    passInput.addEventListener("keypress", (e)=>{
+        if(e.key === "Enter") checkPass();
+    });
 
     function enforcePermissions(){
       emirNoteEl.readOnly = !isEmir();
@@ -588,8 +678,8 @@
     });
 
     changeRole.addEventListener("click", openOverlay);
-    pickEmir.addEventListener("click", async ()=>{ setViewer("Emir"); await markRead().catch(()=>{}); });
-    pickElif.addEventListener("click", async ()=>{ setViewer("Elif"); await markRead().catch(()=>{}); });
+    
+    // Pick eventleri artık direkt açmıyor, şifreye yönlendiriyor (HTML kısmında)
 
     document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "visible") markRead().catch(()=>{}); });
     window.addEventListener("focus", ()=> markRead().catch(()=>{}));
