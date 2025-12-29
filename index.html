@@ -12,8 +12,8 @@
       --line: #333333;
       --text:#ffffff; 
       --muted:#888888; 
-      --good:#10b981; 
-      --bad:#ef4444;
+      --good:#10b981; /* YEŞİL RENK BURADA */
+      --bad:#ef4444;  /* KIRMIZI RENK BURADA */
       --accent: #db2777; /* Pembe vurgu */
       --shadow: 0 10px 40px rgba(0,0,0,.8); 
       --r:16px;
@@ -51,10 +51,25 @@
     /* Butonlar */
     .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:0; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
     .btn:hover{background: var(--line);}
-    .btn.primary{background:#fff; color:#000; border-color: #fff;}
-    .btn.primary:hover{background: #e5e5e5;}
-    .btn.danger{border-color: var(--bad); color: var(--bad); background: transparent;}
-    .btn.danger:hover{background: rgba(239, 68, 68, 0.1);}
+    
+    /* GÜNCELLENEN BUTON RENKLERİ */
+    .btn.primary{
+        background: var(--good); /* YEŞİL */
+        color: #fff; 
+        border-color: var(--good);
+    }
+    .btn.primary:hover{
+        background: #059669; /* Koyu Yeşil (Hover) */
+    }
+    
+    .btn.danger{
+        background: var(--bad); /* KIRMIZI */
+        color: #fff;
+        border-color: var(--bad); 
+    }
+    .btn.danger:hover{
+        background: #dc2626; /* Koyu Kırmızı (Hover) */
+    }
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
