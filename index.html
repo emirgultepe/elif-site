@@ -3,175 +3,240 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ELIF BEAUTY • Bizim Sayfa</title>
+  <title>ELIF & EMIR • Private Space</title>
   <style>
     :root{
-      --bg:#0b0b0c; --card: rgba(255,255,255,.05); --line: rgba(255,255,255,.12);
-      --text:#f4f4f6; --muted:#a0a0ab; --good:#55d6a7; --bad:#ff5c7a;
-      --shadow: 0 18px 46px rgba(0,0,0,.48); --r:18px;
+      /* Sephora / Lüks hissiyatı için renkler revize edildi */
+      --bg:#000000; 
+      --card: #111111; 
+      --line: #333333;
+      --text:#ffffff; 
+      --muted:#888888; 
+      --good:#10b981; 
+      --bad:#ef4444;
+      --accent: #db2777; /* Pembe vurgu */
+      --shadow: 0 10px 40px rgba(0,0,0,.8); 
+      --r:16px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background:
-        radial-gradient(900px 700px at 15% -10%, rgba(255,255,255,.08), transparent 55%),
-        radial-gradient(900px 700px at 90% 10%, rgba(255,255,255,.06), transparent 55%),
-        var(--bg);
+      font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
       color:var(--text);
       min-height:100vh;
     }
-    .top{position:sticky; top:0; z-index:20; backdrop-filter: blur(10px); background: rgba(10,10,11,.75); border-bottom:1px solid var(--line);}
-    .topin{max-width:980px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:12px;}
-    .brand{display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; user-select:none;}
-    .badge{width:34px; height:34px; border-radius:12px; border:1px solid rgba(255,255,255,.22); display:grid; place-items:center; box-shadow: 0 10px 22px rgba(0,0,0,.35);}
-    .right{margin-left:auto; display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
-    .chip{padding:8px 12px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.05); font-size:12px; color:rgba(255,255,255,.9); display:flex; align-items:center; gap:8px; user-select:none; white-space:nowrap;}
-    .dot{width:7px; height:7px; border-radius:50%; background:var(--bad)} .dot.ok{background:var(--good)}
-    .link{font-size:12px; color:rgba(255,255,255,.85); border-bottom:1px dashed rgba(255,255,255,.25); cursor:pointer; user-select:none;}
-    .count{min-width:22px; height:22px; border-radius:999px; display:grid; place-items:center; background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); font-size:12px; padding:0 7px;}
+    
+    /* Üst Bar */
+    .top{position:sticky; top:0; z-index:20; backdrop-filter: blur(12px); background: rgba(0,0,0,.8); border-bottom:1px solid var(--line);}
+    .topin{max-width:980px; margin:0 auto; padding:16px; display:flex; align-items:center; gap:12px;}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.15em; font-size: 1.2rem; text-transform:uppercase; user-select:none;}
+    .brand span { color: var(--accent); font-weight: 300; font-style: italic; }
+    
+    .right{margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
+    .chip{padding:6px 12px; border-radius:4px; border:1px solid var(--line); background: #1a1a1a; font-size:11px; font-weight: 600; color:#fff; display:flex; align-items:center; gap:6px; user-select:none; white-space:nowrap; letter-spacing: 0.05em;}
+    .dot{width:8px; height:8px; border-radius:50%; background:var(--bad); box-shadow: 0 0 10px var(--bad);} 
+    .dot.ok{background:var(--good); box-shadow: 0 0 10px var(--good);}
+    
+    .link{font-size:11px; color:var(--muted); text-decoration: underline; cursor:pointer;}
+    .count{min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content: center; background: var(--accent); color: white; font-size:10px; font-weight: bold; margin-left: 5px;}
 
     .wrap{max-width:980px; margin:0 auto; padding:16px;}
-    .card{background: var(--card); border:1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding:16px; margin-top:14px;}
-    .title{margin:0 0 6px; font-size:18px}
-    .muted{color:var(--muted); font-size:12px; line-height:1.5; margin:0}
+    .card{background: var(--card); border:1px solid var(--line); border-radius: var(--r); padding:20px; margin-top:20px;}
+    .title{margin:0 0 8px; font-size:16px; text-transform: uppercase; letter-spacing: 0.1em; border-left: 3px solid var(--accent); padding-left: 10px;}
+    .muted{color:var(--muted); font-size:13px; line-height:1.5; margin:0;}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
-    .divider{height:1px; background:rgba(255,255,255,.10); margin:14px 0}
+    .divider{height:1px; background:var(--line); margin:20px 0}
 
-    .btn{border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); color:var(--text); padding:10px 12px; border-radius:999px; cursor:pointer; font-weight:800; font-size:13px; user-select:none; transition:.18s ease; white-space:nowrap;}
-    .btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.30)}
-    .btn.primary{background:#fff; color:#0b0b0c; border-color: rgba(255,255,255,.6)}
-    .btn.danger{border-color: rgba(255,92,122,.35); background: rgba(255,92,122,.10)}
-    .btn[disabled]{opacity:.45; cursor:not-allowed; transform:none !important;}
-
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px;}
+    /* Butonlar */
+    .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:0; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
+    .btn:hover{background: var(--line);}
+    .btn.primary{background:#fff; color:#000; border-color: #fff;}
+    .btn.primary:hover{background: #e5e5e5;}
+    .btn.danger{border-color: var(--bad); color: var(--bad); background: transparent;}
+    .btn.danger:hover{background: rgba(239, 68, 68, 0.1);}
+    
+    label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
+    
+    /* Not Alanı - Kağıt Görünümü */
     textarea{
       width:100%;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding:12px 12px;
+      border-radius:4px;
+      border:1px solid var(--line);
+      background: #111;
+      color: #ddd;
+      padding:15px;
       outline:none;
       font-size:14px;
-      min-height:120px;
+      line-height: 1.6;
+      min-height:150px;
       resize:vertical;
+      font-family: monospace;
     }
-    textarea[readonly]{opacity:.9}
+    textarea:focus { border-color: var(--accent); }
+    textarea[readonly]{opacity:.5; cursor: not-allowed;}
 
-    .grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:12px;}
-    @media(max-width:900px){ .grid{grid-template-columns: repeat(2,1fr)} }
-    @media(max-width:620px){ .grid{grid-template-columns: 1fr} }
+    /* Ürün Kartları */
+    .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:15px; margin-top:15px;}
+    
+    .pCard{
+        border:1px solid var(--line); 
+        background: #000; 
+        padding:15px; 
+        display:flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .pCard:hover { transform: translateY(-5px); border-color: var(--accent); }
+    .thumb{font-size: 40px; margin-bottom: 10px;}
+    .name{font-weight:700; margin:5px 0; font-size:13px;}
+    .desc{margin:5px 0 15px; color:var(--muted); font-size:11px;}
+    .tag{font-size:10px; color: #000; background: #fff; padding:2px 6px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;}
 
-    .pCard{border:1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border-radius:18px; padding:14px; display:flex; gap:12px; align-items:flex-start; box-shadow: 0 10px 26px rgba(0,0,0,.35);}
-    .thumb{width:54px; height:54px; border-radius:16px; border:1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08); display:grid; place-items:center; user-select:none; flex:0 0 auto;}
-    .meta{flex:1}
-    .name{font-weight:900; margin:0; font-size:14px;}
-    .desc{margin:6px 0 10px; color:var(--muted); font-size:13px; line-height:1.45;}
-    .tag{font-size:12px; color: rgba(255,255,255,.88); border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); padding:6px 10px; border-radius:999px; white-space:nowrap; user-select:none;}
-
-    .drawer{position:fixed; top:0; right:0; width:min(440px, 92vw); height:100%; background: rgba(12,12,13,.92); border-left:1px solid rgba(255,255,255,.14); backdrop-filter: blur(10px); transform: translateX(110%); transition:.25s ease; z-index:100; display:flex; flex-direction:column; box-shadow: -20px 0 50px rgba(0,0,0,.5);}
+    /* Sepet Drawer */
+    .drawer{position:fixed; top:0; right:0; width:min(400px, 85vw); height:100%; background: #000; border-left:1px solid var(--line); transform: translateX(110%); transition:.3s cubic-bezier(0.4, 0, 0.2, 1); z-index:100; display:flex; flex-direction:column; box-shadow: -10px 0 50px rgba(0,0,0,.8);}
     .drawer.open{transform: translateX(0)}
-    .drawer-header{padding:16px; border-bottom:1px solid rgba(255,255,255,.10); display:flex; justify-content:space-between; gap:10px; align-items:center;}
-    .drawer-header h3{margin:0; letter-spacing:.12em; text-transform:uppercase; font-size:14px;}
-    .drawer-body{padding:14px 16px; overflow:auto; flex:1}
-    .item{display:flex; align-items:flex-start; gap:10px; padding:12px; border-radius:16px; border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); margin-bottom:10px;}
-    .item .thumb{width:44px;height:44px;border-radius:14px}
-    .mini{font-size:12px; color:var(--muted); line-height:1.35;}
-    .xbtn{margin-left:auto; border:1px solid rgba(255,255,255,.18); background: transparent; color:rgba(255,255,255,.9); border-radius:999px; cursor:pointer; padding:6px 10px; font-size:12px; user-select:none;}
-    .drawer-footer{border-top:1px solid rgba(255,255,255,.10); padding:14px 16px; display:grid; gap:10px;}
+    .drawer-header{padding:20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+    .drawer-header h3{margin:0; letter-spacing:.1em; text-transform:uppercase; font-size:16px;}
+    .drawer-body{padding:20px; overflow:auto; flex:1}
+    .item{display:flex; align-items:center; gap:15px; padding:10px; border-bottom:1px solid var(--line); margin-bottom:10px;}
+    .xbtn{margin-left:auto; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 18px;}
+    .xbtn:hover { color: var(--bad); }
+    .drawer-footer{border-top:1px solid var(--line); padding:20px; display:grid; gap:10px;}
 
-    .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); font-size:12px; user-select:none; white-space:nowrap;}
-    .pill.ok{border-color: rgba(85,214,167,.35); background: rgba(85,214,167,.10);}
-
-    .overlay{position:fixed; inset:0; background: rgba(0,0,0,.72); backdrop-filter: blur(6px); display:none; align-items:center; justify-content:center; padding:18px; z-index:500;}
+    /* Modal (Giriş Ekranı) */
+    .overlay{position:fixed; inset:0; background: #000; z-index:500; display:none; align-items:center; justify-content:center; padding:20px;}
     .overlay.open{display:flex}
-    .modal{width:min(520px, 96vw); background: rgba(12,12,13,.94); border:1px solid rgba(255,255,255,.14); border-radius:22px; box-shadow: var(--shadow); padding:16px;}
-    .modal h3{margin:0 0 8px; font-size:14px; letter-spacing:.10em; text-transform:uppercase;}
-    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
-    @media(max-width:520px){.grid2{grid-template-columns:1fr}}
-    .roleBtn{border-radius:18px; padding:14px 12px; border:1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06); color:var(--text); cursor:pointer; text-align:left; transition:.18s ease;}
-    .roleBtn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.32)}
-    .roleBtn b{display:block; font-size:15px; margin-bottom:6px;}
-    .roleBtn span{color:var(--muted); font-size:12px; line-height:1.4;}
+    .modal{width:min(450px, 96vw); text-align: center;}
+    .modal h3{margin:0 0 30px; font-size:24px; letter-spacing:.2em; text-transform:uppercase; font-weight: 300;}
+    
+    .grid2{display:flex; justify-content: center; gap:30px; margin-top:20px;}
+    
+    .roleBtn{
+        background: transparent; 
+        border: none; 
+        color:var(--text); 
+        cursor:pointer; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 15px; 
+        opacity: 0.6; 
+        transition: .3s;
+    }
+    .roleBtn:hover, .roleBtn:active { opacity: 1; transform: scale(1.05); }
+    
+    .avatar-frame {
+        width: 120px; 
+        height: 120px; 
+        border-radius: 50%; 
+        border: 2px solid var(--line); 
+        padding: 4px; 
+        overflow: hidden;
+    }
+    .avatar-img {
+        width: 100%; 
+        height: 100%; 
+        border-radius: 50%; 
+        object-fit: cover;
+    }
+    .roleBtn.elif:hover .avatar-frame { border-color: var(--accent); box-shadow: 0 0 20px var(--accent); }
+    .roleBtn.emir:hover .avatar-frame { border-color: #3b82f6; box-shadow: 0 0 20px #3b82f6; }
 
-    .toast{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); background: rgba(255,255,255,.92); color:#0b0b0c; padding:10px 12px; border-radius:999px; font-weight:900; font-size:13px; box-shadow: var(--shadow); display:none; z-index:200;}
-    .toast.show{display:block}
+    .roleBtn b{display:block; font-size:16px; letter-spacing: 0.1em;}
+    .roleBtn span{color:var(--muted); font-size:11px;}
 
-    .heart{position:fixed; font-size:18px; pointer-events:none; animation: floatUp 1.2s ease forwards; z-index:999; filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));}
-    @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-120px) scale(1.35); opacity:0 }}
+    .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:4px; background: #222; font-size:10px; color: #aaa; text-transform: uppercase; font-weight: bold;}
+    .pill.ok{color: var(--good); background: rgba(16, 185, 129, 0.1);}
+
+    .toast{position:fixed; left:50%; bottom:30px; transform:translateX(-50%); background: #fff; color:#000; padding:12px 24px; font-weight:700; font-size:12px; letter-spacing: 0.05em; text-transform: uppercase; display:none; z-index:900;}
+    .toast.show{display:block; animation: fadeUp 0.3s forwards;}
+
+    @keyframes fadeUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    
+    .heart{position:fixed; font-size:24px; pointer-events:none; animation: floatUp 1.5s ease forwards; z-index:999;}
+    @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-150px) scale(1.5); opacity:0 }}
   </style>
 </head>
 
 <body>
   <div class="top">
     <div class="topin">
-      <div class="brand"><div class="badge">✦</div>ELIF BEAUTY</div>
+      <div class="brand">ELIF<span style="color:#db2777">BEAUTY</span></div>
 
       <div class="right">
         <div class="chip"><span class="dot" id="modeDot"></span><span id="modeText">Küs</span></div>
         <div class="chip">⏱ <span id="timerText">0 sn</span></div>
         <button class="btn" id="cartOpenBtn">Sepet <span class="count" id="cartCount">0</span></button>
-        <div class="chip"><span id="whoText">Sen: -</span> • <span class="link" id="changeRole">Değiştir</span></div>
+        <div class="chip" style="background:transparent; border:none;">
+            <span id="whoText" style="font-size:10px; color:#666;">-</span> 
+            <span class="link" id="changeRole" style="margin-left:5px;">Çıkış</span>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="wrap">
     <div class="card">
-      <h2 class="title">Durum</h2>
-      <p class="muted">Mod değişince sayaç sıfırlanır ve tekrar sayar.</p>
-      <div class="divider"></div>
-      <div class="row">
-        <button class="btn primary" id="btnPeace">Barış</button>
-        <button class="btn danger" id="btnKus">Küs</button>
-        <button class="btn" id="sendHeart">Kalp Gönder</button>
-        <span class="pill" id="heartsPill">Kalp: 0</span>
-        <span class="pill" id="lastSeenPill">Son bakan: -</span>
-        <span class="pill" id="readPill">Okundu: -</span>
+      <h2 class="title">İlişki Durumu</h2>
+      <div class="row" style="margin-bottom: 20px;">
+        <button class="btn primary" id="btnPeace" style="flex:1;">🤍 Barıştık</button>
+        <button class="btn danger" id="btnKus" style="flex:1;">⛈️ Küsüz</button>
+      </div>
+      
+      <div class="row" style="justify-content: space-between; border-top: 1px solid var(--line); padding-top: 15px;">
+         <button class="btn" id="sendHeart" style="border-radius: 50%; width: 50px; height: 50px; padding:0; font-size: 20px; border-color: var(--accent); color: var(--accent);">💖</button>
+         <div style="text-align: right;">
+            <div style="font-size: 10px; color: #666; margin-bottom: 4px;">KALP SAYACI</div>
+            <span class="pill" id="heartsPill" style="font-size: 14px; color: #fff;">0</span>
+         </div>
+      </div>
+      
+      <div style="margin-top: 15px; font-size: 10px; color: #444; text-align: center;">
+        <span id="lastSeenPill">Son aktivite: -</span> | <span id="readPill">Okundu: -</span>
       </div>
     </div>
 
     <div class="card">
-      <h2 class="title">Notlar</h2>
-      <p class="muted">Emir’in notu ayrı, Elif’in notu ayrı. Herkes sadece kendi notunu yazar.</p>
-
-      <div class="divider"></div>
-
-      <label>Emir’in notu (sadece Emir yazabilir)</label>
-      <textarea id="emirNote" placeholder="Emir buraya yazacak…"></textarea>
-      <div class="row" style="justify-content:space-between; margin-top:10px;">
-        <button class="btn" id="copyEmir">Emir Notunu Kopyala</button>
+      <h2 class="title">Özel Notlar</h2>
+      
+      <label style="color: #3b82f6;">EMİR'İN SATIRLARI</label>
+      <textarea id="emirNote" placeholder="Emir buraya duygularını yazacak..."></textarea>
+      <div class="row" style="justify-content:space-between; margin-top:5px; margin-bottom: 20px;">
+        <button class="link" id="copyEmir" style="background:none; border:none; padding:0;">Kopyala</button>
         <span class="pill" id="emirSavedPill">Senkron: -</span>
       </div>
 
       <div class="divider"></div>
 
-      <label>Elif’in notu (sadece Elif yazabilir)</label>
-      <textarea id="elifNote" placeholder="Elif buraya yazacak…"></textarea>
-      <div class="row" style="justify-content:flex-end; margin-top:10px;">
+      <label style="color: #db2777;">ELİF'İN SATIRLARI</label>
+      <textarea id="elifNote" placeholder="Elif buraya duygularını yazacak..."></textarea>
+      <div class="row" style="justify-content:flex-end; margin-top:5px;">
         <span class="pill" id="elifSavedPill">Senkron: -</span>
       </div>
     </div>
 
     <div class="card">
-      <h2 class="title">Koleksiyon</h2>
-      <p class="muted">Ürün kartları + sepete ekleme. Sepette kim ekledi görünür.</p>
+      <h2 class="title">Telafi Koleksiyonu</h2>
+      <p class="muted">Gönül almak için seçilmiş özel "ürünler".</p>
       <div class="grid" id="grid"></div>
     </div>
   </div>
 
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-header">
-      <h3>SEPET</h3>
-      <button class="btn" id="cartCloseBtn">Kapat</button>
+      <h3>SEPETİM</h3>
+      <button class="xbtn" id="cartCloseBtn">×</button>
     </div>
     <div class="drawer-body" id="drawerBody"></div>
     <div class="drawer-footer">
-      <div class="row" style="justify-content:space-between;">
-        <span class="mini" id="cartSummary">0 ürün</span>
-        <button class="btn danger" id="clearCartBtn">Boşalt</button>
+      <div class="row" style="justify-content:space-between; align-items: center;">
+        <span class="muted" id="cartSummary">0 ürün</span>
+        <button class="btn danger" id="clearCartBtn" style="font-size: 10px; padding: 8px 12px;">Sepeti Boşalt</button>
       </div>
+      <button class="btn primary" style="width:100%; margin-top:10px;">ONAYLA ❤️</button>
     </div>
   </aside>
 
@@ -179,12 +244,26 @@
 
   <div class="overlay" id="overlay">
     <div class="modal">
-      <h3>Sen kimsin?</h3>
-      <p class="muted" style="margin:0;">Bu seçim sadece bu cihazda hatırlanır.</p>
+      <h3>KİM GİRİŞ YAPIYOR?</h3>
+      
       <div class="grid2">
-        <button class="roleBtn" id="pickEmir"><b>Ben Emir’im</b><span>Emir notunu yazarsın.</span></button>
-        <button class="roleBtn" id="pickElif"><b>Ben Elif’im</b><span>Elif notunu yazarsın.</span></button>
+        <button class="roleBtn emir" id="pickEmir">
+            <div class="avatar-frame">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200" class="avatar-img">
+            </div>
+            <b>EMİR</b>
+            <span>"Suçlu taraf"</span>
+        </button>
+
+        <button class="roleBtn elif" id="pickElif">
+            <div class="avatar-frame">
+                <img src="elif_prenses.jpg" class="avatar-img" onerror="this.src='https://cdn.dribbble.com/users/1061276/screenshots/14207601/media/34672849007056110656567010066423.jpg?resize=400x300'">
+            </div>
+            <b>ELİF</b>
+            <span>"Prenses"</span>
+        </button>
       </div>
+
     </div>
   </div>
 
@@ -193,9 +272,9 @@
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from
       "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // ✅ BURAYI KENDİ CONFIG'İNLE DOLDUR
+    // 🔴 DİKKAT: BURADAKİ BİLGİLERİ KENDİ FIREBASE PANELİNDEN ALIP DOLDURMALISIN 🔴
     const firebaseConfig = {
-     apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -204,7 +283,7 @@
   measurementId: "G-53C6DN719D"
     };
 
-    // ----- UI -----
+    // ----- UI Elements -----
     const overlay = document.getElementById("overlay");
     const pickEmir = document.getElementById("pickEmir");
     const pickElif = document.getElementById("pickElif");
@@ -240,29 +319,29 @@
 
     const toast = document.getElementById("toast");
 
-    // ----- Products -----
+    // ----- Ürün Listesi (Sephora Tarzı İsimler) -----
     const products = [
-      { id:"p1", icon:"🤍", name:"Net Özür Serum", tag:"Best Seller", desc:"Kısa, net, savunmasız bir özür." },
-      { id:"p2", icon:"🧠", name:"Anlayış Tonik", tag:"Gentle", desc:"‘Seni anlıyorum’ cümlesini doğru kurar." },
-      { id:"p3", icon:"🎧", name:"Dinleme Maskesi", tag:"Deep Care", desc:"Sözünü kesmeden dinleme modu." },
-      { id:"p4", icon:"☕", name:"Kahve + Yürüyüş", tag:"Classic", desc:"Somut telafi: sakin bir konuşma." },
-      { id:"p5", icon:"📵", name:"Baskısız Alan SPF", tag:"Respect", desc:"Üst üste yazmama, alan tanıma." },
-      { id:"p6", icon:"🎁", name:"Küçük Jest Mini", tag:"Cute", desc:"Düşünceli küçük sürpriz." },
+      { id:"p1", icon:"✨", name:"Samimi Özür Serum", tag:"Best Seller", desc:"%100 saf pişmanlık içerir." },
+      { id:"p2", icon:"💖", name:"Sonsuz İlgi Maskesi", tag:"Limited", desc:"7/24 kesintisiz ilgi sağlar." },
+      { id:"p3", icon:"🍫", name:"Çikolata & Kahve Seti", tag:"Classic", desc:"Mutluluk hormonu takviyesi." },
+      { id:"p4", icon:"👂", name:"Aktif Dinleme Tonik", tag:"Essential", desc:"Söz kesmeden dinleme özelliği." },
+      { id:"p5", icon:"🧸", name:"Sarılma Terapisi", tag:"Cozy", desc:"Anında sakinleştirici etki." },
+      { id:"p6", icon:"🌹", name:"Romantik Akşam Yemeği", tag:"Exclusive", desc:"Rezervasyon ve çiçek dahil." },
     ];
 
-    // ----- Helpers -----
+    // ----- Yardımcı Fonksiyonlar -----
     const nowTs = () => Date.now();
-    const fmtTR = (ts) => ts ? new Date(ts).toLocaleString("tr-TR") : "-";
+    const fmtTR = (ts) => ts ? new Date(ts).toLocaleTimeString("tr-TR", {hour:'2-digit', minute:'2-digit'}) : "-";
 
     function popToast(text="✅"){
       toast.textContent = text;
       toast.classList.add("show");
-      setTimeout(()=>toast.classList.remove("show"), 1100);
+      setTimeout(()=>toast.classList.remove("show"), 2000);
     }
     function copyText(str){
       navigator.clipboard.writeText(str)
-        .then(()=>popToast("Kopyalandı ✅"))
-        .catch(()=>popToast("Kopyalanamadı ❌"));
+        .then(()=>popToast("NOT KOPYALANDI"))
+        .catch(()=>popToast("Kopyalanamadı"));
     }
     function heart(x,y,emoji="❤️"){
       const h = document.createElement("div");
@@ -274,12 +353,12 @@
       setTimeout(()=>h.remove(), 1200);
     }
     function burstHearts(n=12){
-      const cx = window.innerWidth - 80;
-      const cy = 90;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
       for(let i=0;i<n;i++){
-        const x = cx + (Math.random()*40 - 20);
-        const y = cy + (Math.random()*30 - 15);
-        setTimeout(()=>heart(x,y, Math.random()>.25?"❤️":"🤍"), i*35);
+        const x = cx + (Math.random()*100 - 50);
+        const y = cy + (Math.random()*100 - 50);
+        setTimeout(()=>heart(x,y, Math.random()>.5?"💖":"🤍"), i*50);
       }
     }
     function openDrawer(){ drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false"); }
@@ -293,29 +372,29 @@
       const mins = Math.floor((s%3600)/60);
       const secs = s%60;
       const parts = [];
-      if(days) parts.push(`${days} gün`);
-      if(hrs || days) parts.push(`${hrs} saat`);
-      if(mins || hrs || days) parts.push(`${mins} dk`);
-      parts.push(`${secs} sn`);
+      if(days) parts.push(`${days}g`);
+      if(hrs || days) parts.push(`${hrs}sa`);
+      if(mins || hrs || days) parts.push(`${mins}dk`);
+      parts.push(`${secs}sn`);
       return parts.join(" ");
     }
     function renderMode(isPeace){
-      if(isPeace){ modeText.textContent = "Barış"; modeDot.classList.add("ok"); }
-      else { modeText.textContent = "Küs"; modeDot.classList.remove("ok"); }
+      if(isPeace){ modeText.textContent = "BARIŞTIK"; modeDot.classList.add("ok"); }
+      else { modeText.textContent = "KÜSÜZ"; modeDot.classList.remove("ok"); }
     }
     function setPill(el, text, ok=false){
       el.textContent = text;
       el.classList.toggle("ok", ok);
     }
 
-    // ----- Role -----
+    // ----- Rol Yönetimi -----
     function viewer(){ return localStorage.getItem("viewerName") || ""; }
     function isEmir(){ return viewer() === "Emir"; }
     function isElif(){ return viewer() === "Elif"; }
 
     function setViewer(name){
       localStorage.setItem("viewerName", name);
-      whoText.textContent = `Sen: ${name}`;
+      whoText.textContent = name;
       overlay.classList.remove("open");
       enforcePermissions();
     }
@@ -325,18 +404,19 @@
       emirNoteEl.readOnly = !isEmir();
       elifNoteEl.readOnly = !isElif();
       copyEmir.disabled = !isEmir();
+      // Placeholder güncelleme
+      if(isEmir()) emirNoteEl.placeholder = "Yazabilirsin Emir...";
+      else emirNoteEl.placeholder = "Emir'in yazmasını bekle...";
+      
+      if(isElif()) elifNoteEl.placeholder = "Yazabilirsin Prenses...";
+      else elifNoteEl.placeholder = "Elif'in yazmasını bekle...";
     }
 
-    // ----- Firestore -----
+    // ----- Firestore Logic -----
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const stateRef = doc(db, "shared", "relationshipState");
 
-    /**
-     * ✅ KRİTİK: Refresh'te veri silmemesi için
-     * - Sadece doküman YOKSA oluşturuyoruz
-     * - Var ise HİÇ overwrite etmiyoruz
-     */
     async function ensureDefaults(){
       const snap = await getDoc(stateRef);
       if(!snap.exists()){
@@ -347,7 +427,7 @@
           elifNote: "",
           emirNoteUpdatedAt: 0,
           elifNoteUpdatedAt: 0,
-          cart: [],               // [{id, by, ts}]
+          cart: [],
           hearts: 0,
           reads: {},
           lastSeen: {}
@@ -358,7 +438,7 @@
     let lastPingAt = 0;
     async function pingSeenDebounced(name){
       const now = nowTs();
-      if(now - lastPingAt < 4000) return;
+      if(now - lastPingAt < 5000) return;
       lastPingAt = now;
       await updateDoc(stateRef, { lastSeen: { name, ts: now } });
     }
@@ -370,11 +450,10 @@
       await pingSeenDebounced(v);
     }
 
-    // ----- Notes autosave (separate) -----
+    // ----- Not Kaydetme (Otomatik) -----
     let emirTimer = null;
     let elifTimer = null;
 
-    // Snapshot gelince yazarken textbox "ezilmesin" diye:
     let emirTyping = false;
     let elifTyping = false;
     emirNoteEl.addEventListener("focus", ()=>{ emirTyping = true; });
@@ -383,53 +462,46 @@
     elifNoteEl.addEventListener("blur", ()=>{ elifTyping = false; });
 
     async function saveEmirNote(val){
-      setPill(emirSavedPill, "Senkron: yazılıyor…", false);
+      setPill(emirSavedPill, "Kaydediliyor...", false);
       await updateDoc(stateRef, { emirNote: String(val||""), emirNoteUpdatedAt: nowTs() });
-      setPill(emirSavedPill, "Senkron: kaydedildi ✅", true);
+      setPill(emirSavedPill, "Kaydedildi ✅", true);
       const v = viewer(); if(v) await pingSeenDebounced(v);
     }
 
     async function saveElifNote(val){
-      setPill(elifSavedPill, "Senkron: yazılıyor…", false);
+      setPill(elifSavedPill, "Kaydediliyor...", false);
       await updateDoc(stateRef, { elifNote: String(val||""), elifNoteUpdatedAt: nowTs() });
-      setPill(elifSavedPill, "Senkron: kaydedildi ✅", true);
+      setPill(elifSavedPill, "Kaydedildi ✅", true);
       const v = viewer(); if(v) await pingSeenDebounced(v);
     }
 
     emirNoteEl.addEventListener("input", ()=>{
       if(!isEmir()) return;
       clearTimeout(emirTimer);
-      emirTimer = setTimeout(()=> saveEmirNote(emirNoteEl.value).catch(()=>{}), 300);
+      emirTimer = setTimeout(()=> saveEmirNote(emirNoteEl.value).catch(()=>{}), 500);
     });
 
     elifNoteEl.addEventListener("input", ()=>{
       if(!isElif()) return;
       clearTimeout(elifTimer);
-      elifTimer = setTimeout(()=> saveElifNote(elifNoteEl.value).catch(()=>{}), 300);
+      elifTimer = setTimeout(()=> saveElifNote(elifNoteEl.value).catch(()=>{}), 500);
     });
 
     copyEmir.addEventListener("click", ()=>{
-      if(!isEmir()) return;
       copyText(emirNoteEl.value || "");
     });
 
-    // ----- Cart state -----
-    let cart = [];                 // [{id, by, ts}]
+    // ----- Sepet Mantığı -----
+    let cart = [];
     let suppressCartWrite = false;
 
     function normalizeCart(remoteCart){
       if(!Array.isArray(remoteCart)) return [];
-      if(remoteCart.length === 0) return [];
-      if(typeof remoteCart[0] === "string"){
-        return remoteCart.map(id => ({ id, by:"?", ts:0 }));
-      }
       return remoteCart
         .filter(x => x && typeof x.id === "string")
         .map(x => ({ id:x.id, by: String(x.by||"?"), ts: Number(x.ts||0) }));
     }
-    function cartKey(list){
-      return JSON.stringify(list.map(x=>x.id+"|"+x.by+"|"+x.ts));
-    }
+    
     async function writeCart(){
       if(suppressCartWrite) return;
       await updateDoc(stateRef, { cart });
@@ -437,11 +509,11 @@
     }
 
     function addToCart(id){
-      const v = viewer() || "?";
+      const v = viewer() || "Biri";
       cart.push({ id, by: v, ts: nowTs() });
       updateCartUI();
-      burstHearts(8);
-      popToast("Sepete eklendi");
+      burstHearts(5);
+      popToast("Sepete Eklendi");
       writeCart().catch(()=>{});
     }
     function removeFromCart(idx){
@@ -452,11 +524,11 @@
 
     function updateCartUI(){
       cartCount.textContent = String(cart.length);
-      cartSummary.textContent = `${cart.length} ürün`;
+      cartSummary.textContent = `${cart.length} ürün var`;
       drawerBody.innerHTML = "";
 
       if(cart.length === 0){
-        drawerBody.innerHTML = `<p class="mini">Sepet boş.</p>`;
+        drawerBody.innerHTML = `<p class="muted" style="text-align:center; margin-top:50px;">Sepetiniz şuan boş.</p>`;
         return;
       }
 
@@ -466,13 +538,12 @@
         const it = document.createElement("div");
         it.className = "item";
         it.innerHTML = `
-          <div class="thumb"><span style="font-size:18px">${p.icon}</span></div>
+          <div style="font-size:24px;">${p.icon}</div>
           <div style="flex:1">
-            <div style="font-weight:900">${p.name}</div>
-            <div class="mini">${p.desc}</div>
-            <div class="mini"><b>${c.by}</b> ekledi • ${c.ts ? fmtTR(c.ts) : "-"}</div>
+            <div style="font-weight:700; font-size:13px;">${p.name}</div>
+            <div style="font-size:10px; color:#666;">Ekleyen: <b>${c.by}</b> • ${fmtTR(c.ts)}</div>
           </div>
-          <button class="xbtn" data-idx="${idx}">Sil</button>
+          <button class="xbtn" data-idx="${idx}">×</button>
         `;
         drawerBody.appendChild(it);
       });
@@ -482,24 +553,20 @@
       });
     }
 
-    // ----- Products UI -----
+    // ----- Ürünleri Ekrana Bas -----
     function renderProducts(){
       grid.innerHTML = "";
       products.forEach(p=>{
         const el = document.createElement("div");
         el.className = "pCard";
         el.innerHTML = `
-          <div class="thumb"><span style="font-size:22px">${p.icon}</span></div>
-          <div class="meta">
-            <div class="row" style="justify-content:space-between; gap:10px;">
-              <p class="name">${p.name}</p>
-              <span class="tag">${p.tag}</span>
-            </div>
+          <div class="tag">${p.tag}</div>
+          <div class="thumb">${p.icon}</div>
+          <div style="flex:1; width:100%;">
+            <p class="name">${p.name}</p>
             <p class="desc">${p.desc}</p>
-            <div class="row" style="justify-content:flex-end;">
-              <button class="btn primary addBtn" data-id="${p.id}">Sepete Ekle</button>
-            </div>
           </div>
+          <button class="btn addBtn" data-id="${p.id}" style="width:100%; border-color:#333; font-size:10px;">EKLE</button>
         `;
         grid.appendChild(el);
       });
@@ -509,7 +576,7 @@
       });
     }
 
-    // ----- Timer -----
+    // ----- Sayaç -----
     let modeChangedAt = 0;
     let timerHandle = null;
     function startTimer(){
@@ -519,36 +586,33 @@
       }, 1000);
     }
 
-    // ----- Events -----
+    // ----- Olay Dinleyiciler -----
     cartOpenBtn.addEventListener("click", openDrawer);
     cartCloseBtn.addEventListener("click", closeDrawer);
 
     clearCartBtn.addEventListener("click", ()=>{
       cart = [];
       updateCartUI();
-      popToast("Sepet boşaltıldı");
+      popToast("Sepet Temizlendi");
       writeCart().catch(()=>{});
     });
 
     btnPeace.addEventListener("click", async ()=>{
       renderMode(true);
-      popToast("Barış ✅");
+      popToast("BARIŞ İLAN EDİLDİ 🕊️");
       await updateDoc(stateRef, { peaceMode:true, modeChangedAt: nowTs() });
-      const v = viewer(); if(v) await pingSeenDebounced(v);
     });
 
     btnKus.addEventListener("click", async ()=>{
       renderMode(false);
-      popToast("Küs ✅");
+      popToast("KÜSLÜK BAŞLADI ⛈️");
       await updateDoc(stateRef, { peaceMode:false, modeChangedAt: nowTs() });
-      const v = viewer(); if(v) await pingSeenDebounced(v);
     });
 
     sendHeart.addEventListener("click", async ()=>{
       burstHearts(14);
-      popToast("Kalp 💌");
+      popToast("Kalp Gönderildi ❤️");
       await updateDoc(stateRef, { hearts: increment(1) });
-      const v = viewer(); if(v) await pingSeenDebounced(v);
     });
 
     changeRole.addEventListener("click", openOverlay);
@@ -558,12 +622,12 @@
     document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "visible") markRead().catch(()=>{}); });
     window.addEventListener("focus", ()=> markRead().catch(()=>{}));
 
-    // ----- Boot -----
+    // ----- Başlatma -----
     renderProducts();
     updateCartUI();
 
     if(!viewer()) overlay.classList.add("open");
-    else whoText.textContent = `Sen: ${viewer()}`;
+    else whoText.textContent = viewer();
     enforcePermissions();
 
     await ensureDefaults();
@@ -572,58 +636,39 @@
       if(!s.exists()) return;
       const d = s.data();
 
-      // mode + timer
+      // Durum ve Sayaç
       renderMode(!!d.peaceMode);
       modeChangedAt = Number(d.modeChangedAt || 0);
       startTimer();
 
-      // hearts
-      heartsPill.textContent = `Kalp: ${d.hearts ?? 0}`;
+      // Kalp Sayısı
+      heartsPill.textContent = `${d.hearts ?? 0}`;
 
-      // seen / read
+      // Görülme Bilgileri
       if(d.lastSeen?.name && d.lastSeen?.ts){
-        lastSeenPill.textContent = `Son bakan: ${d.lastSeen.name} • ${fmtTR(d.lastSeen.ts)}`;
-      } else {
-        lastSeenPill.textContent = "Son bakan: -";
+        lastSeenPill.textContent = `Son: ${d.lastSeen.name} (${fmtTR(d.lastSeen.ts)})`;
       }
-      readPill.textContent = `Okundu • Emir: ${fmtTR(d.reads?.Emir)} • Elif: ${fmtTR(d.reads?.Elif)}`;
+      readPill.textContent = `Emir: ${fmtTR(d.reads?.Emir)} | Elif: ${fmtTR(d.reads?.Elif)}`;
 
-      // emir note (✅ yazarken ezme yok)
+      // Emir Notu
       const remoteEmir = String(d.emirNote || "");
       if(!emirTyping && emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
-      const emirAt = Number(d.emirNoteUpdatedAt || 0);
-      if(remoteEmir.trim()){
-        setPill(emirSavedPill, `Senkron ✅ • ${fmtTR(emirAt)}`, true);
-      } else {
-        emirSavedPill.textContent = "Senkron: -"; emirSavedPill.classList.remove("ok");
-      }
-
-      // elif note (✅ yazarken ezme yok)
+      
+      // Elif Notu
       const remoteElif = String(d.elifNote || "");
       if(!elifTyping && elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
-      const elifAt = Number(d.elifNoteUpdatedAt || 0);
-      if(remoteElif.trim()){
-        setPill(elifSavedPill, `Senkron ✅ • ${fmtTR(elifAt)}`, true);
-      } else {
-        elifSavedPill.textContent = "Senkron: -"; elifSavedPill.classList.remove("ok");
-      }
 
-      // cart
+      // Sepet Senkronizasyonu
       const remoteCart = normalizeCart(d.cart);
-      const same = cartKey(cart) === cartKey(remoteCart);
-      if(!same){
-        suppressCartWrite = true;
+      if(JSON.stringify(cart) !== JSON.stringify(remoteCart) && !suppressCartWrite){
         cart = remoteCart;
         updateCartUI();
-        suppressCartWrite = false;
       }
 
       enforcePermissions();
     });
 
     await markRead().catch(()=>{});
-    const v = viewer(); if(v) await pingSeenDebounced(v).catch(()=>{});
   </script>
 </body>
 </html>
-
