@@ -4,16 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ELIF & EMIR • Private Space</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+  
   <style>
     :root{
-      /* Tasarım Renkleri (Dark/Luxe) */
       --bg:#000000; 
       --card: #111111; 
       --line: #333333;
       --text:#ffffff; 
       --muted:#888888; 
       --good:#10b981; 
-      --bad:#ef4444;  
+      --bad:#ef4444; 
+      --warn:#f59e0b; /* Turuncu (Bekleme modu için) */
       --accent: #db2777; 
       --r:16px;
     }
@@ -36,125 +39,89 @@
     .chip{padding:6px 12px; border-radius:4px; border:1px solid var(--line); background: #1a1a1a; font-size:11px; font-weight: 600; color:#fff; display:flex; align-items:center; gap:6px; user-select:none; white-space:nowrap; letter-spacing: 0.05em;}
     .dot{width:8px; height:8px; border-radius:50%; background:var(--bad); box-shadow: 0 0 10px var(--bad);} 
     .dot.ok{background:var(--good); box-shadow: 0 0 10px var(--good);}
+    .dot.wait{background:var(--warn); box-shadow: 0 0 10px var(--warn);}
     
     .link{font-size:11px; color:var(--muted); text-decoration: underline; cursor:pointer;}
     .count{min-width:18px; height:18px; border-radius:999px; display:flex; align-items:center; justify-content: center; background: var(--accent); color: white; font-size:10px; font-weight: bold; margin-left: 5px;}
 
     .wrap{max-width:980px; margin:0 auto; padding:16px;}
     .card{background: var(--card); border:1px solid var(--line); border-radius: var(--r); padding:20px; margin-top:20px;}
-    .title{margin:0 0 8px; font-size:16px; text-transform: uppercase; letter-spacing: 0.1em; border-left: 3px solid var(--accent); padding-left: 10px;}
+    .title{margin:0 0 8px; font-size:16px; text-transform: uppercase; letter-spacing: 0.1em; border-left: 3px solid var(--accent); padding-left: 10px; display:flex; justify-content:space-between; align-items:center;}
     .muted{color:var(--muted); font-size:13px; line-height:1.5; margin:0;}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
     .divider{height:1px; background:var(--line); margin:20px 0}
 
+    /* Geri Sayım Kartı */
+    .countdown-box { text-align:center; padding: 20px 0; }
+    .countdown-timer { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: var(--accent); text-shadow: 0 0 20px rgba(219, 39, 119, 0.4); }
+    .countdown-label { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.2em; margin-top: 5px; }
+
     /* Butonlar */
-    .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:0; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
+    .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:4px; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
     .btn:hover{background: var(--line);}
+    .btn:disabled{opacity:0.5; cursor:not-allowed;}
+
     .btn.primary{ background: var(--good); color: #fff; border-color: var(--good); }
     .btn.primary:hover{ background: #059669; }
+    
     .btn.danger{ background: var(--bad); color: #fff; border-color: var(--bad); }
     .btn.danger:hover{ background: #dc2626; }
+
+    .btn.warn{ background: var(--warn); color: #000; border-color: var(--warn); }
+    .btn.warn:hover{ background: #d97706; }
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
-    textarea{
-      width:100%;
-      border-radius:4px;
-      border:1px solid var(--line);
-      background: #111;
-      color: #ddd;
-      padding:15px;
-      outline:none;
-      font-size:14px;
-      line-height: 1.6;
-      min-height:150px;
-      resize:vertical;
-      font-family: monospace;
+    textarea, input[type="text"], input[type="date"] {
+      width:100%; border-radius:4px; border:1px solid var(--line); background: #111; color: #ddd; padding:15px; outline:none; font-size:14px; font-family: monospace;
     }
-    textarea:focus { border-color: var(--accent); }
-    textarea[readonly]{opacity:.5; cursor: not-allowed;}
+    textarea:focus, input:focus { border-color: var(--accent); }
+    
+    /* Geleceğe Mektup Stili */
+    .capsule { border: 1px dashed var(--line); padding: 15px; border-radius: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); }
+    .capsule.locked { opacity: 0.7; }
+    .capsule-header { display:flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .capsule-body { font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+    .lock-icon { font-size: 20px; display:block; margin-bottom: 5px; }
 
     .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:15px; margin-top:15px;}
     
-    .pCard{
-        border:1px solid var(--line); background: #000; padding:15px; display:flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.2s;
-    }
+    .pCard{ border:1px solid var(--line); background: #000; padding:15px; display:flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.2s; }
     .pCard:hover { transform: translateY(-5px); border-color: var(--accent); }
     .thumb{font-size: 40px; margin-bottom: 10px;}
     .name{font-weight:700; margin:5px 0; font-size:13px;}
     .desc{margin:5px 0 15px; color:var(--muted); font-size:11px;}
     .tag{font-size:10px; color: #000; background: #fff; padding:2px 6px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;}
 
-    /* Sepet */
+    /* Sepet & Modal */
     .drawer{position:fixed; top:0; right:0; width:min(400px, 85vw); height:100%; background: #000; border-left:1px solid var(--line); transform: translateX(110%); transition:.3s cubic-bezier(0.4, 0, 0.2, 1); z-index:100; display:flex; flex-direction:column; box-shadow: -10px 0 50px rgba(0,0,0,.8);}
     .drawer.open{transform: translateX(0)}
     .drawer-header{padding:20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
-    .drawer-header h3{margin:0; letter-spacing:.1em; text-transform:uppercase; font-size:16px;}
     .drawer-body{padding:20px; overflow:auto; flex:1}
     .item{display:flex; align-items:center; gap:15px; padding:10px; border-bottom:1px solid var(--line); margin-bottom:10px;}
     .xbtn{margin-left:auto; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 18px;}
-    .xbtn:hover { color: var(--bad); }
-    .drawer-footer{border-top:1px solid var(--line); padding:20px; display:grid; gap:10px;}
-
-    /* Modal */
+    
     .overlay{position:fixed; inset:0; background: #000; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px;}
-    /* display:flex yaptım, JS ile kaldırana kadar hep açık */
     .overlay.hidden{display:none;} 
-
     .modal{width:min(450px, 96vw); text-align: center;}
-    .modal h3{margin:0 0 30px; font-size:24px; letter-spacing:.2em; text-transform:uppercase; font-weight: 300;}
     
-    /* Rol Seçim Alanı */
     .role-container { display:flex; justify-content: center; gap:30px; margin-top:20px; }
-    
-    .roleBtn{
-        background: #111;
-        border: 1px solid var(--line); 
-        color:var(--text); 
-        cursor:pointer; 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center;
-        gap: 10px; 
-        padding: 30px;
-        border-radius: var(--r);
-        width: 140px;
-        transition: .3s;
-    }
+    .roleBtn{ background: #111; border: 1px solid var(--line); color:var(--text); cursor:pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 30px; border-radius: var(--r); width: 140px; transition: .3s; }
     .roleBtn:hover { transform: scale(1.05); border-color: var(--text); background: #222; }
     .roleBtn.elif:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(219, 39, 119, 0.3); }
     .roleBtn.emir:hover { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
 
-    .roleBtn b{display:block; font-size:18px; letter-spacing: 0.1em;}
-    .roleBtn span{color:var(--muted); font-size:12px; font-style: italic;}
-
-    /* Şifre Alanı (Başlangıçta gizli) */
     .pass-container { display:none; flex-direction: column; align-items: center; gap:15px; animation: fadeIn 0.3s; }
     @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
-    
-    .passInput {
-        background: #111;
-        border: 1px solid var(--line);
-        color: #fff;
-        padding: 15px;
-        text-align: center;
-        letter-spacing: 5px;
-        font-size: 20px;
-        width: 200px;
-        border-radius: 4px;
-        outline: none;
-    }
+    .passInput { background: #111; border: 1px solid var(--line); color: #fff; padding: 15px; text-align: center; letter-spacing: 5px; font-size: 20px; width: 200px; border-radius: 4px; outline: none; }
     .passInput:focus { border-color: var(--accent); }
-    
     .backBtn { background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:10px; }
 
     .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:4px; background: #222; font-size:10px; color: #aaa; text-transform: uppercase; font-weight: bold;}
     .pill.ok{color: var(--good); background: rgba(16, 185, 129, 0.1);}
-
+    
     .toast{position:fixed; left:50%; bottom:30px; transform:translateX(-50%); background: #fff; color:#000; padding:12px 24px; font-weight:700; font-size:12px; letter-spacing: 0.05em; text-transform: uppercase; display:none; z-index:900;}
     .toast.show{display:block; animation: fadeUp 0.3s forwards;}
-
     @keyframes fadeUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
     
     .heart{position:fixed; font-size:24px; pointer-events:none; animation: floatUp 1.5s ease forwards; z-index:999;}
@@ -168,7 +135,6 @@
       <div class="brand">ELIF<span style="color:#db2777">BEAUTY</span></div>
       <div class="right">
         <div class="chip"><span class="dot" id="modeDot"></span><span id="modeText">Küs</span></div>
-        <div class="chip">⏱ <span id="timerText">0 sn</span></div>
         <button class="btn" id="cartOpenBtn">Sepet <span class="count" id="cartCount">0</span></button>
         <div class="chip" style="background:transparent; border:none;">
             <span id="whoText" style="font-size:10px; color:#666;">-</span> 
@@ -179,12 +145,23 @@
   </div>
 
   <div class="wrap">
+    
+    <div class="card">
+      <div class="title">
+        <span>Geri Sayım</span>
+        <button class="link" id="editDateBtn" style="border:none; background:none;">⚙️</button>
+      </div>
+      <div class="countdown-box">
+        <div class="countdown-timer" id="countdownDisplay">00 gün 00:00:00</div>
+        <div class="countdown-label" id="targetLabel">HEDEF TARİH</div>
+      </div>
+    </div>
+
     <div class="card">
       <h2 class="title">İlişki Durumu</h2>
-      <div class="row" style="margin-bottom: 20px;">
-        <button class="btn primary" id="btnPeace" style="flex:1;">🤍 Barıştık</button>
-        <button class="btn danger" id="btnKus" style="flex:1;">⛈️ Küsüz</button>
-      </div>
+      
+      <div class="row" id="peaceActions" style="margin-bottom: 20px;">
+        </div>
       
       <div class="row" style="justify-content: space-between; border-top: 1px solid var(--line); padding-top: 15px;">
          <button class="btn" id="sendHeart" style="border-radius: 50%; width: 50px; height: 50px; padding:0; font-size: 20px; border-color: var(--accent); color: var(--accent);">💖</button>
@@ -193,10 +170,7 @@
             <span class="pill" id="heartsPill" style="font-size: 14px; color: #fff;">0</span>
          </div>
       </div>
-      
-      <div style="margin-top: 15px; font-size: 10px; color: #444; text-align: center;">
-        <span id="lastSeenPill">Son aktivite: -</span> | <span id="readPill">Okundu: -</span>
-      </div>
+      <p style="text-align:center; font-size:10px; color:#444; margin-top:10px;">Kalbe basınca herkesin ekranında patlar!</p>
     </div>
 
     <div class="card">
@@ -219,8 +193,25 @@
     </div>
 
     <div class="card">
+        <h2 class="title">Geleceğe Mektuplar 💌</h2>
+        <p class="muted">Belirlenen tarihe kadar kilitli kalacak notlar.</p>
+        
+        <div id="capsuleList"></div>
+        
+        <div class="divider"></div>
+        
+        <div id="newCapsuleForm">
+            <label>Yeni Kapsül Oluştur</label>
+            <input type="text" id="capsuleMsg" placeholder="Mesajınız nedir?">
+            <div class="row" style="margin-top:10px;">
+                <input type="text" id="capsuleDate" placeholder="Açılacağı Tarih" style="flex:1">
+                <button class="btn primary" id="btnSaveCapsule">Kilitle 🔒</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
       <h2 class="title">Telafi Koleksiyonu</h2>
-      <p class="muted">Gönül almak için seçilmiş özel "ürünler".</p>
       <div class="grid" id="grid"></div>
     </div>
   </div>
@@ -232,11 +223,8 @@
     </div>
     <div class="drawer-body" id="drawerBody"></div>
     <div class="drawer-footer">
-      <div class="row" style="justify-content:space-between; align-items: center;">
         <span class="muted" id="cartSummary">0 ürün</span>
-        <button class="btn danger" id="clearCartBtn" style="font-size: 10px; padding: 8px 12px;">Sepeti Boşalt</button>
-      </div>
-      <button class="btn primary" style="width:100%; margin-top:10px;">ONAYLA ❤️</button>
+        <button class="btn danger" id="clearCartBtn" style="width:100%; margin-top:10px;">Sepeti Boşalt</button>
     </div>
   </aside>
 
@@ -245,35 +233,28 @@
   <div class="overlay" id="overlay">
     <div class="modal">
       <h3 id="modalTitle">KİM GİRİŞ YAPIYOR?</h3>
-      
       <div class="role-container" id="roleContainer">
-        <button class="roleBtn emir" id="pickEmir">
-            <b>EMİR</b>
-            <span>"Aşık"</span>
-        </button>
-
-        <button class="roleBtn elif" id="pickElif">
-            <b>ELİF</b>
-            <span>"Prenses"</span>
-        </button>
+        <button class="roleBtn emir" id="pickEmir"><b>EMİR</b><span>"Aşık"</span></button>
+        <button class="roleBtn elif" id="pickElif"><b>ELİF</b><span>"Prenses"</span></button>
       </div>
-
       <div class="pass-container" id="passContainer">
-        <div style="font-size: 14px; margin-bottom: 10px; color: #888;" id="passHint">Lütfen parolayı giriniz</div>
+        <div style="font-size: 14px; margin-bottom: 10px; color: #888;" id="passHint">Parola:</div>
         <input type="password" id="passInput" class="passInput" maxlength="10">
         <button class="btn primary" id="btnUnlock" style="width: 200px; margin-top: 10px;">GİRİŞ YAP</button>
         <button class="backBtn" id="btnBack">← Geri Dön</button>
       </div>
-
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/tr.js"></script>
+  
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment } from 
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment, arrayUnion } from 
       "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIRMAYI UNUTMA 🔴
+    // 🔴 FIREBASE AYARLARI 🔴
     const firebaseConfig = {
        apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
@@ -284,458 +265,389 @@
   measurementId: "G-53C6DN719D"
     };
 
-    // ----- UI Elements -----
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const stateRef = doc(db, "shared", "relationshipState");
+
+    // UI Referansları
     const overlay = document.getElementById("overlay");
     const roleContainer = document.getElementById("roleContainer");
     const passContainer = document.getElementById("passContainer");
-    const modalTitle = document.getElementById("modalTitle");
     const passInput = document.getElementById("passInput");
-    const passHint = document.getElementById("passHint");
-    const btnUnlock = document.getElementById("btnUnlock");
-    const btnBack = document.getElementById("btnBack");
-
-    const pickEmir = document.getElementById("pickEmir");
-    const pickElif = document.getElementById("pickElif");
-    
+    const modalTitle = document.getElementById("modalTitle");
     const whoText = document.getElementById("whoText");
     const changeRole = document.getElementById("changeRole");
-
+    
+    const peaceActions = document.getElementById("peaceActions");
     const modeDot = document.getElementById("modeDot");
     const modeText = document.getElementById("modeText");
-    const timerText = document.getElementById("timerText");
-    const btnPeace = document.getElementById("btnPeace");
-    const btnKus = document.getElementById("btnKus");
+    
+    const countdownDisplay = document.getElementById("countdownDisplay");
+    const targetLabel = document.getElementById("targetLabel");
+    const editDateBtn = document.getElementById("editDateBtn");
 
-    const sendHeart = document.getElementById("sendHeart");
-    const heartsPill = document.getElementById("heartsPill");
-    const lastSeenPill = document.getElementById("lastSeenPill");
-    const readPill = document.getElementById("readPill");
+    const capsuleList = document.getElementById("capsuleList");
+    const capsuleMsg = document.getElementById("capsuleMsg");
+    const capsuleDateInput = document.getElementById("capsuleDate");
+    const btnSaveCapsule = document.getElementById("btnSaveCapsule");
 
     const emirNoteEl = document.getElementById("emirNote");
     const elifNoteEl = document.getElementById("elifNote");
     const emirSavedPill = document.getElementById("emirSavedPill");
     const elifSavedPill = document.getElementById("elifSavedPill");
-    const copyEmir = document.getElementById("copyEmir");
 
-    const grid = document.getElementById("grid");
+    const heartsPill = document.getElementById("heartsPill");
+    const sendHeart = document.getElementById("sendHeart");
 
     const drawer = document.getElementById("drawer");
     const cartOpenBtn = document.getElementById("cartOpenBtn");
     const cartCloseBtn = document.getElementById("cartCloseBtn");
     const drawerBody = document.getElementById("drawerBody");
     const cartCount = document.getElementById("cartCount");
-    const cartSummary = document.getElementById("cartSummary");
     const clearCartBtn = document.getElementById("clearCartBtn");
-
     const toast = document.getElementById("toast");
 
-    // ----- Ürün Listesi -----
+    // Ürünler
     const products = [
-      { id:"p1", icon:"✨", name:"Samimi Özür Serum", tag:"Best Seller", desc:"%100 saf pişmanlık içerir." },
-      { id:"p2", icon:"💖", name:"Sonsuz İlgi Maskesi", tag:"Limited", desc:"7/24 kesintisiz ilgi sağlar." },
-      { id:"p3", icon:"🍫", name:"Çikolata & Kahve Seti", tag:"Classic", desc:"Mutluluk hormonu takviyesi." },
-      { id:"p4", icon:"👂", name:"Aktif Dinleme Tonik", tag:"Essential", desc:"Söz kesmeden dinleme özelliği." },
-      { id:"p5", icon:"🧸", name:"Sarılma Terapisi", tag:"Cozy", desc:"Anında sakinleştirici etki." },
-      { id:"p6", icon:"🌹", name:"Romantik Akşam Yemeği", tag:"Exclusive", desc:"Rezervasyon ve çiçek dahil." },
+      { id:"p1", icon:"✨", name:"Samimi Özür Serum", tag:"Best Seller" },
+      { id:"p2", icon:"💖", name:"Sonsuz İlgi Maskesi", tag:"Limited" },
+      { id:"p3", icon:"🍫", name:"Çikolata & Kahve Seti", tag:"Classic" },
+      { id:"p4", icon:"👂", name:"Aktif Dinleme Tonik", tag:"Essential" },
+      { id:"p5", icon:"🧸", name:"Sarılma Terapisi", tag:"Cozy" },
+      { id:"p6", icon:"🌹", name:"Romantik Akşam Yemeği", tag:"Exclusive" },
     ];
 
     // ----- Yardımcı Fonksiyonlar -----
     const nowTs = () => Date.now();
-    const fmtTR = (ts) => ts ? new Date(ts).toLocaleTimeString("tr-TR", {hour:'2-digit', minute:'2-digit'}) : "-";
-
-    function popToast(text="✅"){
-      toast.textContent = text;
-      toast.classList.add("show");
-      setTimeout(()=>toast.classList.remove("show"), 2000);
-    }
-    function copyText(str){
-      navigator.clipboard.writeText(str)
-        .then(()=>popToast("NOT KOPYALANDI"))
-        .catch(()=>popToast("Kopyalanamadı"));
-    }
+    function popToast(text="✅"){ toast.textContent = text; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 2000); }
     function heart(x,y,emoji="❤️"){
-      const h = document.createElement("div");
-      h.className="heart";
-      h.textContent = emoji;
-      h.style.left = x + "px";
-      h.style.top = y + "px";
-      document.body.appendChild(h);
-      setTimeout(()=>h.remove(), 1200);
+      const h = document.createElement("div"); h.className="heart"; h.textContent=emoji; h.style.left=x+"px"; h.style.top=y+"px";
+      document.body.appendChild(h); setTimeout(()=>h.remove(), 1200);
     }
     function burstHearts(n=12){
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
+      const cx = window.innerWidth/2; const cy = window.innerHeight/2;
       for(let i=0;i<n;i++){
-        const x = cx + (Math.random()*100 - 50);
-        const y = cy + (Math.random()*100 - 50);
+        const x = cx + (Math.random()*100 - 50); const y = cy + (Math.random()*100 - 50);
         setTimeout(()=>heart(x,y, Math.random()>.5?"💖":"🤍"), i*50);
       }
     }
-    function openDrawer(){ drawer.classList.add("open"); drawer.setAttribute("aria-hidden","false"); }
-    function closeDrawer(){ drawer.classList.remove("open"); drawer.setAttribute("aria-hidden","true"); }
 
-    function formatDuration(ms){
-      if(ms < 0) ms = 0;
-      const s = Math.floor(ms/1000);
-      const days = Math.floor(s/86400);
-      const hrs  = Math.floor((s%86400)/3600);
-      const mins = Math.floor((s%3600)/60);
-      const secs = s%60;
-      const parts = [];
-      if(days) parts.push(`${days}g`);
-      if(hrs || days) parts.push(`${hrs}sa`);
-      if(mins || hrs || days) parts.push(`${mins}dk`);
-      parts.push(`${secs}sn`);
-      return parts.join(" ");
-    }
-    function renderMode(isPeace){
-      if(isPeace){ modeText.textContent = "BARIŞTIK"; modeDot.classList.add("ok"); }
-      else { modeText.textContent = "KÜSÜZ"; modeDot.classList.remove("ok"); }
-    }
-    function setPill(el, text, ok=false){
-      el.textContent = text;
-      el.classList.toggle("ok", ok);
-    }
-
-    // ----- Rol ve Şifre Yönetimi -----
+    // ----- ŞİFRE SİSTEMİ -----
+    const PASSWORDS = { "Emir": "615127", "Elif": "6161221" };
     let selectedRole = null;
-    
-    // Şifreler
-    const PASSWORDS = {
-        "Emir": "615127",
-        "Elif": "6161221"
-    };
 
     function viewer(){ return localStorage.getItem("viewerName") || ""; }
-    function isEmir(){ return viewer() === "Emir"; }
-    function isElif(){ return viewer() === "Elif"; }
-
-    function setViewer(name){
-      localStorage.setItem("viewerName", name);
-      whoText.textContent = name;
-      overlay.classList.add("hidden"); // Gizle
-      resetModal();
-      enforcePermissions();
-    }
     
     function resetModal(){
-        roleContainer.style.display = "flex";
-        passContainer.style.display = "none";
-        modalTitle.textContent = "KİM GİRİŞ YAPIYOR?";
-        passInput.value = "";
-        selectedRole = null;
+        roleContainer.style.display="flex"; passContainer.style.display="none";
+        modalTitle.textContent="KİM GİRİŞ YAPIYOR?"; passInput.value=""; selectedRole=null;
     }
-
     function showPassInput(role){
-        selectedRole = role;
-        roleContainer.style.display = "none";
-        passContainer.style.display = "flex";
-        modalTitle.textContent = role + " İÇİN GİRİŞ";
-        passHint.textContent = `${role} için parolanı gir:`;
-        passInput.focus();
+        selectedRole=role; roleContainer.style.display="none"; passContainer.style.display="flex";
+        modalTitle.textContent=role+" İÇİN GİRİŞ"; passInput.focus();
     }
-    
     function checkPass(){
-        const val = passInput.value;
-        if(PASSWORDS[selectedRole] && val === PASSWORDS[selectedRole]){
-            setViewer(selectedRole);
-            markRead().catch(()=>{});
+        if(PASSWORDS[selectedRole] && passInput.value === PASSWORDS[selectedRole]){
+            localStorage.setItem("viewerName", selectedRole);
+            whoText.textContent = selectedRole;
+            overlay.classList.add("hidden");
+            enforcePermissions();
         } else {
-            passInput.value = "";
-            popToast("HATALI PAROLA 🔒");
-            passInput.style.borderColor = "red";
-            setTimeout(()=> passInput.style.borderColor = "#333", 1000);
+            popToast("HATALI PAROLA 🔒"); passInput.value="";
         }
     }
+    
+    document.getElementById("pickEmir").addEventListener("click", ()=>showPassInput("Emir"));
+    document.getElementById("pickElif").addEventListener("click", ()=>showPassInput("Elif"));
+    document.getElementById("btnBack").addEventListener("click", resetModal);
+    document.getElementById("btnUnlock").addEventListener("click", checkPass);
+    passInput.addEventListener("keypress", (e)=>{if(e.key==="Enter") checkPass();});
 
-    function openOverlay(){ 
-        localStorage.removeItem("viewerName"); // Çıkış yapınca hafızayı sil
-        whoText.textContent = "-";
-        overlay.classList.remove("hidden"); 
+    changeRole.addEventListener("click", ()=>{
+        localStorage.removeItem("viewerName");
+        whoText.textContent="-";
+        overlay.classList.remove("hidden");
         resetModal();
-        enforcePermissions();
-    }
-
-    // Modal Eventleri
-    pickEmir.addEventListener("click", ()=> showPassInput("Emir"));
-    pickElif.addEventListener("click", ()=> showPassInput("Elif"));
-    
-    btnBack.addEventListener("click", resetModal);
-    
-    btnUnlock.addEventListener("click", checkPass);
-    passInput.addEventListener("keypress", (e)=>{
-        if(e.key === "Enter") checkPass();
     });
 
-    // ÇIKIŞ BUTONU
-    changeRole.addEventListener("click", openOverlay);
+    // Sayfa Yüklenince SIFIRLAMA
+    localStorage.removeItem("viewerName");
+    resetModal();
 
     function enforcePermissions(){
-      emirNoteEl.readOnly = !isEmir();
-      elifNoteEl.readOnly = !isElif();
-      copyEmir.disabled = !isEmir();
-      
-      if(isEmir()) emirNoteEl.placeholder = "Yazabilirsin Emir...";
-      else emirNoteEl.placeholder = "Emir'in yazmasını bekle...";
-      
-      if(isElif()) elifNoteEl.placeholder = "Yazabilirsin Prenses...";
-      else elifNoteEl.placeholder = "Elif'in yazmasını bekle...";
+        const v = viewer();
+        const isEmir = v === "Emir";
+        const isElif = v === "Elif";
+        emirNoteEl.readOnly = !isEmir;
+        elifNoteEl.readOnly = !isElif;
     }
 
-    // ----- Firestore Logic -----
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const stateRef = doc(db, "shared", "relationshipState");
-
+    // ----- VERİTABANI İŞLEMLERİ -----
+    
+    // Varsayılanları Oluştur
     async function ensureDefaults(){
       const snap = await getDoc(stateRef);
       if(!snap.exists()){
         await setDoc(stateRef, {
           peaceMode: false,
-          modeChangedAt: nowTs(),
-          emirNote: "",
-          elifNote: "",
-          emirNoteUpdatedAt: 0,
-          elifNoteUpdatedAt: 0,
-          cart: [],
+          peaceRequestBy: null, // "Emir" veya "Elif"
           hearts: 0,
-          reads: {},
-          lastSeen: {}
+          lastHeartTs: 0,
+          targetDate: nowTs() + 86400000,
+          targetLabel: "BÜYÜK GÜN",
+          capsules: [],
+          cart: [],
+          emirNote: "", elifNote: ""
         });
       }
     }
 
-    let lastPingAt = 0;
-    async function pingSeenDebounced(name){
-      const now = nowTs();
-      if(now - lastPingAt < 5000) return;
-      lastPingAt = now;
-      await updateDoc(stateRef, { lastSeen: { name, ts: now } });
-    }
-
-    async function markRead(){
-      const v = viewer();
-      if(!v) return;
-      await updateDoc(stateRef, { [`reads.${v}`]: nowTs() });
-      await pingSeenDebounced(v);
-    }
-
-    // ----- Not Kaydetme (Otomatik) -----
-    let emirTimer = null;
-    let elifTimer = null;
-
-    let emirTyping = false;
-    let elifTyping = false;
-    emirNoteEl.addEventListener("focus", ()=>{ emirTyping = true; });
-    emirNoteEl.addEventListener("blur", ()=>{ emirTyping = false; });
-    elifNoteEl.addEventListener("focus", ()=>{ elifTyping = true; });
-    elifNoteEl.addEventListener("blur", ()=>{ elifTyping = false; });
-
-    async function saveEmirNote(val){
-      setPill(emirSavedPill, "Kaydediliyor...", false);
-      await updateDoc(stateRef, { emirNote: String(val||""), emirNoteUpdatedAt: nowTs() });
-      setPill(emirSavedPill, "Kaydedildi ✅", true);
-      const v = viewer(); if(v) await pingSeenDebounced(v);
-    }
-
-    async function saveElifNote(val){
-      setPill(elifSavedPill, "Kaydediliyor...", false);
-      await updateDoc(stateRef, { elifNote: String(val||""), elifNoteUpdatedAt: nowTs() });
-      setPill(elifSavedPill, "Kaydedildi ✅", true);
-      const v = viewer(); if(v) await pingSeenDebounced(v);
-    }
-
-    emirNoteEl.addEventListener("input", ()=>{
-      if(!isEmir()) return;
-      clearTimeout(emirTimer);
-      emirTimer = setTimeout(()=> saveEmirNote(emirNoteEl.value).catch(()=>{}), 500);
+    // Kalp Gönderimi (SENKRONİZE)
+    sendHeart.addEventListener("click", async ()=>{
+       await updateDoc(stateRef, { 
+           hearts: increment(1),
+           lastHeartTs: nowTs() // Bu değişince herkes tetiklenecek
+       });
     });
 
-    elifNoteEl.addEventListener("input", ()=>{
-      if(!isElif()) return;
-      clearTimeout(elifTimer);
-      elifTimer = setTimeout(()=> saveElifNote(elifNoteEl.value).catch(()=>{}), 500);
+    // Barış Mantığı (ONAYLI)
+    async function requestPeace(){
+        const v = viewer(); if(!v) return;
+        await updateDoc(stateRef, { peaceRequestBy: v });
+        popToast("Barış Talebi Gönderildi 🕊️");
+    }
+    async function confirmPeace(){
+        await updateDoc(stateRef, { peaceMode: true, peaceRequestBy: null });
+        popToast("BARIŞ SAĞLANDI! ❤️");
+        burstHearts(20);
+    }
+    async function breakPeace(){
+        await updateDoc(stateRef, { peaceMode: false, peaceRequestBy: null });
+        popToast("KÜSLÜK MODU ⛈️");
+    }
+
+    // Arayüzü Duruma Göre Çiz
+    function renderPeaceUI(d){
+        const v = viewer();
+        peaceActions.innerHTML = "";
+        
+        // 1. Durum: Barışık
+        if(d.peaceMode){
+            modeText.textContent = "BARIŞTIK"; modeDot.className = "dot ok";
+            const btn = document.createElement("button");
+            btn.className = "btn danger"; btn.style.flex = "1";
+            btn.textContent = "KÜSTÜK ⛈️";
+            btn.onclick = breakPeace;
+            peaceActions.appendChild(btn);
+            return;
+        }
+
+        // 2. Durum: Küs ama Talep Var
+        if(d.peaceRequestBy){
+            modeText.textContent = "BEKLİYOR"; modeDot.className = "dot wait";
+            
+            if(d.peaceRequestBy === v){
+                // Ben talep etmişim, bekliyorum
+                const info = document.createElement("div");
+                info.className = "btn warn"; info.style.flex="1"; info.style.opacity="0.7"; info.style.cursor="default";
+                info.textContent = "Onay Bekleniyor... ⏳";
+                peaceActions.appendChild(info);
+            } else {
+                // Karşı taraf talep etmiş, onaylamam lazım
+                const btnConfirm = document.createElement("button");
+                btnConfirm.className = "btn primary"; btnConfirm.style.flex="1";
+                btnConfirm.textContent = `${d.peaceRequestBy} BARIŞMAK İSTİYOR - ONAYLA ✅`;
+                btnConfirm.onclick = confirmPeace;
+                
+                const btnReject = document.createElement("button");
+                btnReject.className = "btn danger"; btnReject.textContent = "X";
+                btnReject.onclick = breakPeace; // Talebi siler
+
+                peaceActions.appendChild(btnConfirm);
+                peaceActions.appendChild(btnReject);
+            }
+            return;
+        }
+
+        // 3. Durum: Küs ve Talep Yok
+        modeText.textContent = "KÜSÜZ"; modeDot.className = "dot";
+        const btn = document.createElement("button");
+        btn.className = "btn primary"; btn.style.flex = "1";
+        btn.textContent = "BARIŞALIM MI? 🕊️";
+        btn.onclick = requestPeace;
+        peaceActions.appendChild(btn);
+    }
+
+    // ----- Geri Sayım Mantığı -----
+    let targetTime = 0;
+    setInterval(()=>{
+        const diff = targetTime - Date.now();
+        if(diff <= 0) { countdownDisplay.textContent = "GÜN GELDİ! 🎉"; return; }
+        
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        countdownDisplay.textContent = `${d}g ${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+    }, 1000);
+
+    // Tarih Seçici
+    const fp = flatpickr(document.createElement("input"), {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        locale: "tr",
+        theme: "dark",
+        onClose: async (selectedDates) => {
+             if(selectedDates.length > 0){
+                 await updateDoc(stateRef, { targetDate: selectedDates[0].getTime() });
+             }
+        }
+    });
+    editDateBtn.addEventListener("click", ()=> fp.open());
+
+    // ----- Geleceğe Mektup -----
+    const capsulePicker = flatpickr(capsuleDateInput, { enableTime:true, dateFormat: "Y-m-d H:i", locale:"tr", theme:"dark" });
+
+    btnSaveCapsule.addEventListener("click", async ()=>{
+        const msg = capsuleMsg.value.trim();
+        const dateStr = capsuleDateInput.value;
+        if(!msg || !dateStr) return popToast("Mesaj ve Tarih Girin!");
+        
+        const unlockTs = new Date(dateStr).getTime();
+        const newCap = {
+            id: Date.now().toString(),
+            from: viewer(),
+            msg: msg,
+            unlockTs: unlockTs,
+            createdAt: nowTs()
+        };
+        
+        await updateDoc(stateRef, { capsules: arrayUnion(newCap) });
+        capsuleMsg.value = ""; capsuleDateInput.value = "";
+        popToast("Mektup Kilitlendi 🔒");
     });
 
-    copyEmir.addEventListener("click", ()=>{
-      copyText(emirNoteEl.value || "");
-    });
+    function renderCapsules(list){
+        capsuleList.innerHTML = "";
+        if(!list || list.length === 0){
+            capsuleList.innerHTML = `<div class="muted" style="text-align:center;">Henüz kilitli mektup yok.</div>`;
+            return;
+        }
+        
+        list.sort((a,b)=>a.unlockTs - b.unlockTs).forEach(c => {
+            const isLocked = Date.now() < c.unlockTs;
+            const dateStr = new Date(c.unlockTs).toLocaleDateString("tr-TR");
+            
+            const div = document.createElement("div");
+            div.className = `capsule ${isLocked ? 'locked' : ''}`;
+            
+            let content = "";
+            if(isLocked){
+                content = `<div style="text-align:center; padding:10px;">
+                    <span class="lock-icon">🔒</span>
+                    <div>Bu mektup <b>${dateStr}</b> tarihine kadar kilitli.</div>
+                    <div style="font-size:10px; margin-top:5px;">Yazan: ${c.from}</div>
+                </div>`;
+            } else {
+                content = `<div class="capsule-header"><span>Kimden: ${c.from}</span><span>${dateStr}</span></div>
+                           <div class="capsule-body">${c.msg}</div>`;
+            }
+            
+            div.innerHTML = content;
+            capsuleList.appendChild(div);
+        });
+    }
 
-    // ----- Sepet Mantığı -----
+    // ----- Not Kaydetme (Debounce) -----
+    let timer;
+    function autoSave(field, val){
+        clearTimeout(timer);
+        timer = setTimeout(()=> updateDoc(stateRef, { [field]: val }), 500);
+    }
+    emirNoteEl.addEventListener("input", ()=> isEmir() && autoSave("emirNote", emirNoteEl.value));
+    elifNoteEl.addEventListener("input", ()=> isElif() && autoSave("elifNote", elifNoteEl.value));
+
+    // ----- Sepet İşlemleri -----
     let cart = [];
-    let suppressCartWrite = false;
+    cartOpenBtn.onclick = ()=> drawer.classList.add("open");
+    cartCloseBtn.onclick = ()=> drawer.classList.remove("open");
+    clearCartBtn.onclick = async ()=> { cart=[]; updateCartUI(); await updateDoc(stateRef, {cart}); popToast("Sepet Temizlendi"); };
 
-    function normalizeCart(remoteCart){
-      if(!Array.isArray(remoteCart)) return [];
-      return remoteCart
-        .filter(x => x && typeof x.id === "string")
-        .map(x => ({ id:x.id, by: String(x.by||"?"), ts: Number(x.ts||0) }));
+    function addToCart(pid){
+        const v = viewer();
+        cart.push({ id:pid, by:v, ts:nowTs() });
+        updateCartUI();
+        updateDoc(stateRef, { cart }).catch(()=>{});
+        popToast("Eklendi!");
     }
     
-    async function writeCart(){
-      if(suppressCartWrite) return;
-      await updateDoc(stateRef, { cart });
-      const v = viewer(); if(v) await pingSeenDebounced(v);
-    }
-
-    function addToCart(id){
-      const v = viewer() || "Biri";
-      cart.push({ id, by: v, ts: nowTs() });
-      updateCartUI();
-      burstHearts(5);
-      popToast("Sepete Eklendi");
-      writeCart().catch(()=>{});
-    }
-    function removeFromCart(idx){
-      cart.splice(idx,1);
-      updateCartUI();
-      writeCart().catch(()=>{});
-    }
-
     function updateCartUI(){
-      cartCount.textContent = String(cart.length);
-      cartSummary.textContent = `${cart.length} ürün var`;
-      drawerBody.innerHTML = "";
-
-      if(cart.length === 0){
-        drawerBody.innerHTML = `<p class="muted" style="text-align:center; margin-top:50px;">Sepetiniz şuan boş.</p>`;
-        return;
-      }
-
-      cart.forEach((c, idx)=>{
-        const p = products.find(pp=>pp.id===c.id);
-        if(!p) return;
-        const it = document.createElement("div");
-        it.className = "item";
-        it.innerHTML = `
-          <div style="font-size:24px;">${p.icon}</div>
-          <div style="flex:1">
-            <div style="font-weight:700; font-size:13px;">${p.name}</div>
-            <div style="font-size:10px; color:#666;">Ekleyen: <b>${c.by}</b> • ${fmtTR(c.ts)}</div>
-          </div>
-          <button class="xbtn" data-idx="${idx}">×</button>
-        `;
-        drawerBody.appendChild(it);
-      });
-
-      drawerBody.querySelectorAll(".xbtn").forEach(b=>{
-        b.addEventListener("click", ()=> removeFromCart(Number(b.dataset.idx)));
-      });
+        cartCount.textContent = cart.length;
+        cartSummary.textContent = cart.length + " ürün";
+        drawerBody.innerHTML = "";
+        cart.forEach((c, idx)=>{
+            const p = products.find(x=>x.id===c.id);
+            if(!p) return;
+            const row = document.createElement("div"); row.className="item";
+            row.innerHTML = `<div style="font-size:20px">${p.icon}</div>
+                             <div style="flex:1"><div style="font-weight:700;font-size:12px">${p.name}</div><div style="font-size:10px;color:#666">${c.by}</div></div>
+                             <button class="xbtn" onclick="removeItem(${idx})">×</button>`;
+            drawerBody.appendChild(row);
+        });
+        window.removeItem = async (i) => { cart.splice(i,1); updateCartUI(); await updateDoc(stateRef, {cart}); };
     }
 
-    // ----- Ürünleri Ekrana Bas -----
-    function renderProducts(){
-      grid.innerHTML = "";
-      products.forEach(p=>{
-        const el = document.createElement("div");
-        el.className = "pCard";
-        el.innerHTML = `
-          <div class="tag">${p.tag}</div>
-          <div class="thumb">${p.icon}</div>
-          <div style="flex:1; width:100%;">
-            <p class="name">${p.name}</p>
-            <p class="desc">${p.desc}</p>
-          </div>
-          <button class="btn addBtn" data-id="${p.id}" style="width:100%; border-color:#333; font-size:10px;">EKLE</button>
-        `;
+    // Ürünleri Ekrana Bas
+    const grid = document.getElementById("grid");
+    products.forEach(p => {
+        const el = document.createElement("div"); el.className = "pCard";
+        el.innerHTML = `<div class="tag">${p.tag}</div><div class="thumb">${p.icon}</div>
+                        <div style="flex:1; width:100%"><p class="name">${p.name}</p></div>
+                        <button class="btn" style="width:100%; border-color:#333; font-size:10px;">EKLE</button>`;
+        el.querySelector("button").onclick = ()=> addToCart(p.id);
         grid.appendChild(el);
-      });
-
-      grid.querySelectorAll(".addBtn").forEach(btn=>{
-        btn.addEventListener("click", ()=> addToCart(btn.dataset.id));
-      });
-    }
-
-    // ----- Sayaç -----
-    let modeChangedAt = 0;
-    let timerHandle = null;
-    function startTimer(){
-      if(timerHandle) clearInterval(timerHandle);
-      timerHandle = setInterval(()=> {
-        timerText.textContent = modeChangedAt ? formatDuration(Date.now() - modeChangedAt) : "0 sn";
-      }, 1000);
-    }
-
-    // ----- Olay Dinleyiciler -----
-    cartOpenBtn.addEventListener("click", openDrawer);
-    cartCloseBtn.addEventListener("click", closeDrawer);
-
-    clearCartBtn.addEventListener("click", ()=>{
-      cart = [];
-      updateCartUI();
-      popToast("Sepet Temizlendi");
-      writeCart().catch(()=>{});
     });
 
-    btnPeace.addEventListener("click", async ()=>{
-      renderMode(true);
-      popToast("BARIŞ İLAN EDİLDİ 🕊️");
-      await updateDoc(stateRef, { peaceMode:true, modeChangedAt: nowTs() });
-    });
+    // ----- ANA DİNLLEYİCİ (SNAPSHOT) -----
+    let lastKnownHeartTs = 0;
 
-    btnKus.addEventListener("click", async ()=>{
-      renderMode(false);
-      popToast("KÜSLÜK BAŞLADI ⛈️");
-      await updateDoc(stateRef, { peaceMode:false, modeChangedAt: nowTs() });
-    });
-
-    sendHeart.addEventListener("click", async ()=>{
-      burstHearts(14);
-      popToast("Kalp Gönderildi ❤️");
-      await updateDoc(stateRef, { hearts: increment(1) });
-    });
-
-    document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "visible") markRead().catch(()=>{}); });
-    window.addEventListener("focus", ()=> markRead().catch(()=>{}));
-
-    // ----- Başlatma (HER SEFERİNDE SIFIRLAMA) -----
-    // Sayfa her yüklendiğinde hafızayı sil, böylece login ekranı gelir.
-    localStorage.removeItem("viewerName");
-    whoText.textContent = "-";
-    resetModal();
-    enforcePermissions();
-
-    renderProducts();
-    updateCartUI();
     await ensureDefaults();
-
+    
     onSnapshot(stateRef, (s)=>{
-      if(!s.exists()) return;
-      const d = s.data();
+        if(!s.exists()) return;
+        const d = s.data();
 
-      // Durum ve Sayaç
-      renderMode(!!d.peaceMode);
-      modeChangedAt = Number(d.modeChangedAt || 0);
-      startTimer();
+        // 1. Barış UI
+        renderPeaceUI(d);
+        
+        // 2. Kalp Senkronizasyonu
+        if(d.lastHeartTs > lastKnownHeartTs){
+            // İlk açılışta patlamasın diye kontrol edebiliriz ama
+            // basit olması için her değişimde patlasın.
+            if(lastKnownHeartTs !== 0) burstHearts(15);
+            lastKnownHeartTs = d.lastHeartTs;
+        }
+        heartsPill.textContent = d.hearts;
 
-      // Kalp Sayısı
-      heartsPill.textContent = `${d.hearts ?? 0}`;
+        // 3. Geri Sayım
+        targetTime = d.targetDate || (nowTs() + 86400000);
+        targetLabel.textContent = "HEDEF TARİH"; // İstenirse d.targetLabel da yapılabilir
 
-      // Görülme Bilgileri
-      if(d.lastSeen?.name && d.lastSeen?.ts){
-        lastSeenPill.textContent = `Son: ${d.lastSeen.name} (${fmtTR(d.lastSeen.ts)})`;
-      }
-      readPill.textContent = `Emir: ${fmtTR(d.reads?.Emir)} | Elif: ${fmtTR(d.reads?.Elif)}`;
+        // 4. Mektuplar
+        renderCapsules(d.capsules);
 
-      // Emir Notu
-      const remoteEmir = String(d.emirNote || "");
-      if(!emirTyping && emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
-      
-      // Elif Notu
-      const remoteElif = String(d.elifNote || "");
-      if(!elifTyping && elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
+        // 5. Notlar (Focus değilse güncelle)
+        if(document.activeElement !== emirNoteEl) emirNoteEl.value = d.emirNote || "";
+        if(document.activeElement !== elifNoteEl) elifNoteEl.value = d.elifNote || "";
 
-      // Sepet Senkronizasyonu
-      const remoteCart = normalizeCart(d.cart);
-      if(JSON.stringify(cart) !== JSON.stringify(remoteCart) && !suppressCartWrite){
-        cart = remoteCart;
-        updateCartUI();
-      }
-
-      enforcePermissions();
+        // 6. Sepet
+        if(JSON.stringify(cart) !== JSON.stringify(d.cart)){
+            cart = d.cart || [];
+            updateCartUI();
+        }
     });
 
-    await markRead().catch(()=>{});
   </script>
 </body>
 </html>
