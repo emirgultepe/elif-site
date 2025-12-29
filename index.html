@@ -6,22 +6,21 @@
   <title>ELIF & EMIR • Private Space</title>
   <style>
     :root{
-      /* Tasarım Renkleri (Dark/Luxe Theme) */
+      /* Tasarım Renkleri */
       --bg:#000000; 
       --card: #111111; 
       --line: #333333;
       --text:#ffffff; 
       --muted:#888888; 
-      --good:#10b981; /* Yeşil */
-      --bad:#ef4444;  /* Kırmızı */
-      --accent: #db2777; /* Pembe */
+      --good:#10b981; 
+      --bad:#ef4444;  
+      --accent: #db2777; 
       --r:16px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, sans-serif;
-      /* Arka planı tekrar SİYAH yaptım */
       background: var(--bg);
       color:var(--text);
       min-height:100vh;
@@ -51,19 +50,9 @@
     /* Butonlar */
     .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:0; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
     .btn:hover{background: var(--line);}
-    
-    .btn.primary{
-        background: var(--good); 
-        color: #fff; 
-        border-color: var(--good);
-    }
+    .btn.primary{ background: var(--good); color: #fff; border-color: var(--good); }
     .btn.primary:hover{ background: #059669; }
-    
-    .btn.danger{
-        background: var(--bad); 
-        color: #fff;
-        border-color: var(--bad); 
-    }
+    .btn.danger{ background: var(--bad); color: #fff; border-color: var(--bad); }
     .btn.danger:hover{ background: #dc2626; }
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
@@ -88,14 +77,7 @@
     .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:15px; margin-top:15px;}
     
     .pCard{
-        border:1px solid var(--line); 
-        background: #000; 
-        padding:15px; 
-        display:flex; 
-        flex-direction: column; 
-        align-items: center; 
-        text-align: center;
-        transition: transform 0.2s;
+        border:1px solid var(--line); background: #000; padding:15px; display:flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.2s;
     }
     .pCard:hover { transform: translateY(-5px); border-color: var(--accent); }
     .thumb{font-size: 40px; margin-bottom: 10px;}
@@ -123,40 +105,27 @@
     .grid2{display:flex; justify-content: center; gap:30px; margin-top:20px;}
     
     .roleBtn{
-        background: transparent; 
-        border: none; 
+        background: #111; /* Arkaya hafif bir renk verdim, butona benzesin diye */
+        border: 1px solid var(--line); 
         color:var(--text); 
         cursor:pointer; 
         display: flex; 
         flex-direction: column; 
         align-items: center; 
-        gap: 15px; 
-        opacity: 0.6; 
+        justify-content: center;
+        gap: 10px; 
+        padding: 30px;
+        border-radius: var(--r);
+        width: 140px;
         transition: .3s;
     }
-    .roleBtn:hover, .roleBtn:active { opacity: 1; transform: scale(1.05); }
+    .roleBtn:hover { transform: scale(1.05); border-color: var(--text); background: #222; }
     
-    .avatar-frame {
-        width: 120px; 
-        height: 120px; 
-        border-radius: 50%; 
-        border: 2px solid var(--line); 
-        padding: 4px; 
-        overflow: hidden;
-        background: #000;
-        position: relative;
-    }
-    .avatar-img {
-        width: 100%; 
-        height: 100%; 
-        border-radius: 50%; 
-        object-fit: cover;
-    }
-    .roleBtn.elif:hover .avatar-frame { border-color: var(--accent); box-shadow: 0 0 20px var(--accent); }
-    .roleBtn.emir:hover .avatar-frame { border-color: #3b82f6; box-shadow: 0 0 20px #3b82f6; }
+    .roleBtn.elif:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(219, 39, 119, 0.3); }
+    .roleBtn.emir:hover { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
 
-    .roleBtn b{display:block; font-size:16px; letter-spacing: 0.1em;}
-    .roleBtn span{color:var(--muted); font-size:11px;}
+    .roleBtn b{display:block; font-size:18px; letter-spacing: 0.1em;}
+    .roleBtn span{color:var(--muted); font-size:12px; font-style: italic;}
 
     .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:4px; background: #222; font-size:10px; color: #aaa; text-transform: uppercase; font-weight: bold;}
     .pill.ok{color: var(--good); background: rgba(16, 185, 129, 0.1);}
@@ -175,7 +144,6 @@
   <div class="top">
     <div class="topin">
       <div class="brand">ELIF<span style="color:#db2777">BEAUTY</span></div>
-
       <div class="right">
         <div class="chip"><span class="dot" id="modeDot"></span><span id="modeText">Küs</span></div>
         <div class="chip">⏱ <span id="timerText">0 sn</span></div>
@@ -258,17 +226,11 @@
       
       <div class="grid2">
         <button class="roleBtn emir" id="pickEmir">
-            <div class="avatar-frame">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" class="avatar-img">
-            </div>
             <b>EMİR</b>
             <span>"Aşık"</span>
         </button>
 
         <button class="roleBtn elif" id="pickElif">
-            <div class="avatar-frame">
-                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" class="avatar-img">
-            </div>
             <b>ELİF</b>
             <span>"Prenses"</span>
         </button>
@@ -284,7 +246,7 @@
 
     // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIRMAYI UNUTMA 🔴
     const firebaseConfig = {
-       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
