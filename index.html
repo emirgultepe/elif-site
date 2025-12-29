@@ -9,6 +9,12 @@
       --bg:#0b0b0c; --card: rgba(255,255,255,.05); --line: rgba(255,255,255,.12);
       --text:#f4f4f6; --muted:#a0a0ab; --good:#55d6a7; --bad:#ff5c7a;
       --shadow: 0 18px 46px rgba(0,0,0,.48); --r:18px;
+
+      /* Sephora-ish accents */
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.045);
+      --hi: rgba(255,255,255,.85);
+      --soft: rgba(255,255,255,.08);
     }
     *{box-sizing:border-box}
     body{
@@ -21,24 +27,119 @@
       color:var(--text);
       min-height:100vh;
     }
-    .top{position:sticky; top:0; z-index:20; backdrop-filter: blur(10px); background: rgba(10,10,11,.75); border-bottom:1px solid var(--line);}
-    .topin{max-width:980px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:12px;}
-    .brand{display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; user-select:none;}
-    .badge{width:34px; height:34px; border-radius:12px; border:1px solid rgba(255,255,255,.22); display:grid; place-items:center; box-shadow: 0 10px 22px rgba(0,0,0,.35);}
-    .right{margin-left:auto; display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
-    .chip{padding:8px 12px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.05); font-size:12px; color:rgba(255,255,255,.9); display:flex; align-items:center; gap:8px; user-select:none; white-space:nowrap;}
-    .dot{width:7px; height:7px; border-radius:50%; background:var(--bad)} .dot.ok{background:var(--good)}
-    .link{font-size:12px; color:rgba(255,255,255,.85); border-bottom:1px dashed rgba(255,255,255,.25); cursor:pointer; user-select:none;}
-    .count{min-width:22px; height:22px; border-radius:999px; display:grid; place-items:center; background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); font-size:12px; padding:0 7px;}
 
-    .wrap{max-width:980px; margin:0 auto; padding:16px;}
-    .card{background: var(--card); border:1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding:16px; margin-top:14px;}
+    /* Top bar */
+    .top{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: rgba(10,10,11,.78);
+      border-bottom:1px solid var(--line);
+    }
+    .topin{
+      max-width:1040px; margin:0 auto; padding:12px 16px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:900; letter-spacing:.16em; text-transform:uppercase; user-select:none;
+      white-space:nowrap;
+    }
+    .badge{
+      width:34px; height:34px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    }
+    .right{
+      margin-left:auto; display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .chip{
+      padding:8px 12px; border-radius:999px; border:1px solid var(--line);
+      background: rgba(255,255,255,.05); font-size:12px; color:rgba(255,255,255,.92);
+      display:flex; align-items:center; gap:8px; user-select:none; white-space:nowrap;
+    }
+    .dot{width:7px; height:7px; border-radius:50%; background:var(--bad)}
+    .dot.ok{background:var(--good)}
+    .link{
+      font-size:12px; color:rgba(255,255,255,.85);
+      border-bottom:1px dashed rgba(255,255,255,.25);
+      cursor:pointer; user-select:none;
+    }
+    .count{
+      min-width:22px; height:22px; border-radius:999px; display:grid; place-items:center;
+      background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18);
+      font-size:12px; padding:0 7px;
+    }
+
+    /* Search row */
+    .subtop{
+      max-width:1040px; margin:0 auto; padding:10px 16px 12px;
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .search{
+      flex:1; min-width:240px;
+      display:flex; align-items:center; gap:10px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius:999px;
+      padding:10px 14px;
+    }
+    .search input{
+      width:100%;
+      border:0; outline:0;
+      background:transparent;
+      color:var(--text);
+      font-size:14px;
+    }
+    .search .hint{color:rgba(255,255,255,.65); font-size:12px; user-select:none}
+    .cats{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-start;
+    }
+    .cat{
+      padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      font-size:12px; font-weight:900;
+      letter-spacing:.08em;
+      color:rgba(255,255,255,.90);
+      user-select:none; cursor:pointer;
+      transition:.15s ease;
+      text-transform:uppercase;
+    }
+    .cat:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.26)}
+    .cat.active{
+      background:#fff; color:#0b0b0c;
+      border-color: rgba(255,255,255,.6);
+    }
+
+    .wrap{max-width:1040px; margin:0 auto; padding:16px;}
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:16px;
+      margin-top:14px;
+    }
     .title{margin:0 0 6px; font-size:18px}
     .muted{color:var(--muted); font-size:12px; line-height:1.5; margin:0}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
     .divider{height:1px; background:rgba(255,255,255,.10); margin:14px 0}
 
-    .btn{border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); color:var(--text); padding:10px 12px; border-radius:999px; cursor:pointer; font-weight:800; font-size:13px; user-select:none; transition:.18s ease; white-space:nowrap;}
+    .btn{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:13px;
+      user-select:none;
+      transition:.18s ease;
+      white-space:nowrap;
+    }
     .btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.30)}
     .btn.primary{background:#fff; color:#0b0b0c; border-color: rgba(255,255,255,.6)}
     .btn.danger{border-color: rgba(255,92,122,.35); background: rgba(255,92,122,.10)}
@@ -57,49 +158,208 @@
       min-height:120px;
       resize:vertical;
     }
-    textarea[readonly]{opacity:.9}
 
-    .grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:12px;}
-    @media(max-width:900px){ .grid{grid-template-columns: repeat(2,1fr)} }
-    @media(max-width:620px){ .grid{grid-template-columns: 1fr} }
+    /* Sephora-like product grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+    @media(max-width:980px){ .grid{grid-template-columns: repeat(3,1fr)} }
+    @media(max-width:760px){ .grid{grid-template-columns: repeat(2,1fr)} }
+    @media(max-width:520px){ .grid{grid-template-columns: 1fr} }
 
-    .pCard{border:1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border-radius:18px; padding:14px; display:flex; gap:12px; align-items:flex-start; box-shadow: 0 10px 26px rgba(0,0,0,.35);}
-    .thumb{width:54px; height:54px; border-radius:16px; border:1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08); display:grid; place-items:center; user-select:none; flex:0 0 auto;}
-    .meta{flex:1}
-    .name{font-weight:900; margin:0; font-size:14px;}
-    .desc{margin:6px 0 10px; color:var(--muted); font-size:13px; line-height:1.45;}
-    .tag{font-size:12px; color: rgba(255,255,255,.88); border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); padding:6px 10px; border-radius:999px; white-space:nowrap; user-select:none;}
+    .pCard{
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius:22px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.35);
+      transition:.18s ease;
+      min-height: 210px;
+    }
+    .pCard:hover{transform: translateY(-2px); border-color: rgba(255,255,255,.24)}
+    .pTop{display:flex; gap:12px; align-items:flex-start;}
+    .thumb{
+      width:56px; height:56px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      display:grid; place-items:center;
+      user-select:none;
+      flex:0 0 auto;
+    }
+    .meta{flex:1; min-width:0}
+    .brandline{
+      font-size:11px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.70);
+      user-select:none;
+      margin-bottom:2px;
+    }
+    .name{
+      font-weight:950;
+      margin:0;
+      font-size:14px;
+      line-height:1.25;
+    }
+    .desc{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .tag{
+      font-size:11px;
+      color: rgba(255,255,255,.92);
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      padding:6px 10px;
+      border-radius:999px;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .pBottom{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding-top:6px;
+    }
+    .price{
+      font-weight:950;
+      color:rgba(255,255,255,.92);
+      font-size:13px;
+      user-select:none;
+    }
 
-    .drawer{position:fixed; top:0; right:0; width:min(440px, 92vw); height:100%; background: rgba(12,12,13,.92); border-left:1px solid rgba(255,255,255,.14); backdrop-filter: blur(10px); transform: translateX(110%); transition:.25s ease; z-index:100; display:flex; flex-direction:column; box-shadow: -20px 0 50px rgba(0,0,0,.5);}
+    /* Drawer */
+    .drawer{
+      position:fixed; top:0; right:0;
+      width:min(440px, 92vw); height:100%;
+      background: rgba(12,12,13,.92);
+      border-left:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(10px);
+      transform: translateX(110%);
+      transition:.25s ease;
+      z-index:100;
+      display:flex; flex-direction:column;
+      box-shadow: -20px 0 50px rgba(0,0,0,.5);
+    }
     .drawer.open{transform: translateX(0)}
-    .drawer-header{padding:16px; border-bottom:1px solid rgba(255,255,255,.10); display:flex; justify-content:space-between; gap:10px; align-items:center;}
+    .drawer-header{
+      padding:16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    }
     .drawer-header h3{margin:0; letter-spacing:.12em; text-transform:uppercase; font-size:14px;}
     .drawer-body{padding:14px 16px; overflow:auto; flex:1}
-    .item{display:flex; align-items:flex-start; gap:10px; padding:12px; border-radius:16px; border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); margin-bottom:10px;}
+    .item{
+      display:flex; align-items:flex-start; gap:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      margin-bottom:10px;
+    }
     .item .thumb{width:44px;height:44px;border-radius:14px}
     .mini{font-size:12px; color:var(--muted); line-height:1.35;}
-    .xbtn{margin-left:auto; border:1px solid rgba(255,255,255,.18); background: transparent; color:rgba(255,255,255,.9); border-radius:999px; cursor:pointer; padding:6px 10px; font-size:12px; user-select:none;}
-    .drawer-footer{border-top:1px solid rgba(255,255,255,.10); padding:14px 16px; display:grid; gap:10px;}
+    .xbtn{
+      margin-left:auto;
+      border:1px solid rgba(255,255,255,.18);
+      background: transparent;
+      color:rgba(255,255,255,.9);
+      border-radius:999px;
+      cursor:pointer;
+      padding:6px 10px;
+      font-size:12px;
+      user-select:none;
+    }
+    .drawer-footer{
+      border-top:1px solid rgba(255,255,255,.10);
+      padding:14px 16px;
+      display:grid;
+      gap:10px;
+    }
 
-    .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); font-size:12px; user-select:none; white-space:nowrap;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      font-size:12px; user-select:none; white-space:nowrap;
+    }
     .pill.ok{border-color: rgba(85,214,167,.35); background: rgba(85,214,167,.10);}
+    .pill.bad{border-color: rgba(255,92,122,.35); background: rgba(255,92,122,.10);}
 
-    .overlay{position:fixed; inset:0; background: rgba(0,0,0,.72); backdrop-filter: blur(6px); display:none; align-items:center; justify-content:center; padding:18px; z-index:500;}
+    /* Overlay */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(6px);
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
+      z-index:500;
+    }
     .overlay.open{display:flex}
-    .modal{width:min(520px, 96vw); background: rgba(12,12,13,.94); border:1px solid rgba(255,255,255,.14); border-radius:22px; box-shadow: var(--shadow); padding:16px;}
+    .modal{
+      width:min(520px, 96vw);
+      background: rgba(12,12,13,.94);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
     .modal h3{margin:0 0 8px; font-size:14px; letter-spacing:.10em; text-transform:uppercase;}
     .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
     @media(max-width:520px){.grid2{grid-template-columns:1fr}}
-    .roleBtn{border-radius:18px; padding:14px 12px; border:1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06); color:var(--text); cursor:pointer; text-align:left; transition:.18s ease;}
+    .roleBtn{
+      border-radius:18px; padding:14px 12px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      cursor:pointer;
+      text-align:left;
+      transition:.18s ease;
+    }
     .roleBtn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.32)}
     .roleBtn b{display:block; font-size:15px; margin-bottom:6px;}
     .roleBtn span{color:var(--muted); font-size:12px; line-height:1.4;}
 
-    .toast{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); background: rgba(255,255,255,.92); color:#0b0b0c; padding:10px 12px; border-radius:999px; font-weight:900; font-size:13px; box-shadow: var(--shadow); display:none; z-index:200;}
+    .toast{
+      position:fixed; left:50%; bottom:16px;
+      transform:translateX(-50%);
+      background: rgba(255,255,255,.92);
+      color:#0b0b0c;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:13px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index:200;
+    }
     .toast.show{display:block}
 
-    .heart{position:fixed; font-size:18px; pointer-events:none; animation: floatUp 1.2s ease forwards; z-index:999; filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));}
-    @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-120px) scale(1.35); opacity:0 }}
+    .heart{
+      position:fixed;
+      font-size:18px;
+      pointer-events:none;
+      animation: floatUp 1.2s ease forwards;
+      z-index:999;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) scale(1); opacity:1 }
+      to{ transform: translateY(-120px) scale(1.35); opacity:0 }
+    }
   </style>
 </head>
 
@@ -111,8 +371,24 @@
       <div class="right">
         <div class="chip"><span class="dot" id="modeDot"></span><span id="modeText">Küs</span></div>
         <div class="chip">⏱ <span id="timerText">0 sn</span></div>
-        <button class="btn" id="cartOpenBtn">Sepet <span class="count" id="cartCount">0</span></button>
+        <button class="btn" id="cartOpenBtn">Bag <span class="count" id="cartCount">0</span></button>
         <div class="chip"><span id="whoText">Sen: -</span> • <span class="link" id="changeRole">Değiştir</span></div>
+      </div>
+    </div>
+
+    <!-- Sephora-style search + categories -->
+    <div class="subtop">
+      <div class="search">
+        <span class="hint">🔎</span>
+        <input id="searchInput" placeholder="Ürün ara… (özür, kahve, dinleme, alan…)" autocomplete="off"/>
+      </div>
+      <div class="cats" id="cats">
+        <div class="cat active" data-cat="ALL">ALL</div>
+        <div class="cat" data-cat="NEW">NEW</div>
+        <div class="cat" data-cat="BEST">BEST</div>
+        <div class="cat" data-cat="FOR YOU">FOR YOU</div>
+        <div class="cat" data-cat="CLASSIC">CLASSIC</div>
+        <div class="cat" data-cat="RESPECT">RESPECT</div>
       </div>
     </div>
   </div>
@@ -156,14 +432,14 @@
 
     <div class="card">
       <h2 class="title">Koleksiyon</h2>
-      <p class="muted">Ürün kartları + sepete ekleme. Sepette kim ekledi görünür.</p>
+      <p class="muted">Ürünleri ara/filtrele. Sepette kim ekledi görünür.</p>
       <div class="grid" id="grid"></div>
     </div>
   </div>
 
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-header">
-      <h3>SEPET</h3>
+      <h3>BAG</h3>
       <button class="btn" id="cartCloseBtn">Kapat</button>
     </div>
     <div class="drawer-body" id="drawerBody"></div>
@@ -195,7 +471,7 @@
 
     // ✅ BURAYI KENDİ CONFIG'İNLE DOLDUR
     const firebaseConfig = {
-     apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -240,14 +516,19 @@
 
     const toast = document.getElementById("toast");
 
+    // Sephora filters
+    const searchInput = document.getElementById("searchInput");
+    const catsEl = document.getElementById("cats");
+
     // ----- Products -----
+    // Sadece UI için küçük ekler: brand, price, cat
     const products = [
-      { id:"p1", icon:"🤍", name:"Net Özür Serum", tag:"Best Seller", desc:"Kısa, net, savunmasız bir özür." },
-      { id:"p2", icon:"🧠", name:"Anlayış Tonik", tag:"Gentle", desc:"‘Seni anlıyorum’ cümlesini doğru kurar." },
-      { id:"p3", icon:"🎧", name:"Dinleme Maskesi", tag:"Deep Care", desc:"Sözünü kesmeden dinleme modu." },
-      { id:"p4", icon:"☕", name:"Kahve + Yürüyüş", tag:"Classic", desc:"Somut telafi: sakin bir konuşma." },
-      { id:"p5", icon:"📵", name:"Baskısız Alan SPF", tag:"Respect", desc:"Üst üste yazmama, alan tanıma." },
-      { id:"p6", icon:"🎁", name:"Küçük Jest Mini", tag:"Cute", desc:"Düşünceli küçük sürpriz." },
+      { id:"p1", icon:"🤍", brand:"ELIF BEAUTY", name:"Net Özür Serum", tag:"Best Seller", cat:"BEST", price:"₺0", desc:"Kısa, net, savunmasız bir özür." },
+      { id:"p2", icon:"🧠", brand:"ELIF BEAUTY", name:"Anlayış Tonik", tag:"Gentle", cat:"FOR YOU", price:"₺0", desc:"‘Seni anlıyorum’ cümlesini doğru kurar." },
+      { id:"p3", icon:"🎧", brand:"ELIF BEAUTY", name:"Dinleme Maskesi", tag:"Deep Care", cat:"NEW", price:"₺0", desc:"Sözünü kesmeden dinleme modu." },
+      { id:"p4", icon:"☕", brand:"ELIF BEAUTY", name:"Kahve + Yürüyüş", tag:"Classic", cat:"CLASSIC", price:"₺0", desc:"Somut telafi: sakin bir konuşma." },
+      { id:"p5", icon:"📵", brand:"ELIF BEAUTY", name:"Baskısız Alan SPF", tag:"Respect", cat:"RESPECT", price:"₺0", desc:"Üst üste yazmama, alan tanıma." },
+      { id:"p6", icon:"🎁", brand:"ELIF BEAUTY", name:"Küçük Jest Mini", tag:"Cute", cat:"FOR YOU", price:"₺0", desc:"Düşünceli küçük sürpriz." },
     ];
 
     // ----- Helpers -----
@@ -274,8 +555,8 @@
       setTimeout(()=>h.remove(), 1200);
     }
     function burstHearts(n=12){
-      const cx = window.innerWidth - 80;
-      const cy = 90;
+      const cx = window.innerWidth - 90;
+      const cy = 110;
       for(let i=0;i<n;i++){
         const x = cx + (Math.random()*40 - 20);
         const y = cy + (Math.random()*30 - 15);
@@ -332,26 +613,24 @@
     const db = getFirestore(app);
     const stateRef = doc(db, "shared", "relationshipState");
 
-    /**
-     * ✅ KRİTİK: Refresh'te veri silmemesi için
-     * - Sadece doküman YOKSA oluşturuyoruz
-     * - Var ise HİÇ overwrite etmiyoruz
-     */
     async function ensureDefaults(){
       const snap = await getDoc(stateRef);
+      const base = {
+        peaceMode: false,
+        modeChangedAt: nowTs(),
+        emirNote: "",
+        elifNote: "",
+        emirNoteUpdatedAt: 0,
+        elifNoteUpdatedAt: 0,
+        cart: [],              // [{id, by, ts}]
+        hearts: 0,
+        reads: {},
+        lastSeen: {}
+      };
       if(!snap.exists()){
-        await setDoc(stateRef, {
-          peaceMode: false,
-          modeChangedAt: nowTs(),
-          emirNote: "",
-          elifNote: "",
-          emirNoteUpdatedAt: 0,
-          elifNoteUpdatedAt: 0,
-          cart: [],               // [{id, by, ts}]
-          hearts: 0,
-          reads: {},
-          lastSeen: {}
-        });
+        await setDoc(stateRef, base);
+      } else {
+        await setDoc(stateRef, base, { merge: true });
       }
     }
 
@@ -370,17 +649,9 @@
       await pingSeenDebounced(v);
     }
 
-    // ----- Notes autosave (separate) -----
+    // ----- Notes autosave -----
     let emirTimer = null;
     let elifTimer = null;
-
-    // Snapshot gelince yazarken textbox "ezilmesin" diye:
-    let emirTyping = false;
-    let elifTyping = false;
-    emirNoteEl.addEventListener("focus", ()=>{ emirTyping = true; });
-    emirNoteEl.addEventListener("blur", ()=>{ emirTyping = false; });
-    elifNoteEl.addEventListener("focus", ()=>{ elifTyping = true; });
-    elifNoteEl.addEventListener("blur", ()=>{ elifTyping = false; });
 
     async function saveEmirNote(val){
       setPill(emirSavedPill, "Senkron: yazılıyor…", false);
@@ -413,8 +684,8 @@
       copyText(emirNoteEl.value || "");
     });
 
-    // ----- Cart state -----
-    let cart = [];                 // [{id, by, ts}]
+    // ----- Cart -----
+    let cart = [];
     let suppressCartWrite = false;
 
     function normalizeCart(remoteCart){
@@ -468,7 +739,7 @@
         it.innerHTML = `
           <div class="thumb"><span style="font-size:18px">${p.icon}</span></div>
           <div style="flex:1">
-            <div style="font-weight:900">${p.name}</div>
+            <div style="font-weight:950">${p.name}</div>
             <div class="mini">${p.desc}</div>
             <div class="mini"><b>${c.by}</b> ekledi • ${c.ts ? fmtTR(c.ts) : "-"}</div>
           </div>
@@ -482,23 +753,41 @@
       });
     }
 
+    // ----- Sephora filtering (UI only) -----
+    let activeCat = "ALL";
+    function applyFilters(){
+      const q = (searchInput.value || "").trim().toLowerCase();
+      const filtered = products.filter(p=>{
+        const hay = `${p.brand} ${p.name} ${p.desc} ${p.tag} ${p.cat}`.toLowerCase();
+        const matchQ = !q || hay.includes(q);
+        const matchCat = (activeCat === "ALL") || (p.cat === activeCat) || (p.tag.toUpperCase().includes(activeCat));
+        return matchQ && matchCat;
+      });
+      renderProducts(filtered);
+    }
+
     // ----- Products UI -----
-    function renderProducts(){
+    function renderProducts(list){
+      const items = list || products;
       grid.innerHTML = "";
-      products.forEach(p=>{
+      items.forEach(p=>{
         const el = document.createElement("div");
         el.className = "pCard";
         el.innerHTML = `
-          <div class="thumb"><span style="font-size:22px">${p.icon}</span></div>
-          <div class="meta">
-            <div class="row" style="justify-content:space-between; gap:10px;">
+          <div class="pTop">
+            <div class="thumb"><span style="font-size:22px">${p.icon}</span></div>
+            <div class="meta">
+              <div class="brandline">${p.brand}</div>
               <p class="name">${p.name}</p>
-              <span class="tag">${p.tag}</span>
+              <p class="desc">${p.desc}</p>
             </div>
-            <p class="desc">${p.desc}</p>
-            <div class="row" style="justify-content:flex-end;">
-              <button class="btn primary addBtn" data-id="${p.id}">Sepete Ekle</button>
-            </div>
+          </div>
+          <div class="pBottom">
+            <span class="tag">${p.tag}</span>
+            <span class="price">${p.price}</span>
+          </div>
+          <div class="row" style="justify-content:flex-end;">
+            <button class="btn primary addBtn" data-id="${p.id}">Add to Bag</button>
           </div>
         `;
         grid.appendChild(el);
@@ -558,8 +847,18 @@
     document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "visible") markRead().catch(()=>{}); });
     window.addEventListener("focus", ()=> markRead().catch(()=>{}));
 
+    // Categories click
+    catsEl.addEventListener("click", (e)=>{
+      const t = e.target.closest(".cat");
+      if(!t) return;
+      activeCat = t.dataset.cat || "ALL";
+      catsEl.querySelectorAll(".cat").forEach(x=>x.classList.toggle("active", x === t));
+      applyFilters();
+    });
+    searchInput.addEventListener("input", applyFilters);
+
     // ----- Boot -----
-    renderProducts();
+    renderProducts(products);
     updateCartUI();
 
     if(!viewer()) overlay.classList.add("open");
@@ -572,15 +871,12 @@
       if(!s.exists()) return;
       const d = s.data();
 
-      // mode + timer
       renderMode(!!d.peaceMode);
       modeChangedAt = Number(d.modeChangedAt || 0);
       startTimer();
 
-      // hearts
       heartsPill.textContent = `Kalp: ${d.hearts ?? 0}`;
 
-      // seen / read
       if(d.lastSeen?.name && d.lastSeen?.ts){
         lastSeenPill.textContent = `Son bakan: ${d.lastSeen.name} • ${fmtTR(d.lastSeen.ts)}`;
       } else {
@@ -588,9 +884,8 @@
       }
       readPill.textContent = `Okundu • Emir: ${fmtTR(d.reads?.Emir)} • Elif: ${fmtTR(d.reads?.Elif)}`;
 
-      // emir note (✅ yazarken ezme yok)
       const remoteEmir = String(d.emirNote || "");
-      if(!emirTyping && emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
+      if(emirNoteEl.value !== remoteEmir) emirNoteEl.value = remoteEmir;
       const emirAt = Number(d.emirNoteUpdatedAt || 0);
       if(remoteEmir.trim()){
         setPill(emirSavedPill, `Senkron ✅ • ${fmtTR(emirAt)}`, true);
@@ -598,9 +893,8 @@
         emirSavedPill.textContent = "Senkron: -"; emirSavedPill.classList.remove("ok");
       }
 
-      // elif note (✅ yazarken ezme yok)
       const remoteElif = String(d.elifNote || "");
-      if(!elifTyping && elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
+      if(elifNoteEl.value !== remoteElif) elifNoteEl.value = remoteElif;
       const elifAt = Number(d.elifNoteUpdatedAt || 0);
       if(remoteElif.trim()){
         setPill(elifSavedPill, `Senkron ✅ • ${fmtTR(elifAt)}`, true);
@@ -608,7 +902,6 @@
         elifSavedPill.textContent = "Senkron: -"; elifSavedPill.classList.remove("ok");
       }
 
-      // cart
       const remoteCart = normalizeCart(d.cart);
       const same = cartKey(cart) === cartKey(remoteCart);
       if(!same){
