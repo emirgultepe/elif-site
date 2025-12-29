@@ -74,10 +74,10 @@
     
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
     
-    /* GÜNCELLENEN NOT ALANI (DAHA GENİŞ) */
+    /* GÜNCELLENEN NOT ALANI */
     textarea, input[type="text"], input[type="date"] {
       width:100%; border-radius:4px; border:1px solid var(--line); background: #111; color: #ddd; padding:15px; outline:none; font-size:14px; font-family: monospace;
-      min-height: 350px; /* GENİŞLETİLDİ */
+      min-height: 350px; 
     }
     input[type="text"], input[type="date"] { min-height: auto; }
     textarea:focus, input:focus { border-color: var(--accent); }
@@ -86,11 +86,17 @@
     .sync-icon { font-size: 18px; color: var(--muted); transition: color 0.3s; margin-left: auto; }
     
     /* Geleceğe Mektup Stili */
-    .capsule { border: 1px dashed var(--line); padding: 15px; border-radius: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); }
+    .capsule { border: 1px dashed var(--line); padding: 15px; border-radius: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); position:relative; }
     .capsule.locked { opacity: 0.7; }
-    .capsule-header { display:flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .capsule-header { display:flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; align-items:center; }
     .capsule-body { font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
     .lock-icon { font-size: 20px; display:block; margin-bottom: 5px; }
+    
+    /* Mektup Silme Butonu */
+    .del-capsule-btn {
+        background: none; border: none; color: #666; font-size: 16px; cursor: pointer; padding: 0 5px; margin-left: 10px;
+    }
+    .del-capsule-btn:hover { color: var(--bad); }
 
     /* Modal */
     .overlay{position:fixed; inset:0; background: #000; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px;}
@@ -119,7 +125,6 @@
     .heart{position:fixed; font-size:24px; pointer-events:none; animation: floatUp 1.5s ease forwards; z-index:999;}
     @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-150px) scale(1.5); opacity:0 }}
     
-    /* Mobilde input gizleme ayarı */
     #hiddenDateInput { position: absolute; opacity: 0; pointer-events: none; height: 0; width: 0; }
   </style>
 </head>
@@ -293,8 +298,6 @@
         setTimeout(()=>heart(x,y, Math.random()>.5?"💖":"🤍"), i*50);
       }
     }
-    
-    // Sayaç Formatı
     function formatDuration(ms){
       if(ms < 0) ms = 0;
       const s = Math.floor(ms/1000);
@@ -302,7 +305,6 @@
       const hrs  = Math.floor((s%86400)/3600);
       const mins = Math.floor((s%3600)/60);
       const secs = s%60;
-      
       const parts = [];
       if(days) parts.push(`${days}g`);
       if(hrs || days) parts.push(`${hrs}sa`);
@@ -337,51 +339,33 @@
             popToast("HATALI PAROLA 🔒"); passInput.value="";
         }
     }
-    
     document.getElementById("pickEmir").addEventListener("click", ()=>showPassInput("Emir"));
     document.getElementById("pickElif").addEventListener("click", ()=>showPassInput("Elif"));
     document.getElementById("btnBack").addEventListener("click", resetModal);
     document.getElementById("btnUnlock").addEventListener("click", checkPass);
     passInput.addEventListener("keypress", (e)=>{if(e.key==="Enter") checkPass();});
-
-    changeRole.addEventListener("click", ()=>{
-        localStorage.removeItem("viewerName");
-        whoText.textContent="-";
-        overlay.classList.remove("hidden");
-        resetModal();
-    });
-
-    localStorage.removeItem("viewerName");
-    resetModal();
+    changeRole.addEventListener("click", ()=>{ localStorage.removeItem("viewerName"); whoText.textContent="-"; overlay.classList.remove("hidden"); resetModal(); });
+    localStorage.removeItem("viewerName"); resetModal();
 
     function enforcePermissions(){
         emirNoteEl.readOnly = !isEmir();
         elifNoteEl.readOnly = !isElif();
     }
 
-    // ----- VERİTABANI İŞLEMLERİ -----
+    // ----- VERİTABANI -----
     async function ensureDefaults(){
       const snap = await getDoc(stateRef);
       if(!snap.exists()){
         await setDoc(stateRef, {
-          peaceMode: false,
-          peaceRequestBy: null,
-          modeChangedAt: nowTs(),
-          hearts: 0,
-          lastHeartTs: 0,
-          targetDate: nowTs() + 86400000,
-          capsules: [],
-          emirNote: "", elifNote: ""
+          peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs(),
+          hearts: 0, lastHeartTs: 0, targetDate: nowTs() + 86400000,
+          capsules: [], emirNote: "", elifNote: ""
         });
       }
     }
+    sendHeart.addEventListener("click", async ()=>{ await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() }); });
 
-    // Kalp
-    sendHeart.addEventListener("click", async ()=>{
-       await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() });
-    });
-
-    // BARIŞ / KÜSLÜK
+    // BARIŞ MANTIĞI
     async function requestPeace(){
         const v = viewer(); if(!v) return;
         await updateDoc(stateRef, { peaceRequestBy: v });
@@ -389,8 +373,7 @@
     }
     async function confirmPeace(){
         await updateDoc(stateRef, { peaceMode: true, peaceRequestBy: null, modeChangedAt: nowTs() });
-        popToast("BARIŞ SAĞLANDI! ❤️");
-        burstHearts(20);
+        popToast("BARIŞ SAĞLANDI! ❤️"); burstHearts(20);
     }
     async function rejectPeace(){
         await updateDoc(stateRef, { peaceRequestBy: null });
@@ -404,7 +387,6 @@
     function renderPeaceUI(d){
         const v = viewer();
         peaceActions.innerHTML = "";
-        
         if(d.peaceMode){
             modeText.textContent = "BARIŞTIK"; modeDot.className = "dot ok";
             const btn = document.createElement("button"); btn.className = "btn danger"; btn.style.flex = "1";
@@ -412,34 +394,28 @@
             peaceActions.appendChild(btn);
             return;
         }
-
         if(d.peaceRequestBy){
             modeText.textContent = "BEKLİYOR"; modeDot.className = "dot wait";
             if(d.peaceRequestBy === v){
-                const info = document.createElement("div"); info.className = "btn warn"; info.style.flex="1"; info.style.opacity="0.7";
-                info.textContent = "Onay Bekleniyor... ⏳"; peaceActions.appendChild(info);
+                const info = document.createElement("div"); info.className = "btn warn"; info.style.flex="1"; info.style.opacity="0.7"; info.textContent = "Onay Bekleniyor... ⏳";
+                peaceActions.appendChild(info);
             } else {
                 const btnConfirm = document.createElement("button"); btnConfirm.className = "btn primary"; btnConfirm.style.flex="1";
                 btnConfirm.textContent = `${d.peaceRequestBy} BARIŞMAK İSTİYOR - ONAYLA ✅`; btnConfirm.onclick = confirmPeace;
-                const btnReject = document.createElement("button"); btnReject.className = "btn danger"; btnReject.textContent = "X";
-                btnReject.onclick = rejectPeace;
+                const btnReject = document.createElement("button"); btnReject.className = "btn danger"; btnReject.textContent = "X"; btnReject.onclick = rejectPeace;
                 peaceActions.appendChild(btnConfirm); peaceActions.appendChild(btnReject);
             }
             return;
         }
-
         modeText.textContent = "KÜSÜZ"; modeDot.className = "dot";
         const btn = document.createElement("button"); btn.className = "btn primary"; btn.style.flex = "1";
         btn.textContent = "BARIŞALIM MI? 🕊️"; btn.onclick = requestPeace;
         peaceActions.appendChild(btn);
     }
 
-    // ----- SAYAÇLAR -----
+    // SAYAÇLAR
     let modeChangedAt = 0;
-    setInterval(()=>{
-        const diff = Date.now() - modeChangedAt;
-        timerText.textContent = formatDuration(diff);
-    }, 1000);
+    setInterval(()=>{ timerText.textContent = formatDuration(Date.now() - modeChangedAt); }, 1000);
 
     let targetTime = 0;
     setInterval(()=>{
@@ -452,29 +428,33 @@
         countdownDisplay.textContent = `${d}g ${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
     }, 1000);
 
-    // Tarih Seçici - MOBİL İÇİN ÖZEL INPUT
     const fp = flatpickr(hiddenDateInput, {
-        enableTime: true, dateFormat: "Y-m-d H:i", locale: "tr", theme: "dark",
-        disableMobile: "true", // Flatpickr'ın kendi native tarihçisini zorlar, bazen daha stabil
-        onClose: async (selectedDates) => {
-             if(selectedDates.length > 0) await updateDoc(stateRef, { targetDate: selectedDates[0].getTime() });
-        }
+        enableTime: true, dateFormat: "Y-m-d H:i", locale: "tr", theme: "dark", disableMobile: "true",
+        onClose: async (selectedDates) => { if(selectedDates.length > 0) await updateDoc(stateRef, { targetDate: selectedDates[0].getTime() }); }
     });
-    // Butona basınca inputu tetikle
     editDateBtn.addEventListener("click", ()=> fp.open());
 
-    // ----- Geleceğe Mektup -----
+    // MEKTUPLAR
     const capsulePicker = flatpickr(capsuleDateInput, { enableTime:true, dateFormat: "Y-m-d H:i", locale:"tr", theme:"dark" });
 
     btnSaveCapsule.addEventListener("click", async ()=>{
         const msg = capsuleMsg.value.trim();
         const dateStr = capsuleDateInput.value;
         if(!msg || !dateStr) return popToast("Mesaj ve Tarih Girin!");
-        const unlockTs = new Date(dateStr).getTime();
-        const newCap = { id: Date.now().toString(), from: viewer(), msg: msg, unlockTs: unlockTs };
+        const newCap = { id: Date.now().toString(), from: viewer(), msg: msg, unlockTs: new Date(dateStr).getTime() };
         await updateDoc(stateRef, { capsules: arrayUnion(newCap) });
         capsuleMsg.value = ""; capsuleDateInput.value = ""; popToast("Mektup Kilitlendi 🔒");
     });
+    
+    // MEKTUP SİLME FONKSİYONU
+    window.deleteCapsule = async (id) => {
+        const snap = await getDoc(stateRef);
+        if(!snap.exists()) return;
+        const currentCapsules = snap.data().capsules || [];
+        const newCapsules = currentCapsules.filter(c => c.id !== id);
+        await updateDoc(stateRef, { capsules: newCapsules });
+        popToast("Mektup Silindi 🗑️");
+    };
 
     function renderCapsules(list){
         capsuleList.innerHTML = "";
@@ -483,59 +463,54 @@
             const isLocked = Date.now() < c.unlockTs;
             const dateStr = new Date(c.unlockTs).toLocaleDateString("tr-TR");
             const div = document.createElement("div"); div.className = `capsule ${isLocked ? 'locked' : ''}`;
-            div.innerHTML = isLocked ? 
-                `<div style="text-align:center; padding:10px;"><span class="lock-icon">🔒</span><div>Bu mektup <b>${dateStr}</b> tarihine kadar kilitli.</div><div style="font-size:10px; margin-top:5px;">Yazan: ${c.from}</div></div>` : 
-                `<div class="capsule-header"><span>Kimden: ${c.from}</span><span>${dateStr}</span></div><div class="capsule-body">${c.msg}</div>`;
+            
+            if(isLocked){
+                div.innerHTML = `<div style="text-align:center; padding:10px;"><span class="lock-icon">🔒</span><div>Bu mektup <b>${dateStr}</b> tarihine kadar kilitli.</div><div style="font-size:10px; margin-top:5px;">Yazan: ${c.from}</div></div>`;
+            } else {
+                div.innerHTML = `
+                    <div class="capsule-header">
+                        <span>Kimden: ${c.from}</span>
+                        <div style="display:flex; align-items:center;">
+                            <span>${dateStr}</span>
+                            <button class="del-capsule-btn" onclick="deleteCapsule('${c.id}')">×</button>
+                        </div>
+                    </div>
+                    <div class="capsule-body">${c.msg}</div>`;
+            }
             capsuleList.appendChild(div);
         });
     }
 
-    // ----- Not Kaydetme ve Yeşil Tik -----
+    // NOTLAR VE TİK SİSTEMİ
     let timer;
     function setSyncState(el, state){
-        // state: 0=boş, 1=yazıyor, 2=kaydedildi
         if(state===0) el.textContent = "";
         if(state===1) el.textContent = "...";
         if(state===2) { el.textContent = "✅"; el.style.color = "#10b981"; setTimeout(()=>{ el.textContent=""; }, 2000); }
     }
-
     function autoSave(field, val, syncEl){
         setSyncState(syncEl, 1);
         clearTimeout(timer);
-        timer = setTimeout(async ()=> {
-            await updateDoc(stateRef, { [field]: val });
-            setSyncState(syncEl, 2);
-        }, 800);
+        timer = setTimeout(async ()=> { await updateDoc(stateRef, { [field]: val }); setSyncState(syncEl, 2); }, 800);
     }
-    
     emirNoteEl.addEventListener("input", ()=> isEmir() && autoSave("emirNote", emirNoteEl.value, emirSync));
     elifNoteEl.addEventListener("input", ()=> isElif() && autoSave("elifNote", elifNoteEl.value, elifSync));
 
-    // ----- ANA DİNLLEYİCİ -----
+    // SNAPSHOT
     let lastKnownHeartTs = 0;
     await ensureDefaults();
-    
     onSnapshot(stateRef, (s)=>{
         if(!s.exists()) return;
         const d = s.data();
-
         renderPeaceUI(d);
-        
-        if(d.lastHeartTs > lastKnownHeartTs){
-            if(lastKnownHeartTs !== 0) burstHearts(15);
-            lastKnownHeartTs = d.lastHeartTs;
-        }
+        if(d.lastHeartTs > lastKnownHeartTs){ if(lastKnownHeartTs !== 0) burstHearts(15); lastKnownHeartTs = d.lastHeartTs; }
         heartsPill.textContent = d.hearts;
-
         modeChangedAt = d.modeChangedAt || nowTs();
         targetTime = d.targetDate || (nowTs() + 86400000);
-
         renderCapsules(d.capsules);
-
         if(document.activeElement !== emirNoteEl) emirNoteEl.value = d.emirNote || "";
         if(document.activeElement !== elifNoteEl) elifNoteEl.value = d.elifNote || "";
     });
-
   </script>
 </body>
 </html>
