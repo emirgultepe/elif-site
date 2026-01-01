@@ -306,7 +306,7 @@
 
     // 🔴 FIREBASE AYARLARI 🔴
     const firebaseConfig = {
-      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+     apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -548,7 +548,23 @@
         const v = viewer(); peaceActions.innerHTML = "";
         if(d.peaceMode){
             modeText.textContent = "BARIŞTIK"; modeDot.className = "dot ok";
-            const btn = document.createElement("button"); btn.className = "btn danger"; btn.style.flex = "1"; btn.textContent = "KÜSTÜK ⛈️"; btn.onclick = startFeud; peaceActions.appendChild(btn); return;
+            
+            // YENİ: KÜSTÜK BUTONU (GÜVENLİ)
+            const btn = document.createElement("button"); 
+            btn.className = "btn danger"; btn.style.flex = "1"; btn.textContent = "KÜSTÜK ⛈️";
+            
+            let clickCount = 0;
+            btn.onclick = () => {
+                if(clickCount === 0){
+                    clickCount++;
+                    btn.textContent = "EMİN MİSİN? ⚠️";
+                    setTimeout(()=>{ clickCount = 0; btn.textContent = "KÜSTÜK ⛈️"; }, 3000);
+                } else {
+                    startFeud();
+                }
+            };
+            
+            peaceActions.appendChild(btn); return;
         }
         if(d.peaceRequestBy){
             modeText.textContent = "BEKLİYOR"; modeDot.className = "dot wait";
