@@ -9,158 +9,73 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
   
   <style>
-    :root{
-      --bg:#000000; 
-      --card: #111111; 
-      --line: #333333;
-      --text:#ffffff; 
-      --muted:#888888; 
-      --good:#10b981; 
-      --bad:#ef4444; 
-      --warn:#f59e0b; 
-      --accent: #db2777; 
-      --r:16px;
-    }
+    :root{ --bg:#000000; --card: #111111; --line: #333333; --text:#ffffff; --muted:#888888; --good:#10b981; --bad:#ef4444; --warn:#f59e0b; --accent: #db2777; --r:16px; }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      -webkit-tap-highlight-color: transparent;
-    }
+    body{ margin:0; font-family: 'Montserrat', sans-serif; background: var(--bg); color:var(--text); min-height:100vh; -webkit-tap-highlight-color: transparent; }
     
-    /* Üst Bar */
     .top{position:sticky; top:0; z-index:20; backdrop-filter: blur(12px); background: rgba(0,0,0,.8); border-bottom:1px solid var(--line);}
     .topin{max-width:980px; margin:0 auto; padding:16px; display:flex; align-items:center; gap:12px;}
     .brand{display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:.15em; font-size: 1.2rem; text-transform:uppercase; user-select:none;}
     .brand span { color: var(--accent); font-weight: 300; font-style: italic; }
-    
     .right{margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end;}
     .chip{padding:6px 12px; border-radius:4px; border:1px solid var(--line); background: #1a1a1a; font-size:11px; font-weight: 600; color:#fff; display:flex; align-items:center; gap:6px; user-select:none; white-space:nowrap; letter-spacing: 0.05em;}
-    .dot{width:8px; height:8px; border-radius:50%; background:var(--bad); box-shadow: 0 0 10px var(--bad);} 
-    .dot.ok{background:var(--good); box-shadow: 0 0 10px var(--good);}
-    .dot.wait{background:var(--warn); box-shadow: 0 0 10px var(--warn);}
-    
+    .dot{width:8px; height:8px; border-radius:50%; background:var(--bad); box-shadow: 0 0 10px var(--bad);} .dot.ok{background:var(--good); box-shadow: 0 0 10px var(--good);} .dot.wait{background:var(--warn); box-shadow: 0 0 10px var(--warn);}
     .link{font-size:11px; color:var(--muted); text-decoration: underline; cursor:pointer;}
-    .count{min-width:18px; height:18px; border-radius:999px; display:flex; align-items:center; justify-content: center; background: var(--accent); color: white; font-size:10px; font-weight: bold; margin-left: 5px;}
-
     .wrap{max-width:980px; margin:0 auto; padding:16px;}
     .card{background: var(--card); border:1px solid var(--line); border-radius: var(--r); padding:20px; margin-top:20px;}
     .title{margin:0 0 8px; font-size:16px; text-transform: uppercase; letter-spacing: 0.1em; border-left: 3px solid var(--accent); padding-left: 10px; display:flex; justify-content:space-between; align-items:center;}
     .muted{color:var(--muted); font-size:13px; line-height:1.5; margin:0;}
     .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
     .divider{height:1px; background:var(--line); margin:20px 0}
-
-    /* Geri Sayım Kartı */
     .countdown-box { text-align:center; padding: 20px 0; }
     .countdown-timer { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: var(--accent); text-shadow: 0 0 20px rgba(219, 39, 119, 0.4); }
     .countdown-label { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.2em; margin-top: 5px; }
-
-    /* Butonlar */
     .btn{border:1px solid var(--line); background: #000; color:#fff; padding:12px 20px; border-radius:4px; cursor:pointer; font-weight:700; font-size:12px; text-transform: uppercase; letter-spacing: 0.1em; transition:.2s ease;}
-    .btn:hover{background: var(--line);}
-    .btn:disabled{opacity:0.5; cursor:not-allowed;}
-
-    .btn.primary{ background: var(--good); color: #fff; border-color: var(--good); }
-    .btn.primary:hover{ background: #059669; }
-    
-    .btn.danger{ background: var(--bad); color: #fff; border-color: var(--bad); }
-    .btn.danger:hover{ background: #dc2626; }
-
-    .btn.warn{ background: var(--warn); color: #000; border-color: var(--warn); }
-    .btn.warn:hover{ background: #d97706; }
-    
+    .btn:hover{background: var(--line);} .btn:disabled{opacity:0.5; cursor:not-allowed;}
+    .btn.primary{ background: var(--good); color: #fff; border-color: var(--good); } .btn.primary:hover{ background: #059669; }
+    .btn.danger{ background: var(--bad); color: #fff; border-color: var(--bad); } .btn.danger:hover{ background: #dc2626; }
+    .btn.warn{ background: var(--warn); color: #000; border-color: var(--warn); } .btn.warn:hover{ background: #d97706; }
     label{display:block; font-size:11px; font-weight: bold; text-transform: uppercase; color:var(--muted); margin:15px 0 8px; letter-spacing: 0.05em;}
-    
-    /* GÜNCELLENEN NOT ALANI */
-    textarea, input[type="text"], input[type="date"] {
-      width:100%; border-radius:4px; border:1px solid var(--line); background: #111; color: #ddd; padding:15px; outline:none; font-size:14px; font-family: monospace;
-      min-height: 350px; 
-    }
-    input[type="text"], input[type="date"] { min-height: auto; }
-    textarea:focus, input:focus { border-color: var(--accent); }
-    
+    textarea, input[type="text"], input[type="date"] { width:100%; border-radius:4px; border:1px solid var(--line); background: #111; color: #ddd; padding:15px; outline:none; font-size:14px; font-family: monospace; min-height: 350px; }
+    input[type="text"], input[type="date"] { min-height: auto; } textarea:focus, input:focus { border-color: var(--accent); }
     .sync-icon { font-size: 18px; color: var(--muted); transition: color 0.3s; margin-left: auto; }
-    
-    /* Geleceğe Mektup Stili */
     .capsule { border: 1px dashed var(--line); padding: 15px; border-radius: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.03); position:relative; }
     .capsule.locked { opacity: 0.7; }
     .capsule-header { display:flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; align-items:center; }
     .capsule-body { font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
     .lock-icon { font-size: 20px; display:block; margin-bottom: 5px; }
-    .del-btn { background: none; border: none; color: #666; font-size: 16px; cursor: pointer; padding: 0 5px; margin-left: 10px; }
-    .del-btn:hover { color: var(--bad); }
-
-    /* Modal */
-    .overlay{position:fixed; inset:0; background: #000; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px;}
-    .overlay.hidden{display:none;} 
+    .del-btn { background: none; border: none; color: #666; font-size: 16px; cursor: pointer; padding: 0 5px; margin-left: 10px; } .del-btn:hover { color: var(--bad); }
+    .overlay{position:fixed; inset:0; background: #000; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px;} .overlay.hidden{display:none;} 
     .modal{width:min(450px, 96vw); text-align: center;}
-    
     .role-container { display:flex; justify-content: center; gap:30px; margin-top:20px; }
     .roleBtn{ background: #111; border: 1px solid var(--line); color:var(--text); cursor:pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 30px; border-radius: var(--r); width: 140px; transition: .3s; }
     .roleBtn:hover { transform: scale(1.05); border-color: var(--text); background: #222; }
     .roleBtn.elif:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(219, 39, 119, 0.3); }
     .roleBtn.emir:hover { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-
     .pass-container { display:none; flex-direction: column; align-items: center; gap:15px; animation: fadeIn 0.3s; }
     @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
     .passInput { background: #111; border: 1px solid var(--line); color: #fff; padding: 15px; text-align: center; letter-spacing: 5px; font-size: 20px; width: 200px; border-radius: 4px; outline: none; min-height: auto; }
     .passInput:focus { border-color: var(--accent); }
     .backBtn { background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:10px; }
-
     .pill{display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:4px; background: #222; font-size:10px; color: #aaa; text-transform: uppercase; font-weight: bold;}
     .pill.ok{color: var(--good); background: rgba(16, 185, 129, 0.1);}
-    
     .toast{position:fixed; left:50%; bottom:30px; transform:translateX(-50%); background: #fff; color:#000; padding:12px 24px; font-weight:700; font-size:12px; letter-spacing: 0.05em; text-transform: uppercase; display:none; z-index:900;}
     .toast.show{display:block; animation: fadeUp 0.3s forwards;}
     @keyframes fadeUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
-    
-    /* YENİ: Tepki Butonları ve Animasyon */
     .reaction-row { display: flex; justify-content: center; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
     .reaction-btn { border-radius: 50%; width: 50px; height: 50px; padding:0; font-size: 24px; background: #000; border: 2px solid var(--line); cursor:pointer; transition: transform 0.2s; display:flex; align-items:center; justify-content:center; }
-    .reaction-btn:hover { transform: scale(1.1); }
-    .reaction-btn:active { transform: scale(0.9); }
-    
-    .reaction-btn.heart { border-color: var(--accent); }
-    .reaction-btn.kiss { border-color: #e11d48; }
-    .reaction-btn.hug { border-color: #f59e0b; }
-    .reaction-btn.fire { border-color: #ef4444; }
-    .reaction-btn.angry { border-color: #991b1b; } /* Koyu Kırmızı */
-    
+    .reaction-btn:hover { transform: scale(1.1); } .reaction-btn:active { transform: scale(0.9); }
+    .reaction-btn.heart { border-color: var(--accent); } .reaction-btn.kiss { border-color: #e11d48; } .reaction-btn.hug { border-color: #f59e0b; } .reaction-btn.fire { border-color: #ef4444; } .reaction-btn.angry { border-color: #991b1b; }
     .emoji-particle{position:fixed; font-size:24px; pointer-events:none; animation: floatUp 1.5s ease forwards; z-index:999;}
     @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-150px) scale(1.5); opacity:0 }}
-    
     #hiddenDateInput { position: absolute; opacity: 0; pointer-events: none; height: 0; width: 0; }
-
-    /* Aktiflik ve Mood Footer */
-    .status-footer {
-        border-top: 1px solid var(--line);
-        margin-top: 15px;
-        padding-top: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        font-size: 10px;
-        color: #666;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
+    .status-footer { border-top: 1px solid var(--line); margin-top: 15px; padding-top: 15px; display: flex; flex-direction: column; gap: 12px; font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.05em; }
     .status-row { display:flex; align-items:center; justify-content: space-between; }
     .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; background: #444; transition: .3s; }
     .status-dot.online { background: #10b981; box-shadow: 0 0 5px #10b981; }
-    
-    /* Mood Butonu */
-    .mood-btn { background:none; border:none; font-size:16px; cursor:pointer; transition:.2s; filter: grayscale(1); }
-    .mood-btn:hover, .mood-btn.active { filter: grayscale(0); transform: scale(1.2); }
-
-    /* Bucket List */
-    .bucket-item { display:flex; align-items:center; padding:12px; border-bottom:1px solid var(--line); gap:10px; }
-    .bucket-item.done span { text-decoration: line-through; color: var(--muted); }
-    .check-btn { width: 20px; height: 20px; border: 2px solid var(--muted); border-radius: 4px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:transparent; }
-    .bucket-item.done .check-btn { border-color: var(--good); background: rgba(16, 185, 129, 0.2); color: var(--good); }
-
+    .mood-btn { background:none; border:none; font-size:16px; cursor:pointer; transition:.2s; filter: grayscale(1); } .mood-btn:hover, .mood-btn.active { filter: grayscale(0); transform: scale(1.2); }
+    .bucket-item { display:flex; align-items:center; padding:12px; border-bottom:1px solid var(--line); gap:10px; } .bucket-item.done span { text-decoration: line-through; color: var(--muted); }
+    .check-btn { width: 20px; height: 20px; border: 2px solid var(--muted); border-radius: 4px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:transparent; } .bucket-item.done .check-btn { border-color: var(--good); background: rgba(16, 185, 129, 0.2); color: var(--good); }
   </style>
 </head>
 
@@ -171,7 +86,6 @@
       <div class="right">
         <div class="chip"><span class="dot" id="modeDot"></span><span id="modeText">Küs</span></div>
         <div class="chip">⏱ <span id="timerText">0 sn</span></div>
-        
         <div class="chip" style="background:transparent; border:none;">
             <span id="whoText" style="font-size:10px; color:#666;">-</span> 
             <span class="link" id="changeRole" style="margin-left:5px;">Çıkış</span>
@@ -181,7 +95,6 @@
   </div>
 
   <div class="wrap">
-    
     <div class="card">
       <div class="title">
         <span>Geri Sayım</span>
@@ -196,11 +109,8 @@
 
     <div class="card">
       <h2 class="title">İlişki Durumu</h2>
-      
       <div class="row" id="peaceActions" style="margin-bottom: 20px;"></div>
-      
       <div class="divider"></div>
-
       <div style="text-align:center; margin-bottom: 20px;">
           <div style="font-size: 10px; color: #666; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">Canlı Tepki Gönder</div>
           <div class="reaction-row">
@@ -214,7 +124,6 @@
              <span class="pill" id="heartsPill" style="font-size: 12px; color: #fff;">Kalp Sayacı: 0</span>
           </div>
       </div>
-
       <div class="status-footer">
           <div class="status-row">
               <div style="display:flex; align-items:center;">
@@ -223,7 +132,6 @@
               </div>
               <div id="emirOnlineText">-</div>
           </div>
-          
           <div class="status-row">
               <div style="display:flex; align-items:center;">
                   <span class="status-dot" id="elifDot"></span> ELİF
@@ -236,15 +144,12 @@
 
     <div class="card">
       <h2 class="title">Özel Notlar</h2>
-      
       <div class="row" style="justify-content:space-between; margin-bottom:5px;">
         <label style="color: #3b82f6; margin:0;">EMİR'İN SATIRLARI</label>
         <div id="emirSync" class="sync-icon"></div>
       </div>
       <textarea id="emirNote" placeholder="Emir buraya duygularını yazacak..."></textarea>
-      
       <div class="divider"></div>
-
       <div class="row" style="justify-content:space-between; margin-bottom:5px;">
         <label style="color: #db2777; margin:0;">ELİF'İN SATIRLARI</label>
         <div id="elifSync" class="sync-icon"></div>
@@ -275,7 +180,6 @@
             <button class="btn primary" id="addBucketBtn">EKLE</button>
         </div>
     </div>
-
   </div>
 
   <div class="toast" id="toast">✅</div>
@@ -304,9 +208,9 @@
     import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc, increment, arrayUnion } from 
       "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // 🔴 FIREBASE AYARLARI 🔴
+    // 🔴 KENDİ FIREBASE BİLGİLERİNİ BURAYA YAPIŞTIRMAYI UNUTMA 🔴
     const firebaseConfig = {
-     apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -327,47 +231,44 @@
     const modalTitle = document.getElementById("modalTitle");
     const whoText = document.getElementById("whoText");
     const changeRole = document.getElementById("changeRole");
-    
     const peaceActions = document.getElementById("peaceActions");
     const modeDot = document.getElementById("modeDot");
     const modeText = document.getElementById("modeText");
     const timerText = document.getElementById("timerText");
-    
     const countdownDisplay = document.getElementById("countdownDisplay");
     const editDateBtn = document.getElementById("editDateBtn");
     const hiddenDateInput = document.getElementById("hiddenDateInput");
-
     const capsuleList = document.getElementById("capsuleList");
     const capsuleMsg = document.getElementById("capsuleMsg");
     const capsuleDateInput = document.getElementById("capsuleDate");
     const btnSaveCapsule = document.getElementById("btnSaveCapsule");
-
     const emirNoteEl = document.getElementById("emirNote");
     const elifNoteEl = document.getElementById("elifNote");
     const emirSync = document.getElementById("emirSync");
     const elifSync = document.getElementById("elifSync");
-
     const heartsPill = document.getElementById("heartsPill");
     const toast = document.getElementById("toast");
-
-    // Aktiflik UI
     const emirDot = document.getElementById("emirDot");
     const elifDot = document.getElementById("elifDot");
     const emirOnlineText = document.getElementById("emirOnlineText");
     const elifOnlineText = document.getElementById("elifOnlineText");
     const emirMoodBtn = document.getElementById("emirMoodBtn");
     const elifMoodBtn = document.getElementById("elifMoodBtn");
-
-    // Bucket List UI
     const bucketListContainer = document.getElementById("bucketListContainer");
     const bucketInput = document.getElementById("bucketInput");
     const addBucketBtn = document.getElementById("addBucketBtn");
 
-    // ----- Yardımcı Fonksiyonlar -----
     const nowTs = () => Date.now();
     function popToast(text="✅"){ toast.textContent = text; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 2000); }
     
-    // YENİ: Çoklu Emoji Animasyonu
+    // BİLDİRİM FONKSİYONU
+    function notify(title, body){
+        if (!("Notification" in window)) return;
+        if (Notification.permission === "granted") {
+            new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/2529/2529521.png" });
+        }
+    }
+
     function floatEmoji(x, y, emojiChar){
       const h = document.createElement("div"); h.className="emoji-particle"; h.textContent=emojiChar; h.style.left=x+"px"; h.style.top=y+"px";
       document.body.appendChild(h); setTimeout(()=>h.remove(), 1200);
@@ -383,29 +284,21 @@
     }
     
     function formatDuration(ms){
-      if(ms < 0) ms = 0;
-      const s = Math.floor(ms/1000); const days = Math.floor(s/86400); const hrs  = Math.floor((s%86400)/3600); const mins = Math.floor((s%3600)/60); const secs = s%60;
+      if(ms < 0) ms = 0; const s = Math.floor(ms/1000); const days = Math.floor(s/86400); const hrs  = Math.floor((s%86400)/3600); const mins = Math.floor((s%3600)/60); const secs = s%60;
       const parts = []; if(days) parts.push(`${days}g`); if(hrs || days) parts.push(`${hrs}sa`); if(mins || hrs || days) parts.push(`${mins}dk`); parts.push(`${secs}sn`);
       return parts.join(" ");
     }
     function fmtTime(ts){ return new Date(ts).toLocaleTimeString("tr-TR", {hour:'2-digit', minute:'2-digit'}); }
 
-    // ----- ŞİFRE SİSTEMİ -----
+    // ŞİFRE
     const PASSWORDS = { "Emir": "615127", "Elif": "6161221" };
     let selectedRole = null;
-
     function viewer(){ return localStorage.getItem("viewerName") || ""; }
     function isEmir(){ return viewer() === "Emir"; }
     function isElif(){ return viewer() === "Elif"; }
+    function resetModal(){ roleContainer.style.display="flex"; passContainer.style.display="none"; modalTitle.textContent="KİM GİRİŞ YAPIYOR?"; passInput.value=""; selectedRole=null; }
+    function showPassInput(role){ selectedRole=role; roleContainer.style.display="none"; passContainer.style.display="flex"; modalTitle.textContent=role+" İÇİN GİRİŞ"; passInput.focus(); }
     
-    function resetModal(){
-        roleContainer.style.display="flex"; passContainer.style.display="none";
-        modalTitle.textContent="KİM GİRİŞ YAPIYOR?"; passInput.value=""; selectedRole=null;
-    }
-    function showPassInput(role){
-        selectedRole=role; roleContainer.style.display="none"; passContainer.style.display="flex";
-        modalTitle.textContent=role+" İÇİN GİRİŞ"; passInput.focus();
-    }
     async function checkPass(){
         if(PASSWORDS[selectedRole] && passInput.value === PASSWORDS[selectedRole]){
             localStorage.setItem("viewerName", selectedRole);
@@ -415,82 +308,52 @@
             const now = nowTs();
             await updateDoc(stateRef, { [`presence.${selectedRole}`]: now, [`presence.${selectedRole}Login`]: now });
             pingPresence();
-        } else {
-            popToast("HATALI PAROLA 🔒"); passInput.value="";
-        }
+            if("Notification" in window) Notification.requestPermission(); // İzin iste
+        } else { popToast("HATALI PAROLA 🔒"); passInput.value=""; }
     }
     document.getElementById("pickEmir").addEventListener("click", ()=>showPassInput("Emir"));
     document.getElementById("pickElif").addEventListener("click", ()=>showPassInput("Elif"));
     document.getElementById("btnBack").addEventListener("click", resetModal);
     document.getElementById("btnUnlock").addEventListener("click", checkPass);
     passInput.addEventListener("keypress", (e)=>{if(e.key==="Enter") checkPass();});
-    
     changeRole.addEventListener("click", async ()=>{ 
-        const v = viewer();
-        if(v) await updateDoc(stateRef, { [`presence.${v}`]: nowTs() - 60000 }); 
+        const v = viewer(); if(v) await updateDoc(stateRef, { [`presence.${v}`]: nowTs() - 60000 }); 
         localStorage.removeItem("viewerName"); whoText.textContent="-"; overlay.classList.remove("hidden"); resetModal(); 
     });
     localStorage.removeItem("viewerName"); resetModal();
+    function enforcePermissions(){ emirNoteEl.readOnly = !isEmir(); elifNoteEl.readOnly = !isElif(); }
 
-    function enforcePermissions(){
-        emirNoteEl.readOnly = !isEmir();
-        elifNoteEl.readOnly = !isElif();
-    }
-
-    // ----- VERİTABANI -----
+    // DATA
     async function ensureDefaults(){
       const snap = await getDoc(stateRef);
-      if(!snap.exists()){
-        await setDoc(stateRef, {
-          peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs(),
-          hearts: 0, lastReaction: { type: null, ts: 0 }, targetDate: nowTs() + 86400000,
-          capsules: [], emirNote: "", elifNote: "",
-          presence: {}, moods: { Emir:"😐", Elif:"😐" }, bucketList: []
-        });
-      }
+      if(!snap.exists()){ await setDoc(stateRef, { peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs(), hearts: 0, lastReaction: { type: null, ts: 0 }, targetDate: nowTs() + 86400000, capsules: [], emirNote: "", elifNote: "", presence: {}, moods: { Emir:"😐", Elif:"😐" }, bucketList: [] }); }
     }
 
-    // YENİ: ÇOKLU TEPKİ GÖNDERME
     document.querySelectorAll('.reaction-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const type = btn.getAttribute('data-type');
-            // Sadece kalp (heart) sayacı artırır
             let updateData = { 'lastReaction': { type: type, ts: nowTs() } };
             if(type === 'heart') updateData.hearts = increment(1);
             await updateDoc(stateRef, updateData);
         });
     });
 
-    // AKTİFLİK SİNYALİ
-    async function pingPresence(){
-        const v = viewer(); if(!v) return;
-        await updateDoc(stateRef, { [`presence.${v}`]: nowTs() });
-    }
+    async function pingPresence(){ const v = viewer(); if(!v) return; await updateDoc(stateRef, { [`presence.${v}`]: nowTs() }); }
     setInterval(()=> pingPresence(), 10000); 
-    document.addEventListener("visibilitychange", ()=>{
-        const v = viewer(); if(document.visibilityState === "hidden" && v) updateDoc(stateRef, { [`presence.${v}`]: nowTs() });
-    });
+    document.addEventListener("visibilitychange", ()=>{ const v = viewer(); if(document.visibilityState === "hidden" && v) updateDoc(stateRef, { [`presence.${v}`]: nowTs() }); });
 
-    // UI Güncelleme (Presence & Mood)
     function renderPresence(p, m){
-        if(!p) return;
-        const now = nowTs();
-        const limit = 25000;
-        
-        // Emir
+        if(!p) return; const now = nowTs(); const limit = 25000;
         const emirLast = p.Emir || 0; const emirLogin = p.EmirLogin || emirLast; const isEmirOnline = (now - emirLast) < limit;
         emirDot.className = `status-dot ${isEmirOnline?'online':''}`;
         emirOnlineText.innerHTML = isEmirOnline ? `<span style="color:#10b981;font-weight:bold;">ÇEVRİMİÇİ • ${fmtTime(emirLogin)}</span>` : fmtTime(emirLast);
         emirMoodBtn.textContent = m?.Emir || "😐";
-        
-        // Elif
         const elifLast = p.Elif || 0; const elifLogin = p.ElifLogin || elifLast; const isElifOnline = (now - elifLast) < limit;
         elifDot.className = `status-dot ${isElifOnline?'online':''}`;
         elifOnlineText.innerHTML = isElifOnline ? `<span style="color:#10b981;font-weight:bold;">ÇEVRİMİÇİ • ${fmtTime(elifLogin)}</span>` : fmtTime(elifLast);
         elifMoodBtn.textContent = m?.Elif || "😐";
     }
 
-    // MOOD DEĞİŞTİRME
     function setupMoodSelector(role, btnId){
         document.getElementById(btnId).addEventListener("click", async ()=>{
             if(viewer() !== role) return popToast(`Sadece ${role} değiştirebilir!`);
@@ -498,47 +361,30 @@
             if(mood) await updateDoc(stateRef, { [`moods.${role}`]: mood });
         });
     }
-    setupMoodSelector("Emir", "emirMoodBtn");
-    setupMoodSelector("Elif", "elifMoodBtn");
+    setupMoodSelector("Emir", "emirMoodBtn"); setupMoodSelector("Elif", "elifMoodBtn");
 
-    // BUCKET LIST
     addBucketBtn.addEventListener("click", async ()=>{
-        const txt = bucketInput.value.trim();
-        if(!txt) return;
+        const txt = bucketInput.value.trim(); if(!txt) return;
         const newItem = { id: Date.now().toString(), text: txt, done: false };
-        await updateDoc(stateRef, { bucketList: arrayUnion(newItem) });
-        bucketInput.value = "";
+        await updateDoc(stateRef, { bucketList: arrayUnion(newItem) }); bucketInput.value = "";
     });
-
     window.toggleBucket = async (id, currentDone) => {
-        const snap = await getDoc(stateRef);
-        const list = snap.data().bucketList || [];
-        const updated = list.map(i => i.id === id ? { ...i, done: !currentDone } : i);
-        await updateDoc(stateRef, { bucketList: updated });
+        const snap = await getDoc(stateRef); const list = snap.data().bucketList || [];
+        const updated = list.map(i => i.id === id ? { ...i, done: !currentDone } : i); await updateDoc(stateRef, { bucketList: updated });
     };
-
     window.delBucket = async (id) => {
-        const snap = await getDoc(stateRef);
-        const list = snap.data().bucketList || [];
-        const updated = list.filter(i => i.id !== id);
-        await updateDoc(stateRef, { bucketList: updated });
+        const snap = await getDoc(stateRef); const list = snap.data().bucketList || [];
+        const updated = list.filter(i => i.id !== id); await updateDoc(stateRef, { bucketList: updated });
     };
-
     function renderBucketList(list){
-        bucketListContainer.innerHTML = "";
-        if(!list || list.length === 0){ bucketListContainer.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">Henüz hayal eklenmedi.</div>`; return; }
+        bucketListContainer.innerHTML = ""; if(!list || list.length === 0){ bucketListContainer.innerHTML = `<div class="muted" style="text-align:center; padding:10px;">Henüz hayal eklenmedi.</div>`; return; }
         list.forEach(item => {
             const div = document.createElement("div"); div.className = `bucket-item ${item.done?'done':''}`;
-            div.innerHTML = `
-                <button class="check-btn" onclick="toggleBucket('${item.id}', ${item.done})">✓</button>
-                <span style="flex:1; font-size:13px;">${item.text}</span>
-                <button class="del-btn" onclick="delBucket('${item.id}')">×</button>
-            `;
+            div.innerHTML = `<button class="check-btn" onclick="toggleBucket('${item.id}', ${item.done})">✓</button><span style="flex:1; font-size:13px;">${item.text}</span><button class="del-btn" onclick="delBucket('${item.id}')">×</button>`;
             bucketListContainer.appendChild(div);
         });
     }
 
-    // BARIŞ MANTIĞI
     async function requestPeace(){ const v = viewer(); if(!v) return; await updateDoc(stateRef, { peaceRequestBy: v }); popToast("Barış Talebi Gönderildi 🕊️"); }
     async function confirmPeace(){ await updateDoc(stateRef, { peaceMode: true, peaceRequestBy: null, modeChangedAt: nowTs() }); popToast("BARIŞ SAĞLANDI! ❤️"); burstReaction('heart'); }
     async function rejectPeace(){ await updateDoc(stateRef, { peaceRequestBy: null }); popToast("İstek Reddedildi ❌"); }
@@ -548,22 +394,13 @@
         const v = viewer(); peaceActions.innerHTML = "";
         if(d.peaceMode){
             modeText.textContent = "BARIŞTIK"; modeDot.className = "dot ok";
-            
-            // YENİ: KÜSTÜK BUTONU (GÜVENLİ)
-            const btn = document.createElement("button"); 
-            btn.className = "btn danger"; btn.style.flex = "1"; btn.textContent = "KÜSTÜK ⛈️";
+            const btn = document.createElement("button"); btn.className = "btn danger"; btn.style.flex = "1"; btn.textContent = "KÜSTÜK ⛈️"; 
             
             let clickCount = 0;
             btn.onclick = () => {
-                if(clickCount === 0){
-                    clickCount++;
-                    btn.textContent = "EMİN MİSİN? ⚠️";
-                    setTimeout(()=>{ clickCount = 0; btn.textContent = "KÜSTÜK ⛈️"; }, 3000);
-                } else {
-                    startFeud();
-                }
+                if(clickCount === 0){ clickCount++; btn.textContent = "EMİN MİSİN? ⚠️"; setTimeout(()=>{ clickCount = 0; btn.textContent = "KÜSTÜK ⛈️"; }, 3000); } 
+                else { startFeud(); }
             };
-            
             peaceActions.appendChild(btn); return;
         }
         if(d.peaceRequestBy){
@@ -580,7 +417,6 @@
         const btn = document.createElement("button"); btn.className = "btn primary"; btn.style.flex = "1"; btn.textContent = "BARIŞALIM MI? 🕊️"; btn.onclick = requestPeace; peaceActions.appendChild(btn);
     }
 
-    // SAYAÇLAR
     let modeChangedAt = 0; setInterval(()=>{ timerText.textContent = formatDuration(Date.now() - modeChangedAt); }, 1000);
     let targetTime = 0; setInterval(()=>{
         const diff = targetTime - Date.now(); if(diff <= 0) { countdownDisplay.textContent = "GÜN GELDİ! 🎉"; return; }
@@ -590,18 +426,13 @@
     const fp = flatpickr(hiddenDateInput, { enableTime: true, dateFormat: "Y-m-d H:i", locale: "tr", theme: "dark", disableMobile: "true", onClose: async (selectedDates) => { if(selectedDates.length > 0) await updateDoc(stateRef, { targetDate: selectedDates[0].getTime() }); } });
     editDateBtn.addEventListener("click", ()=> fp.open());
 
-    // MEKTUPLAR
     const capsulePicker = flatpickr(capsuleDateInput, { enableTime:true, dateFormat: "Y-m-d H:i", locale:"tr", theme:"dark" });
     btnSaveCapsule.addEventListener("click", async ()=>{
         const msg = capsuleMsg.value.trim(); const dateStr = capsuleDateInput.value; if(!msg || !dateStr) return popToast("Mesaj ve Tarih Girin!");
         const newCap = { id: Date.now().toString(), from: viewer(), msg: msg, unlockTs: new Date(dateStr).getTime() };
         await updateDoc(stateRef, { capsules: arrayUnion(newCap) }); capsuleMsg.value = ""; capsuleDateInput.value = ""; popToast("Mektup Kilitlendi 🔒");
     });
-    window.deleteCapsule = async (id) => {
-        const snap = await getDoc(stateRef); if(!snap.exists()) return;
-        const currentCapsules = snap.data().capsules || []; const newCapsules = currentCapsules.filter(c => c.id !== id);
-        await updateDoc(stateRef, { capsules: newCapsules }); popToast("Mektup Silindi 🗑️");
-    };
+    window.deleteCapsule = async (id) => { const snap = await getDoc(stateRef); if(!snap.exists()) return; const currentCapsules = snap.data().capsules || []; const newCapsules = currentCapsules.filter(c => c.id !== id); await updateDoc(stateRef, { capsules: newCapsules }); popToast("Mektup Silindi 🗑️"); };
     function renderCapsules(list){
         capsuleList.innerHTML = ""; if(!list || list.length === 0){ capsuleList.innerHTML = `<div class="muted" style="text-align:center;">Henüz kilitli mektup yok.</div>`; return; }
         list.sort((a,b)=>a.unlockTs - b.unlockTs).forEach(c => {
@@ -612,29 +443,63 @@
         });
     }
 
-    // NOTLAR
     let timer; function setSyncState(el, state){ if(state===0) el.textContent = ""; if(state===1) el.textContent = "..."; if(state===2) { el.textContent = "✅"; el.style.color = "#10b981"; setTimeout(()=>{ el.textContent=""; }, 2000); } }
     function autoSave(field, val, syncEl){ setSyncState(syncEl, 1); clearTimeout(timer); timer = setTimeout(async ()=> { await updateDoc(stateRef, { [field]: val }); setSyncState(syncEl, 2); }, 800); }
     emirNoteEl.addEventListener("input", ()=> isEmir() && autoSave("emirNote", emirNoteEl.value, emirSync));
     elifNoteEl.addEventListener("input", ()=> isElif() && autoSave("elifNote", elifNoteEl.value, elifSync));
 
-    // SNAPSHOT - ANA DİNLEYİCİ
-    let lastKnownReactionTs = 0; await ensureDefaults();
+    // SNAPSHOT & BİLDİRİM MANTIĞI
+    let previousData = null; // Eski veriyi tut
+    
+    await ensureDefaults();
     onSnapshot(stateRef, (s)=>{
-        if(!s.exists()) return; const d = s.data();
-        renderPeaceUI(d);
-        
-        // YENİ: Çoklu Tepki Kontrolü
-        if(d.lastReaction && d.lastReaction.ts > lastKnownReactionTs){
-            if(lastKnownReactionTs !== 0) burstReaction(d.lastReaction.type);
-            lastKnownReactionTs = d.lastReaction.ts;
+        if(!s.exists()) return;
+        const d = s.data();
+        const v = viewer();
+
+        // İLK YÜKLEME Mİ?
+        if(!previousData){
+            previousData = d;
+            // İlk açılış renderları
+            renderPeaceUI(d); heartsPill.textContent = `Kalp Sayacı: ${d.hearts}`;
+            modeChangedAt = d.modeChangedAt || nowTs(); targetTime = d.targetDate || (nowTs() + 86400000);
+            renderCapsules(d.capsules); renderPresence(d.presence, d.moods); renderBucketList(d.bucketList);
+            if(document.activeElement !== emirNoteEl) emirNoteEl.value = d.emirNote || "";
+            if(document.activeElement !== elifNoteEl) elifNoteEl.value = d.elifNote || "";
+            return;
         }
+
+        // DEĞİŞİKLİK VAR MI?
         
+        // 1. Not Değişikliği (Ben değilsem bildirim)
+        if(d.emirNote !== previousData.emirNote && v === "Elif") notify("Yeni Not!", "Emir notunu güncelledi.");
+        if(d.elifNote !== previousData.elifNote && v === "Emir") notify("Yeni Not!", "Elif notunu güncelledi.");
+
+        // 2. Barış Talebi
+        if(d.peaceRequestBy && d.peaceRequestBy !== previousData.peaceRequestBy && d.peaceRequestBy !== v) notify("Barış İsteği", `${d.peaceRequestBy} barışmak istiyor!`);
+
+        // 3. Mektup
+        if(d.capsules.length > previousData.capsules.length) notify("Mektup Var", "Yeni bir mektup kilitlendi 🔒");
+
+        // 4. Bucket List
+        if(d.bucketList.length > previousData.bucketList.length) notify("Yeni Hayal", "Listeye yeni bir madde eklendi ✨");
+
+        // 5. Tepki
+        if(d.lastReaction && d.lastReaction.ts > (previousData.lastReaction?.ts || 0)){
+            if(d.lastReaction.ts > 0) burstReaction(d.lastReaction.type);
+        }
+
+        // Render İşlemleri (Her zaman çalışır)
+        renderPeaceUI(d);
         heartsPill.textContent = `Kalp Sayacı: ${d.hearts}`;
         modeChangedAt = d.modeChangedAt || nowTs(); targetTime = d.targetDate || (nowTs() + 86400000);
         renderCapsules(d.capsules); renderPresence(d.presence, d.moods); renderBucketList(d.bucketList);
+        
+        // Sadece yazmıyorsak güncelle (Çakışmayı önlemek için)
         if(document.activeElement !== emirNoteEl) emirNoteEl.value = d.emirNote || "";
         if(document.activeElement !== elifNoteEl) elifNoteEl.value = d.elifNote || "";
+
+        previousData = d; // Veriyi güncelle
     });
   </script>
 </body>
