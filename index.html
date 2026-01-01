@@ -117,7 +117,19 @@
     .toast.show{display:block; animation: fadeUp 0.3s forwards;}
     @keyframes fadeUp { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
     
-    .heart{position:fixed; font-size:24px; pointer-events:none; animation: floatUp 1.5s ease forwards; z-index:999;}
+    /* YENİ: Tepki Butonları ve Animasyon */
+    .reaction-row { display: flex; justify-content: center; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+    .reaction-btn { border-radius: 50%; width: 50px; height: 50px; padding:0; font-size: 24px; background: #000; border: 2px solid var(--line); cursor:pointer; transition: transform 0.2s; display:flex; align-items:center; justify-content:center; }
+    .reaction-btn:hover { transform: scale(1.1); }
+    .reaction-btn:active { transform: scale(0.9); }
+    
+    .reaction-btn.heart { border-color: var(--accent); }
+    .reaction-btn.kiss { border-color: #e11d48; }
+    .reaction-btn.hug { border-color: #f59e0b; }
+    .reaction-btn.fire { border-color: #ef4444; }
+    .reaction-btn.angry { border-color: #991b1b; } /* Koyu Kırmızı */
+    
+    .emoji-particle{position:fixed; font-size:24px; pointer-events:none; animation: floatUp 1.5s ease forwards; z-index:999;}
     @keyframes floatUp{from{ transform: translateY(0) scale(1); opacity:1 }to{ transform: translateY(-150px) scale(1.5); opacity:0 }}
     
     #hiddenDateInput { position: absolute; opacity: 0; pointer-events: none; height: 0; width: 0; }
@@ -142,8 +154,6 @@
     /* Mood Butonu */
     .mood-btn { background:none; border:none; font-size:16px; cursor:pointer; transition:.2s; filter: grayscale(1); }
     .mood-btn:hover, .mood-btn.active { filter: grayscale(0); transform: scale(1.2); }
-    .mood-selector { display:flex; gap:5px; background: #222; padding:5px; border-radius:99px; position:absolute; bottom:30px; left:0; display:none; }
-    .mood-selector.show { display:flex; animation: fadeIn 0.2s; }
 
     /* Bucket List */
     .bucket-item { display:flex; align-items:center; padding:12px; border-bottom:1px solid var(--line); gap:10px; }
@@ -189,12 +199,20 @@
       
       <div class="row" id="peaceActions" style="margin-bottom: 20px;"></div>
       
-      <div class="row" style="justify-content: space-between; border-top: 1px solid var(--line); padding-top: 15px;">
-         <button class="btn" id="sendHeart" style="border-radius: 50%; width: 50px; height: 50px; padding:0; font-size: 20px; border-color: var(--accent); color: var(--accent);">💖</button>
-         <div style="text-align: right;">
-            <div style="font-size: 10px; color: #666; margin-bottom: 4px;">KALP SAYACI</div>
-            <span class="pill" id="heartsPill" style="font-size: 14px; color: #fff;">0</span>
-         </div>
+      <div class="divider"></div>
+
+      <div style="text-align:center; margin-bottom: 20px;">
+          <div style="font-size: 10px; color: #666; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.1em;">Canlı Tepki Gönder</div>
+          <div class="reaction-row">
+              <button class="reaction-btn heart" data-type="heart">💖</button>
+              <button class="reaction-btn kiss" data-type="kiss">💋</button>
+              <button class="reaction-btn hug" data-type="hug">🤗</button>
+              <button class="reaction-btn fire" data-type="fire">🔥</button>
+              <button class="reaction-btn angry" data-type="angry">😡</button>
+          </div>
+          <div style="margin-top: 10px;">
+             <span class="pill" id="heartsPill" style="font-size: 12px; color: #fff;">Kalp Sayacı: 0</span>
+          </div>
       </div>
 
       <div class="status-footer">
@@ -202,7 +220,6 @@
               <div style="display:flex; align-items:center;">
                   <span class="status-dot" id="emirDot"></span> EMİR
                   <button class="mood-btn" id="emirMoodBtn" style="margin-left:5px;">😐</button>
-                  <div class="mood-selector" id="emirMoodSel"></div>
               </div>
               <div id="emirOnlineText">-</div>
           </div>
@@ -211,7 +228,6 @@
               <div style="display:flex; align-items:center;">
                   <span class="status-dot" id="elifDot"></span> ELİF
                   <button class="mood-btn" id="elifMoodBtn" style="margin-left:5px;">😐</button>
-                  <div class="mood-selector" id="elifMoodSel"></div>
               </div>
               <div id="elifOnlineText">-</div>
           </div>
@@ -290,7 +306,7 @@
 
     // 🔴 FIREBASE AYARLARI 🔴
     const firebaseConfig = {
-       apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
+      apiKey: "AIzaSyAYOjXNc0vfzNL68z4pmbX8kFoQSC11LZ8",
   authDomain: "elif-site.firebaseapp.com",
   projectId: "elif-site",
   storageBucket: "elif-site.firebasestorage.app",
@@ -332,7 +348,6 @@
     const elifSync = document.getElementById("elifSync");
 
     const heartsPill = document.getElementById("heartsPill");
-    const sendHeart = document.getElementById("sendHeart");
     const toast = document.getElementById("toast");
 
     // Aktiflik UI
@@ -351,17 +366,22 @@
     // ----- Yardımcı Fonksiyonlar -----
     const nowTs = () => Date.now();
     function popToast(text="✅"){ toast.textContent = text; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 2000); }
-    function heart(x,y,emoji="❤️"){
-      const h = document.createElement("div"); h.className="heart"; h.textContent=emoji; h.style.left=x+"px"; h.style.top=y+"px";
+    
+    // YENİ: Çoklu Emoji Animasyonu
+    function floatEmoji(x, y, emojiChar){
+      const h = document.createElement("div"); h.className="emoji-particle"; h.textContent=emojiChar; h.style.left=x+"px"; h.style.top=y+"px";
       document.body.appendChild(h); setTimeout(()=>h.remove(), 1200);
     }
-    function burstHearts(n=12){
+    function burstReaction(type){
+      const emojis = { heart: '💖', kiss: '💋', hug: '🤗', fire: '🔥', angry: '😡' };
+      const emojiChar = emojis[type] || '❤️';
       const cx = window.innerWidth/2; const cy = window.innerHeight/2;
-      for(let i=0;i<n;i++){
-        const x = cx + (Math.random()*100 - 50); const y = cy + (Math.random()*100 - 50);
-        setTimeout(()=>heart(x,y, Math.random()>.5?"💖":"🤍"), i*50);
+      for(let i=0;i<15;i++){
+        const x = cx + (Math.random()*120 - 60); const y = cy + (Math.random()*120 - 60);
+        setTimeout(()=>floatEmoji(x,y, emojiChar), i*40);
       }
     }
+    
     function formatDuration(ms){
       if(ms < 0) ms = 0;
       const s = Math.floor(ms/1000); const days = Math.floor(s/86400); const hrs  = Math.floor((s%86400)/3600); const mins = Math.floor((s%3600)/60); const secs = s%60;
@@ -423,13 +443,23 @@
       if(!snap.exists()){
         await setDoc(stateRef, {
           peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs(),
-          hearts: 0, lastHeartTs: 0, targetDate: nowTs() + 86400000,
+          hearts: 0, lastReaction: { type: null, ts: 0 }, targetDate: nowTs() + 86400000,
           capsules: [], emirNote: "", elifNote: "",
           presence: {}, moods: { Emir:"😐", Elif:"😐" }, bucketList: []
         });
       }
     }
-    sendHeart.addEventListener("click", async ()=>{ await updateDoc(stateRef, { hearts: increment(1), lastHeartTs: nowTs() }); });
+
+    // YENİ: ÇOKLU TEPKİ GÖNDERME
+    document.querySelectorAll('.reaction-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const type = btn.getAttribute('data-type');
+            // Sadece kalp (heart) sayacı artırır
+            let updateData = { 'lastReaction': { type: type, ts: nowTs() } };
+            if(type === 'heart') updateData.hearts = increment(1);
+            await updateDoc(stateRef, updateData);
+        });
+    });
 
     // AKTİFLİK SİNYALİ
     async function pingPresence(){
@@ -461,7 +491,6 @@
     }
 
     // MOOD DEĞİŞTİRME
-    const MOODS = ["😴","👿","🥰","🤒","🥳","😐","☕"];
     function setupMoodSelector(role, btnId){
         document.getElementById(btnId).addEventListener("click", async ()=>{
             if(viewer() !== role) return popToast(`Sadece ${role} değiştirebilir!`);
@@ -511,7 +540,7 @@
 
     // BARIŞ MANTIĞI
     async function requestPeace(){ const v = viewer(); if(!v) return; await updateDoc(stateRef, { peaceRequestBy: v }); popToast("Barış Talebi Gönderildi 🕊️"); }
-    async function confirmPeace(){ await updateDoc(stateRef, { peaceMode: true, peaceRequestBy: null, modeChangedAt: nowTs() }); popToast("BARIŞ SAĞLANDI! ❤️"); burstHearts(20); }
+    async function confirmPeace(){ await updateDoc(stateRef, { peaceMode: true, peaceRequestBy: null, modeChangedAt: nowTs() }); popToast("BARIŞ SAĞLANDI! ❤️"); burstReaction('heart'); }
     async function rejectPeace(){ await updateDoc(stateRef, { peaceRequestBy: null }); popToast("İstek Reddedildi ❌"); }
     async function startFeud(){ await updateDoc(stateRef, { peaceMode: false, peaceRequestBy: null, modeChangedAt: nowTs() }); popToast("KÜSLÜK BAŞLADI ⛈️"); }
 
@@ -573,13 +602,19 @@
     emirNoteEl.addEventListener("input", ()=> isEmir() && autoSave("emirNote", emirNoteEl.value, emirSync));
     elifNoteEl.addEventListener("input", ()=> isElif() && autoSave("elifNote", elifNoteEl.value, elifSync));
 
-    // SNAPSHOT
-    let lastKnownHeartTs = 0; await ensureDefaults();
+    // SNAPSHOT - ANA DİNLEYİCİ
+    let lastKnownReactionTs = 0; await ensureDefaults();
     onSnapshot(stateRef, (s)=>{
         if(!s.exists()) return; const d = s.data();
         renderPeaceUI(d);
-        if(d.lastHeartTs > lastKnownHeartTs){ if(lastKnownHeartTs !== 0) burstHearts(15); lastKnownHeartTs = d.lastHeartTs; }
-        heartsPill.textContent = d.hearts;
+        
+        // YENİ: Çoklu Tepki Kontrolü
+        if(d.lastReaction && d.lastReaction.ts > lastKnownReactionTs){
+            if(lastKnownReactionTs !== 0) burstReaction(d.lastReaction.type);
+            lastKnownReactionTs = d.lastReaction.ts;
+        }
+        
+        heartsPill.textContent = `Kalp Sayacı: ${d.hearts}`;
         modeChangedAt = d.modeChangedAt || nowTs(); targetTime = d.targetDate || (nowTs() + 86400000);
         renderCapsules(d.capsules); renderPresence(d.presence, d.moods); renderBucketList(d.bucketList);
         if(document.activeElement !== emirNoteEl) emirNoteEl.value = d.emirNote || "";
